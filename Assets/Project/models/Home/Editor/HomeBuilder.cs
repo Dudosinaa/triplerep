@@ -12,7 +12,7 @@ namespace TripleRep.Home.Editor
 {
  public static class HomeBuilder
  {
-  const string Folder="Assets/models/Home", PrefabPath=Folder+"/Home.prefab", ScenePath="Assets/Scenes/Home.unity";
+  const string Folder="Assets/Project/models/Home", PrefabPath=Folder+"/Home.prefab", ScenePath="Assets/Project/Scenes/Home.unity";
   const float H=2.9f;
   [InitializeOnLoadMethod] static void PendingBuild(){if(File.Exists("Logs/Home/build.request")) EditorApplication.delayCall+=()=>{File.Delete("Logs/Home/build.request");try{BuildAndPreview();}catch(Exception e){File.WriteAllText("Logs/Home/error.txt",e.ToString());Debug.LogException(e);}};}
 
@@ -141,7 +141,7 @@ namespace TripleRep.Home.Editor
    if(!Application.isBatchMode&&!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;
    Directory.CreateDirectory(Folder+"/Meshes");Directory.CreateDirectory(Folder+"/Materials");
    plaster=Mat("Warm plaster",new Color(.82f,.79f,.71f),.15f);wood=Mat("Floor",new Color(.42f,.27f,.14f),.25f);tile=Mat("Bathroom floor",new Color(.48f,.57f,.59f),.3f);white=Mat("Ceiling",new Color(.93f,.92f,.88f),.18f);
-   root=new GameObject("Home");openings.Clear();Geometry();
+   root=new GameObject("Home");openings.Clear();Geometry();HomeLightmapRepair.PrepareModel(root);
    PrefabUtility.SaveAsPrefabAsset(root,PrefabPath);UnityEngine.Object.DestroyImmediate(root);AssetDatabase.SaveAssets();
    var scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
    foreach(var old in scene.GetRootGameObjects())if(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(old)==PrefabPath||old.name=="Home Preview Lighting")UnityEngine.Object.DestroyImmediate(old);
@@ -173,7 +173,7 @@ namespace TripleRep.Home.Editor
   }
   [MenuItem("Tools/Home/Build and render previews")]
   public static void BuildAndPreview(){Build();var cam=Camera.main;Directory.CreateDirectory("Logs/Home");Render(cam,"Logs/Home/interior.png",1400,1000);
-   root.transform.Find("Ceiling").gameObject.SetActive(false);cam.orthographic=true;cam.orthographicSize=9.3f;cam.transform.position=new Vector3(2.8f,24,-8);cam.transform.rotation=Quaternion.Euler(90,0,0);Render(cam,"Logs/Home/plan.png",900,1700);
+   root.transform.Find("LightmapReady/Ceiling").gameObject.SetActive(false);cam.orthographic=true;cam.orthographicSize=9.3f;cam.transform.position=new Vector3(2.8f,24,-8);cam.transform.rotation=Quaternion.Euler(90,0,0);Render(cam,"Logs/Home/plan.png",900,1700);
    cam.orthographicSize=10;cam.transform.position=new Vector3(19,23,-25);cam.transform.LookAt(new Vector3(2.8f,0,-8));Render(cam,"Logs/Home/overview.png",1400,1400);EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);Debug.Log("HOME_PREVIEW_OK");}
   static void Render(Camera camera,string path,int width,int height){var target=new RenderTexture(width,height,24);var old=RenderTexture.active;var texture=new Texture2D(width,height,TextureFormat.RGB24,false);camera.targetTexture=target;RenderPipeline.SubmitRenderRequest(camera,new RenderPipeline.StandardRequest{destination=target});RenderTexture.active=target;texture.ReadPixels(new Rect(0,0,width,height),0,0);texture.Apply();File.WriteAllBytes(path,texture.EncodeToPNG());camera.targetTexture=null;RenderTexture.active=old;target.Release();UnityEngine.Object.DestroyImmediate(target);UnityEngine.Object.DestroyImmediate(texture);}
  }

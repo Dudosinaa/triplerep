@@ -44,3 +44,26 @@ Tools > Home > Build and render previews — пересобрать prefab и с
 Проверки и изображения: Logs/Home/validation.txt, plan.png, overview.png, interior.png.
 Ceiling включён в сохранённой сцене; отключайте только этот объект для осмотра сверху.
 Исходное изображение: Reference/NewYorkHouse.jpg.
+
+## Исправление швов запечённого света
+
+Рабочие поверхности находятся в Home/LightmapReady:
+- Walls — наружные стены и перегородки, объединённые булевой операцией;
+- Floor — объединённая плита с сохранённым лестничным проёмом;
+- Ceiling — объединённое перекрытие.
+
+Исходные Exterior, Partitions, Floors и Ceiling сохранены как исходная геометрия,
+но их MeshRenderer и Collider отключены, чтобы не было двойных поверхностей.
+Окна, рамы, лестница, плитка, материалы и прочие объекты сохранены.
+Углы наружных стен закрыты дополнительными объёмами; внутренние грани удалены.
+UV0 материалов сохранены с интерполяцией на новых вершинах; UV2 пересозданы,
+для новых Renderer включены Contribute GI, Receive GI: Lightmaps и Stitch Seams.
+
+В FinalRender: Padding=8, AO Max Distance=0.2 м, Direct Samples=64.
+Для повторного обычного запекания используй Generate Lighting.
+После редактирования исходных блоков можно запустить
+Tools > Home > Repair lightmap seams and rebake (preserve scene).
+Пересборка через HomeBuilder также включает подготовку геометрии.
+
+Резервные копии сцены и prefab до исправления: Logs/HomeSeams/Home.before.*.
+Проверки и сравнение рендеров: Logs/HomeSeams/.
