@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4141458c687491fff48c41c5d97f6d37, type: 3}
+  m_Name: HandsWeapon
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
+  displayName: Hands Animated Pistol
+  rigRoot: Akito Rig
+  modelPrefab: {fileID: 4091018456256954661, guid: 9199461af76ad0f43902110f34111b44, type: 3}
+  controller: {fileID: 9100000, guid: 7cbc7aed5349b7fb0b1a8ea1fd6e2b9f, type: 2}
+  idleClip: {fileID: -2745928210971963435, guid: 351e7a4737a03ef4e97fa0b2c89edfd7, type: 3}
+  shotClip: {fileID: -6683155489116349302, guid: 351e7a4737a03ef4e97fa0b2c89edfd7, type: 3}
+  reloadClip: {fileID: 7400000, guid: efddf5262dce518449e01a87a4570a5a, type: 2}
+  emptyReloadClip: {fileID: 7400000, guid: 7da469b57c1b597479a5f236f565a364, type: 2}
+  equipClip: {fileID: 3743966214075639284, guid: 351e7a4737a03ef4e97fa0b2c89edfd7, type: 3}
+  materialBindings:
+  - sourceName: MI_gl5000_Asian_Hand_Male_Inst
+    material: {fileID: 2100000, guid: 33582676b7733f2076f4a3a7d8b31d87, type: 2}
+  - sourceName: MI_tp5003_jacket
+    material: {fileID: 2100000, guid: cecbc328a08d69324d32fefdad4966c8, type: 2}
+  - sourceName: Material #219
+    material: {fileID: 2100000, guid: cdd192dd8135ba1d8987a00535bc4f21, type: 2}
+  visibleRendererNames:
+  - GhostWire Akito Hands
+  - GhostWire Akito Sleeves
+  - Object001
+  handsMaterial: {fileID: 0}
+  pistolMaterial: {fileID: 0}
+  attachmentsMaterial: {fileID: 0}
+  hipOffset: {x: 0, y: 0, z: 0}
+  modelScale: {x: 1, y: 1, z: 1}
+  sightBone: Base_end
+  sightOffsetMeters: {x: 0, y: 0.01, z: 0}
+  aimDepthOffset: 0
+  reloadInsertNormalizedTime: 0.76865673
+  emptyReloadInsertNormalizedTime: 0.575419

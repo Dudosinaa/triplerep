@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4141458c687491fff48c41c5d97f6d37, type: 3}
+  m_Name: MakarovWeapon
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
+  modelPrefab: {fileID: 919132149155446097, guid: b53078f2b5a5a4149832fc766a8f2aff, type: 3}
+  controller: {fileID: 9100000, guid: c9ab029b82c39309a51e85ffbf276944, type: 2}
+  idleClip: {fileID: 8859815154056317384, guid: b53078f2b5a5a4149832fc766a8f2aff, type: 3}
+  shotClip: {fileID: 5508894048013278383, guid: b53078f2b5a5a4149832fc766a8f2aff, type: 3}
+  reloadClip: {fileID: 9011332030090775920, guid: b53078f2b5a5a4149832fc766a8f2aff, type: 3}
+  emptyReloadClip: {fileID: 3221603253325159769, guid: b53078f2b5a5a4149832fc766a8f2aff, type: 3}
+  handsMaterial: {fileID: 2100000, guid: cd087200c669bf4a1c970ec1190ff911, type: 2}
+  pistolMaterial: {fileID: 2100000, guid: 89c120a2ea9176b0fd8532d4d9339f7e, type: 2}
+  attachmentsMaterial: {fileID: 2100000, guid: 430289ac8fed43ec9dd16e2616760f73, type: 2}
+  hipOffset: {x: 0, y: 0, z: 0}
+  modelScale: {x: 1, y: 1, z: 1}
+  sightBone: Slide_end
+  sightOffsetMeters: {x: 0, y: 0.01, z: 0}
+  aimDepthOffset: 0
+  reloadCommitSeconds: 1.45
+  emptyReloadCommitSeconds: 1.45
