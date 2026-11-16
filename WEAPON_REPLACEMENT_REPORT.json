@@ -1,0 +1,259 @@
+{
+  "status": "IMPLEMENTED_STATIC_CHECKS_PASS_UNITY_NOT_RUN",
+  "project": "F:\\Projects\\KaramazovMerge\\triplerep-main",
+  "backup": "F:\\Projects\\KaramazovMerge\\triplerep-main\\SourceAssets\\WeaponReplacement\\2026-11-14T20-50-28-731Z",
+  "model": {
+    "path": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx",
+    "guid": "b53078f2b5a5a4149832fc766a8f2aff",
+    "rootFileID": "919132149155446097",
+    "sha256": "da5cfc9de8685d08b713ba6ba84bdcc6bac4f13ce41aaddd9c72e6cbd76bff0f",
+    "rig": "Generic Rig from the same FBX as all four clips",
+    "hands": "mesh skinned renderer inside Arms_Mak.fbx",
+    "pistol": "Makarov_base skinned renderer inside Arms_Mak.fbx"
+  },
+  "unusedAlternate": {
+    "path": "Assets/Project/models/Hands/source/AnimatedPistol.fbx",
+    "reason": "Independent Akito Rig with different bone paths; not instantiated or retargeted"
+  },
+  "clips": [
+    {
+      "state": "Idle",
+      "name": "Rig|MK_Idle",
+      "fileID": "8859815154056317384",
+      "source": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx"
+    },
+    {
+      "state": "Shot",
+      "name": "Rig|MK_Shot",
+      "fileID": "5508894048013278383",
+      "source": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx"
+    },
+    {
+      "state": "Reload",
+      "name": "Rig|MK_ReloadFast",
+      "fileID": "9011332030090775920",
+      "source": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx"
+    },
+    {
+      "state": "ReloadEmpty",
+      "name": "Rig|MK_ReloadFull",
+      "fileID": "3221603253325159769",
+      "source": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx"
+    }
+  ],
+  "reload": {
+    "partial": "Rig|MK_ReloadFast",
+    "empty": "Rig|MK_ReloadFull",
+    "duration": "AnimationClip.length at Animator speed 1",
+    "commitSeconds": 1.45,
+    "emptyCommitSeconds": 1.45,
+    "commitTimingVerifiedVisually": false,
+    "cancelBeforeCommit": "No ammo transfer",
+    "cancelAfterCommit": "Retain transferred ammo; never transfer twice",
+    "progress": "Animator normalizedTime in LateUpdate"
+  },
+  "runtimeInstances": "MergedGameplay.prefab binds MakarovWeapon.asset, so Metro/Home runtime spawning uses the same model; CarxDemo also configured",
+  "alignment": {
+    "method": "Static calibration parent aligns FBX authored camera sampled at Idle(0); imported cameras/lights disabled; outer holder handles aim; Animator handles only model/rig",
+    "sight": "Slide_end plus camera-space sightOffsetMeters, independent of Rig scale 100",
+    "visualVerification": false
+  },
+  "checks": {
+    "static": [
+      "No duplicate Assets GUIDs; existing modified metadata retains its GUID",
+      "Metro/Home scenes, environment settings, interaction scripts and original FBX binaries unchanged",
+      "Common runtime prefab and CarxDemo both bind real weapon definition; local YAML references resolve",
+      "Model/root and clip fileIDs match locally imported Unity artifact; controller states and native asset references checked",
+      "No runtime procedural weapon creator or procedural reload remains",
+      "Six changed/new C# sources checked for balanced delimiters (not a Unity compiler test)",
+      "Reload is driven after Animator evaluation with one commit authority; no obsolete reload coroutine"
+    ],
+    "errors": [],
+    "ammunitionTest": {
+      "command": "Tests/WeaponMagazine.Tests.ps1",
+      "actualSourceCompiled": "Assets/Scripts/WeaponMagazine.cs",
+      "assertions": 35,
+      "result": "PASS"
+    },
+    "unityCompilation": "NOT RUN: no active editor or Unity engine/compiler assemblies accessible inside the target project",
+    "unityAssetValidation": "Prepared Tools > Weapon > Validate assets; not executed",
+    "playMode": "NOT RUN",
+    "visual": "NOT RUN"
+  },
+  "preserved": {
+    "protectedFiles": [
+      "Assets/Scripts/FirstPersonPlayer.cs",
+      "Assets/Scripts/MergedGameBootstrap.cs",
+      "Assets/Scripts/SmokingController.cs",
+      "Assets/Scripts/SceneSwitch.cs",
+      "Assets/Scripts/DialogueController.cs",
+      "Assets/Scripts/DocumentReader.cs",
+      "Assets/Scripts/ItemInspector.cs",
+      "Assets/Project/Scenes/Metro.unity",
+      "Assets/Project/Scenes/Home.unity",
+      "ProjectSettings/GraphicsSettings.asset",
+      "ProjectSettings/QualitySettings.asset",
+      "ProjectSettings/ProjectSettings.asset",
+      "Assets/Project/models/Hands/source/AnimatedPistol.fbx",
+      "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx"
+    ],
+    "checksumsUnchanged": true,
+    "existingModifiedResourceGuidsPreserved": true,
+    "environmentAndGraphicsUnchanged": true,
+    "remoteOperations": false,
+    "commits": false
+  },
+  "remaining": [
+    "Run Unity compilation/import and Tools > Weapon > Validate assets",
+    "In Metro and Home verify hand visibility, aim framing, bone deformation and materials",
+    "Visually verify the 1.45-second insertion point for both reload clips",
+    "Play-test shots, target hits, repeated/empty reloads and cancellation through Q, dialogue, reading, inspection, smoking and consciousness transfer",
+    "Separate pistol/attachment roughness maps are not separately supplied; materials use constant smoothness with the provided real color/normal/metallic/emission maps"
+  ],
+  "files": [
+    {
+      "file": "Assets/Scripts/WeaponMagazine.cs",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/WeaponMagazine.cs.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/WeaponDefinition.cs",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/WeaponDefinition.cs.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/FirstPersonWeaponView.cs",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/FirstPersonWeaponView.cs.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Scripts/PistolController.cs",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/Weapons/MakarovFirstPerson.controller",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/MakarovFirstPerson.controller.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Hands.mat",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Hands.mat.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/textures/armCNormal.png.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Gun.mat",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Gun.mat.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/textures/Makarov_main_Normal_OpenGL.png.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/textures/Makarov_main_Metallic_png-Makarov_main_Rou.png.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Attachments.mat",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials/Attachments.mat.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/textures/makarov_attachments_Normal_OpenGL.png.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/textures/makarov_attachments_Metallic-makarov_attac.png.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx.meta",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Resources/MakarovWeapon.asset",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Resources/MakarovWeapon.asset.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Resources/MergedGameplay.prefab",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Scenes/CarxDemo.unity",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Editor/SetupPistolDemo.cs",
+      "change": "modified"
+    },
+    {
+      "file": "Assets/Scripts/ProceduralPistol.cs",
+      "change": "removed (original backed up)"
+    },
+    {
+      "file": "Assets/Scripts/ProceduralPistol.cs.meta",
+      "change": "removed (original backed up)"
+    },
+    {
+      "file": "Assets/Editor/WeaponAssetValidation.cs",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Editor/WeaponAssetValidation.cs.meta",
+      "change": "added"
+    },
+    {
+      "file": "Tests/WeaponMagazine.Tests.ps1",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons.meta",
+      "change": "added"
+    },
+    {
+      "file": "Assets/Project/Weapons/Materials.meta",
+      "change": "added"
+    },
+    {
+      "file": "WEAPON_SETUP.md",
+      "change": "added"
+    },
+    {
+      "file": "README_MERGED.md",
+      "change": "modified"
+    },
+    {
+      "file": "WEAPON_REPLACEMENT_REPORT.json",
+      "change": "added"
+    }
+  ]
+}
