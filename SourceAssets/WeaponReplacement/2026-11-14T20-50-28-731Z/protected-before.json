@@ -1,0 +1,16 @@
+{
+  "Assets/Scripts/FirstPersonPlayer.cs": "5bcf4d3711ccbdc08ff1309b49d1aee8bb4625241492b94b35fdc3533cace844",
+  "Assets/Scripts/MergedGameBootstrap.cs": "b62bec263f22fb8fc0f82aa9d68ab6b7453162aa0c6656bbe5966962c407e3a9",
+  "Assets/Scripts/SmokingController.cs": "18bb38f6365cdcaa378837bd0ce3f0e9af5ad1041671dd09768c528fd34af77e",
+  "Assets/Scripts/SceneSwitch.cs": "a0584ba4e1644c5b5df61e9b7c9850b049c0a31c13cb9815c4de14c77e79ff9e",
+  "Assets/Scripts/DialogueController.cs": "8c622dd72634200bbefae90e79fc6a05f706b733b1a97c677885a1f9c42ff10a",
+  "Assets/Scripts/DocumentReader.cs": "2b8469faf19135f557b6bd4683ca28b3e2e5a4dbf147d697bf397ec6007f0e8b",
+  "Assets/Scripts/ItemInspector.cs": "22520618e34857d0c54dd15dfbcb48616887720b0473cb3d3f7438292e6b7cce",
+  "Assets/Project/Scenes/Metro.unity": "ea0861d6a7539d65da8019c84cf8159ee067ad5d224b07bef4d33c25b402ac1b",
+  "Assets/Project/Scenes/Home.unity": "0338fe5325bf47ff635b8197f558f1763f3cbc47388328ff368025496f903cac",
+  "ProjectSettings/GraphicsSettings.asset": "6736f33dc62c35b0e7a88e275242080bc7a1d94c91154d18fceb332b661a6bce",
+  "ProjectSettings/QualitySettings.asset": "6814d6cc3eb850dd7d2a069a8b17ba9f7591deba8b1758a855978bd9c8627643",
+  "ProjectSettings/ProjectSettings.asset": "e76789327b810d25801f3635601451a491eb7bb4da5749860279e424fc5181e7",
+  "Assets/Project/models/Hands/source/AnimatedPistol.fbx": "1a4d9e56662edb128f49666a520654cc4e4f67525dc341df26837cef037ebb19",
+  "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx": "da5cfc9de8685d08b713ba6ba84bdcc6bac4f13ce41aaddd9c72e6cbd76bff0f"
+}

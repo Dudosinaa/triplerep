@@ -1,0 +1,195 @@
+[
+  {
+    "path": "Assets/Scripts/WeaponMagazine.cs",
+    "existed": false,
+    "afterSha256": "aee6b06e0552659b47e96a7ad4082b3a11a21640e7a285c83a1fdd4b534a3844"
+  },
+  {
+    "path": "Assets/Scripts/WeaponMagazine.cs.meta",
+    "existed": false,
+    "afterSha256": "7d479ff7a6de6e4a1dcfda863758d15eb70c4dc3db16efa4ee7c289a5770de7d"
+  },
+  {
+    "path": "Assets/Scripts/WeaponDefinition.cs",
+    "existed": false,
+    "afterSha256": "5c1cbb455afba99fc802a3a40e6b8674db5e362dbe3ec02f2f5e45382a4a08dc"
+  },
+  {
+    "path": "Assets/Scripts/WeaponDefinition.cs.meta",
+    "existed": false,
+    "afterSha256": "af0936cabfd02d476d4c1635644a492d0526d8ca8953a32da3c834c55a097d19"
+  },
+  {
+    "path": "Assets/Scripts/FirstPersonWeaponView.cs",
+    "existed": false,
+    "afterSha256": "bf1eb1b2d6e48ac71b840ce86f2dedc2e7d37c6b6d6ff810cd254186b26d5cff"
+  },
+  {
+    "path": "Assets/Scripts/FirstPersonWeaponView.cs.meta",
+    "existed": false,
+    "afterSha256": "ed905ef80c0e9f0de15bb10b12b63cf3d339136bdccd22b2b6811855599e8a86"
+  },
+  {
+    "path": "Assets/Scripts/PistolController.cs",
+    "existed": true,
+    "beforeSha256": "195da9c9e1719b229cf647b8504d624b7811d32e70000257079119b2242545a1",
+    "afterSha256": "6c0b70aa7a66fe73ccb28871785fe7782cfc5d4dea0910feb5bc98ed8fb2df4c"
+  },
+  {
+    "path": "Assets/Project/Weapons/MakarovFirstPerson.controller",
+    "existed": false,
+    "afterSha256": "cd5580dc63eeed59b3ca5aae7368d920bf1be544a85d947ec87ec062636ae249"
+  },
+  {
+    "path": "Assets/Project/Weapons/MakarovFirstPerson.controller.meta",
+    "existed": false,
+    "afterSha256": "bac1516c5b81f1abb1c7c36c1792b6605d0925304c0284483e3331bc8b174612"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Hands.mat",
+    "existed": false,
+    "afterSha256": "9cfbb486cbd70dad6eca35da92426018057be6afba1df8dd2f77f80e42ff6445"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Hands.mat.meta",
+    "existed": false,
+    "afterSha256": "8f38c7322d1eeddf04f9a87b7cf6dd41f0e721984335e3cc65b9f907d02d9aac"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/textures/armCNormal.png.meta",
+    "existed": true,
+    "beforeSha256": "0664a708212fe1f858be6a3e786d91e27aed90943fbdf758eeb023c13f9439e4",
+    "afterSha256": "777de7f176f2f9cb2b2dfd773788beac90f5d5524f871d1ff6f11e82ebe9ab85"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Gun.mat",
+    "existed": false,
+    "afterSha256": "b660872c9265e915e99ca1c9797d3c335ccc6140127a08d539b1a3b76a6b33f7"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Gun.mat.meta",
+    "existed": false,
+    "afterSha256": "707a84c38012599c0c9f07d36f4ef8e2103383d4b2c6899b133e0078858769e7"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/textures/Makarov_main_Normal_OpenGL.png.meta",
+    "existed": true,
+    "beforeSha256": "f87da8207aa4daec15bde19cbea3157f901e6026278d848a2f5f8ca17aa434ba",
+    "afterSha256": "0f963a314d93a3b32ba7b2d1fb96c7eff42395137734141c93c13473a9250b5f"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/textures/Makarov_main_Metallic_png-Makarov_main_Rou.png.meta",
+    "existed": true,
+    "beforeSha256": "cc82662f7e12740c03e3c0940903bc52ee178d168e2df399a2daa77e6f9d0c13",
+    "afterSha256": "8a143ba94678c5c7a668370961fcc54c118088ebed7746e29048f175c33aa62d"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Attachments.mat",
+    "existed": false,
+    "afterSha256": "af0f2685b4ad7083670374365a92b73894a575d511761a70ed9a9e6313fa7d68"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials/Attachments.mat.meta",
+    "existed": false,
+    "afterSha256": "819a5c2c0555bb54c6ccbdb386eed734543135af7af0decb78a91ab5af60e5bf"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/textures/makarov_attachments_Normal_OpenGL.png.meta",
+    "existed": true,
+    "beforeSha256": "0cfc7307bfda7fb93701445609e052dc5b6f4bae9d25e92462723e141bb6ca83",
+    "afterSha256": "1700a937c9056f3a1e00b3b250a62a712c87c772b4b300493f23efd0b3d9e8d9"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/textures/makarov_attachments_Metallic-makarov_attac.png.meta",
+    "existed": true,
+    "beforeSha256": "8aaf6c60c05c5ce9ea62a6bf2cbb972154b6f9133186b95875dadd6430356e61",
+    "afterSha256": "6e426a7b9000134c492edcc92a02ece62ed592ff4110884f566b641101e76b5d"
+  },
+  {
+    "path": "Assets/Project/models/Hands + pistol animation/source/Arms_Mak.fbx.meta",
+    "existed": true,
+    "beforeSha256": "ab6f8b4a7efa6432eae643396c0054122f3a9f069c14da431d98e722c53f78bd",
+    "afterSha256": "cb2609dadd05a826b5c5d4ffe0be497f31fb1086c96ce8a85c78523cd7aa06f5"
+  },
+  {
+    "path": "Assets/Resources/MakarovWeapon.asset",
+    "existed": false,
+    "afterSha256": "603b413f1beed9bc032c439bc677e308ca62ee1b47d335d0781a5e341cd6d124"
+  },
+  {
+    "path": "Assets/Resources/MakarovWeapon.asset.meta",
+    "existed": false,
+    "afterSha256": "6d85a8c030a49d080bff3c4d4a072aabe4f4e58c49bd85f857dffb9eb39d54da"
+  },
+  {
+    "path": "Assets/Resources/MergedGameplay.prefab",
+    "existed": true,
+    "beforeSha256": "84dd5909c310fb683b31f22b291f8ccacda7145153bf12345af5ec41fa9fed30",
+    "afterSha256": "a86ca0c03abb211fe4e46db130b1e24db176cec20adebc12fd384a1e320e0c89"
+  },
+  {
+    "path": "Assets/Scenes/CarxDemo.unity",
+    "existed": true,
+    "beforeSha256": "7ebd7696e27c4d8bc274e6bf77b25e529098b7b2b9a8ddb144ef1179026ac7e5",
+    "afterSha256": "4cbfe9782ee3720d69b97b2dd31ff05dcecc67fd7eeab6e0f52b9d703d17fda7"
+  },
+  {
+    "path": "Assets/Editor/SetupPistolDemo.cs",
+    "existed": true,
+    "beforeSha256": "b4d35cc819cfcc8b936ed836b2d8124e755cb7f3cda0e0d8cca6d4c08146e9c4",
+    "afterSha256": "0bfff4589966b5c6293d74cc5130ba81ad20f7fbca991629e3394b78a35c205a"
+  },
+  {
+    "path": "Assets/Scripts/ProceduralPistol.cs",
+    "existed": true,
+    "beforeSha256": "d860ecd35647321d9a37081e71bebe079ad3c4d19c77e5bd47eeb776e4d61362",
+    "removed": true
+  },
+  {
+    "path": "Assets/Scripts/ProceduralPistol.cs.meta",
+    "existed": true,
+    "beforeSha256": "fecaec0b5934ba531db143bd5ae403da1fcc724edaa17081ccf75d2893c4a448",
+    "removed": true
+  },
+  {
+    "path": "Assets/Editor/WeaponAssetValidation.cs",
+    "existed": false,
+    "afterSha256": "5d74877e1d87806e7314867f243288d95ca1f4668f00c65060cd00f889d96f1b"
+  },
+  {
+    "path": "Assets/Editor/WeaponAssetValidation.cs.meta",
+    "existed": false,
+    "afterSha256": "b0181e7c051b4b7b0b25e241d930025caa5c22aa82dec813af914656234e4f33"
+  },
+  {
+    "path": "Tests/WeaponMagazine.Tests.ps1",
+    "existed": false,
+    "afterSha256": "7021f88836449b73b80854fd028040a42452a54324c136415aabd23c527de93b"
+  },
+  {
+    "path": "Assets/Project/Weapons.meta",
+    "existed": false,
+    "afterSha256": "4a735b350cd66f0ac4f23be445996c62a4c0fdb1b1fe7c6ef56ba630c9e1b813"
+  },
+  {
+    "path": "Assets/Project/Weapons/Materials.meta",
+    "existed": false,
+    "afterSha256": "520a283f001cfdded033278bdf05716bfdd9eb559704f7c4bb661801a32b25f1"
+  },
+  {
+    "path": "WEAPON_SETUP.md",
+    "existed": false,
+    "afterSha256": "de00ae37ab751562d89c13262b8e77448e36a3fbac70316e7c5d5a1adb7ad788"
+  },
+  {
+    "path": "README_MERGED.md",
+    "existed": true,
+    "beforeSha256": "367ee8efc2311ebffcacfde1c1c65bc8532475f479deba745ba0ada950163c69",
+    "afterSha256": "b5c6263fc3366d99322d7463680eda6d7db6c6dd4d1a92e828e2ff662bcd907c"
+  },
+  {
+    "path": "WEAPON_REPLACEMENT_REPORT.json",
+    "existed": false,
+    "afterSha256": "11709c303c5adb50e3c35deb8dc96c90dc306b2334e760b4941b1940b81af048"
+  }
+]
