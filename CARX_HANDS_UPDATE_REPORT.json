@@ -1,0 +1,277 @@
+{
+  "status": "UPDATED_STATIC_CHECKS_PASS_UNITY_NOT_RUN",
+  "project": "F:\\Projects\\KaramazovMerge\\triplerep-main",
+  "source": "F:\\Projects\\KaramazovMerge\\triplerep-carx-hackathon - управление персонажем",
+  "previousSourceRoot": "F:\\Projects\\KaramazovMerge\\triplerep-carx-hackathon - управление персонажем\\triplerep-carx-hackathon",
+  "baseline": "F:\\Projects\\KaramazovMerge\\_merge-backups\\2026-11-14T19-30-44-138Z\\sources-before.json",
+  "sourceDelta": {
+    "added": [],
+    "modified": [
+      "Assets/Editor/SetupItemInspection.cs",
+      "Assets/Scenes/SampleScene.unity",
+      "Assets/Scripts/DialogueController.cs",
+      "Assets/Scripts/ItemInspector.cs"
+    ],
+    "removed": []
+  },
+  "baselineReconstruction": {
+    "Assets/Scripts/DialogueController.cs": true,
+    "Assets/Scripts/ItemInspector.cs": true,
+    "Assets/Editor/SetupItemInspection.cs": true,
+    "Assets/Scenes/SampleScene.unity": true
+  },
+  "updatesTransferred": [
+    "Dialogue stays in first-person player camera; removed cinematic shot switching",
+    "Transparent ARGB32 inspection preview with HDR disabled",
+    "Normalized exponential mouse-wheel inspection zoom",
+    "Transparent nonblocking inspection-panel Image in common prefab and CarxDemo",
+    "Editor inspection tool updated while retaining target CarxDemo scene path"
+  ],
+  "conflictsResolved": [
+    "Retained movement/modal gates, InteractionInput consumption and gaze/visibility NPC selection while applying carx dialogue and inspection changes",
+    "Source SampleScene weapon bindings were unchanged from baseline; not treated as new updates and not copied over active Hands binding",
+    "Kept target Packages, ProjectSettings, dudosinaa environment/graphics and numeric SceneSwitch configuration",
+    "Hands takes precedence; no automatic Arms_Mak or procedural fallback"
+  ],
+  "hands": {
+    "model": "Assets/Project/models/Hands/source/AnimatedPistol.fbx",
+    "guid": "351e7a4737a03ef4e97fa0b2c89edfd7",
+    "sha256": "1a4d9e56662edb128f49666a520654cc4e4f67525dc341df26837cef037ebb19",
+    "skeleton": "Akito Rig",
+    "renderers": [
+      "GhostWire Akito Hands",
+      "GhostWire Akito Sleeves",
+      "Object001"
+    ],
+    "hiddenHelpers": 9,
+    "rootFileID": "919132149155446097",
+    "clips": [
+      {
+        "name": "Akito Rig|Shoot",
+        "fileID": "-6683155489116349302",
+        "source": "Assets/Project/models/Hands/source/AnimatedPistol.fbx"
+      },
+      {
+        "name": "Akito Rig|Idle",
+        "fileID": "-2745928210971963435",
+        "source": "Assets/Project/models/Hands/source/AnimatedPistol.fbx"
+      },
+      {
+        "name": "Akito Rig|Reload",
+        "fileID": "579073422227207666",
+        "source": "Assets/Project/models/Hands/source/AnimatedPistol.fbx"
+      },
+      {
+        "name": "Akito Rig|Take",
+        "fileID": "3743966214075639284",
+        "source": "Assets/Project/models/Hands/source/AnimatedPistol.fbx"
+      }
+    ],
+    "controller": "Assets/Project/Weapons/Hands/HandsFirstPerson.controller",
+    "definition": "Assets/Resources/HandsWeapon.asset",
+    "emptyReload": "Uses the same native Hands Reload clip",
+    "equip": "Uses native Take clip"
+  },
+  "reload": {
+    "durationSeconds": 3.3333333333333335,
+    "originalAnimationEvents": 0,
+    "newEvent": "OnMagazineInserted",
+    "insertFrame": 67,
+    "sourceFrames": 100,
+    "sourceFramesPerSecond": 30,
+    "normalizedEventTime": 0.67,
+    "approxSeconds": 2.2333333333333334,
+    "evidence": "F:\\Projects\\KaramazovMerge\\_merge-backups\\carx-hands-2026-11-15T08-51-55-101Z\\hands-insertion-evidence.json",
+    "ammunitionAuthority": "WeaponMagazine.ApplyInsertionEvent validates operation token and one-time commit",
+    "oldTimingUsed": false,
+    "visualVerificationRequired": true
+  },
+  "preserved": {
+    "carxSourceFiles": 180,
+    "carxUnchanged": true,
+    "protectedTargetFiles": 58,
+    "packagesAndSettingsUnchanged": true,
+    "metroAndHomeSceneBytesUnchanged": true,
+    "armsMakModelAndMetadataUnchanged": true,
+    "remoteGitOperations": false,
+    "commits": false
+  },
+  "checks": {
+    "static": [
+      "Assets metadata complete, no duplicate GUIDs or orphan metadata; modified existing GUIDs preserved",
+      "58 protected files (Packages, ProjectSettings, dudosinaa graphics, Metro/Home and nonupdated gameplay) unchanged",
+      "All 180 current carx files verified unchanged; exact baseline recovered for all four updated source files",
+      "Hands model/clip fileIDs verified from local Unity import; common prefab and CarxDemo bind only Hands; UI delta applied to both",
+      "No automatic Arms_Mak/procedural fallback or previous timing in active implementation; reload uses operation-scoped AnimationEvent",
+      "Akito Rig, authored camera, sight marker, three intended skins and all four own clips present; helpers filtered",
+      "Packed material data round-tripped: metallic R and inverted roughness A match every source pixel",
+      "Carx first-person dialogue and transparent/exponential inspection merged with existing action gates"
+    ],
+    "errors": [],
+    "ammunition": "PASS: 47 assertions, real WeaponMagazine.cs compiled in memory",
+    "csharpSyntax": "PASS: Roslyn parsed all 10 changed/new C# files",
+    "unityApiCompilation": "NOT RUN",
+    "playMode": "NOT RUN",
+    "visuals": "NOT RUN",
+    "reason": "No active Unity editor and no Unity engine/compiler available inside the permitted project; static checks cannot establish in-game rendering or animation correctness"
+  },
+  "manualChecks": [
+    "Import/compile in Unity and run Tools > Weapon > Validate assets",
+    "Metro, Home and CarxDemo: one visible Hands kit, correct materials and aim",
+    "Native Idle/Shoot/Take/Reload playback and insertion event frame 67",
+    "Shots, target hits, HUD, repeated R, empty/partial reload, Q cancellation before/after event",
+    "Dialogue, reading, inspection, smoking and consciousness transitions still block/cancel weapon",
+    "First-person dialogue view, transparent inspection background and wheel zoom"
+  ],
+  "backup": "F:\\Projects\\KaramazovMerge\\_merge-backups\\carx-hands-2026-11-15T08-51-55-101Z",
+  "files": [
+    {
+      "path": "Assets/Scripts/DialogueController.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scripts/ItemInspector.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Editor/SetupItemInspection.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Resources/MergedGameplay.prefab",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scenes/CarxDemo.unity",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scripts/WeaponDefinition.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scripts/WeaponAnimationEvents.cs",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Scripts/WeaponAnimationEvents.cs.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Scripts/WeaponMagazine.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scripts/FirstPersonWeaponView.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Scripts/PistolController.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Textures/PistolMetalSmooth.png",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Textures/PistolMetalSmooth.png.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Skin.mat",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Skin.mat.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/models/Hands/textures/T_gl5000_Male_Hand_Base_N.tga.png.meta",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Sleeves.mat",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Sleeves.mat.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/models/Hands/textures/T_tp5003_Jacket_N.tga.png.meta",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Pistol.mat",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials/Pistol.mat.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/models/Hands/textures/Material__219_Normal_OpenGL.png.meta",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/models/Hands/textures/Material__219_Mixed_AO.png.meta",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/models/Hands/source/AnimatedPistol.fbx.meta",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/HandsFirstPerson.controller",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/HandsFirstPerson.controller.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Resources/HandsWeapon.asset",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Resources/HandsWeapon.asset.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Editor/WeaponAssetValidation.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Editor/SetupPistolDemo.cs",
+      "status": "modified"
+    },
+    {
+      "path": "Tests/WeaponMagazine.Tests.ps1",
+      "status": "modified"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Materials.meta",
+      "status": "added"
+    },
+    {
+      "path": "Assets/Project/Weapons/Hands/Textures.meta",
+      "status": "added"
+    },
+    {
+      "path": "WEAPON_SETUP.md",
+      "status": "modified"
+    },
+    {
+      "path": "README_MERGED.md",
+      "status": "modified"
+    },
+    {
+      "path": "CARX_HANDS_UPDATE_REPORT.json",
+      "status": "added"
+    }
+  ]
+}
