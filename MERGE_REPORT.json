@@ -1,0 +1,99 @@
+{
+  "status": "STATIC_AUDIT_PASS_RUNTIME_UNVERIFIED",
+  "target": "F:\\Projects\\KaramazovMerge\\triplerep-main",
+  "unityVersion": "6000.3.28f1",
+  "inputSystem": "Input System only; carx controls and UI actions",
+  "sources": {
+    "triplerep-carx-hackathon": {
+      "files": 180,
+      "unchanged": true,
+      "mismatches": []
+    },
+    "triplerep-dudosinaa": {
+      "files": 2185,
+      "unchanged": true,
+      "mismatches": []
+    },
+    "triplerep-stress-mechanik": {
+      "files": 1160,
+      "unchanged": true,
+      "mismatches": []
+    },
+    "triplerep-Vadsu": {
+      "files": 1098,
+      "unchanged": true,
+      "mismatches": []
+    }
+  },
+  "originalTargetUnchanged": true,
+  "sceneOrder": [
+    {
+      "index": 0,
+      "path": "Assets/Project/Scenes/Metro.unity",
+      "guid": "99c9720ab356a0642a771bea13969a05"
+    },
+    {
+      "index": 1,
+      "path": "Assets/Project/Scenes/Home.unity",
+      "guid": "b05cb2c8ea0c45843a30a1de358b9ed1"
+    },
+    {
+      "index": 2,
+      "path": "Assets/Scenes/ConsciousnessScene.unity",
+      "guid": "af8fe1ebfa1f2564cac4139ef96ea314"
+    },
+    {
+      "index": 3,
+      "path": "Assets/Scenes/CarxDemo.unity",
+      "guid": "0893e2229c01c053bb6f6101954fe011"
+    },
+    {
+      "index": 4,
+      "path": "Assets/Scenes/StressDemo.unity",
+      "guid": "180cf797cc7dfd461ae87a6516b4c7ca"
+    }
+  ],
+  "resolvedConflicts": [
+    "Distinct GUIDs for Metro, CarxDemo and StressDemo",
+    "Dudosinaa graphics settings and authored environment objects retained",
+    "Vadsu shared systems imported once through stress-mechanik",
+    "Old input API replaced with Input System; SceneSwitch loads numeric scene indices",
+    "Modal actions coordinate movement, interactions and weapon state",
+    "Missing LFS weapon resources replaced by user-approved procedural model; original combat logic retained",
+    "Smoking glTF loaded from self-contained StreamingAssets file",
+    "Unused unreferenced Blender source archived outside Assets",
+    "NPC dialogue requires a visible NPC under the crosshair, preventing nearby dialogue from stealing document/item input"
+  ],
+  "staticChecks": [
+    "All Assets files have metadata; no orphan metadata or duplicate GUIDs",
+    "Native YAML object IDs and local references consistent; no references to unavailable LFS assets",
+    "Direct native external fileID links checked; inherited prefab links match source files and require the Unity importer",
+    "C# delimiters balanced; runtime scripts use Input System; this is not a compiler check",
+    "Build scene order and GUID mapping match all index-based transitions",
+    "Dudosinaa graphics settings/profiles unchanged by SHA-256; original Metro/Home serialized objects unchanged",
+    "Manifest/lock versions and transitive minimums consistent",
+    "Smoking glTF includes buffers and textures; StreamingAssets file is self-contained",
+    "No unresolved LFS pointer files in imported Assets",
+    "All four source folders verified unchanged by SHA-256; original nested target file unchanged",
+    "Final interaction source review: NPC, document and item selection do not compete on proximity alone"
+  ],
+  "errors": [],
+  "unityOnlyChecks": [
+    "Compilation and package import",
+    "Inherited prefab object references (785 occurrences retained exactly from sources)",
+    "Metro/Home spawn points, mesh collision cooking, placement and visual appearance",
+    "Dialogue, reading, inspection, weapon, stress/smoking and scene transitions in Play Mode",
+    "Windows x64 build and glTF shader/material appearance in the built player"
+  ],
+  "notRun": [
+    "Unity Editor",
+    "Play Mode",
+    "BuildPipeline"
+  ],
+  "reasonNotRun": "No editor or package runtime is provided inside the permitted workspace; files outside it were not accessed.",
+  "backup": "F:\\Projects\\KaramazovMerge\\_merge-backups\\2026-11-14T19-30-44-138Z",
+  "restoreScript": "F:\\Projects\\KaramazovMerge\\_merge-backups\\2026-11-14T19-30-44-138Z\\Restore-Target.ps1",
+  "remoteGitOperations": [],
+  "commitsCreated": 0,
+  "branchesChanged": false
+}
