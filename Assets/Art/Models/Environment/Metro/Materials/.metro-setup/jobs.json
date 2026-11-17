@@ -1,0 +1,320 @@
+[
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Ads_roughness.jpeg",
+    "metallic": null,
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Ads_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\AsientosInteriores_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\AsientosInteriores_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\AsientosInteriores_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\AsientosInteriores_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\BajosExterioresTren_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\BajosExterioresTren_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\BajosExterioresTren_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\BajosExterioresTren_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Banco_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Banco_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Banco_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Banco_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Barandilla_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Barandilla_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Barandilla_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Barandilla_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CabezaTren_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CabezaTren_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CabezaTren_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CabezaTren_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CablesTexturePack_roughness.jpeg",
+    "metallic": null,
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CablesTexturePack_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaExtintor_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaExtintor_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaExtintor_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CajaExtintor_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaMetalica_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaMetalica_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaMetalica_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CajaMetalica_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaT_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaT_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaT_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CajaT_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaVias_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CajaVias_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CajaVias_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CamaraColgante_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CamaraColgante_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CamaraColgante_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CamaraSeguridad_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CamaraSeguridad_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CamaraSeguridad_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CamaraSeguridad_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CanTrash_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CanTrash_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CanTrash_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CanTrash_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelInformativo_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelInformativo_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelInformativo_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CartelInformativo_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelPilar_roughness.jpeg",
+    "metallic": null,
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CartelPilar_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelSalida_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelSalida_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\CartelSalida_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\CartelSalida_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\DriverCabin_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\DriverCabin_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\DriverCabin_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\DriverCabin_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Escalera_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Escalera_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Escalera_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Escalera_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Extintor_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Extintor_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Extintor_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Extintor_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Fluorescente_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Fluorescente_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Fluorescente_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Fluorescente_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\FluorescenteLuz_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\FluorescenteLuz_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\FluorescenteLuz_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\FluorescenteLuz_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LateralTren_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LateralTren_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LateralTren_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\LateralTren_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LateralesInteriores_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LateralesInteriores_metallic.jpeg",
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\LateralesInteriores_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelCorta_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelCorta_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelCorta_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\LuzTunelCorta_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelLarga_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelLarga_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\LuzTunelLarga_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\LuzTunelLarga_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Maleta_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Maleta_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Maleta_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Maleta_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Megafono_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Megafono_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Megafono_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Megafono_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\NumeroVias_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\NumeroVias_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\NumeroVias_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PackCajas_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PackCajas_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\PackCajas_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Papelera_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Papelera_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Papelera_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\ParedTunel_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\ParedTunel_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\ParedTunel_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\ParedTunel_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\ParedesModulares_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\ParedesModulares_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\ParedesModulares_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PiezaViasCables_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PiezaViasCables_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PiezaViasCables_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\PiezaViasCables_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Pilar_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Pilar_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Pilar_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Pilar_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Poste_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Poste_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Poste_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Poste_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertaDelantera_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertaDelantera_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertaDelantera_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\PuertaDelantera_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertasLaterales_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertasLaterales_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\PuertasLaterales_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\PuertasLaterales_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Semaforo_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Semaforo_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Semaforo_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Semaforo_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SeparadorAndanas_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SeparadorAndanas_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SeparadorAndanas_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SeparadorEscalera_roughness.jpeg",
+    "metallic": null,
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SeparadorEscalera_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloInterior_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloInterior_metallic.jpeg",
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SueloInterior_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloModular_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloModular_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SueloModular_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloVias_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SueloVias_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SueloVias_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SujeccionesCables_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SujeccionesCables_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\SujeccionesCables_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\SujeccionesCables_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoEscalera_roughness.jpeg",
+    "metallic": null,
+    "ao": null,
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\TechoEscalera_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoInterior_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoInterior_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoInterior_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\TechoInterior_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoTren_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoTren_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TechoTren_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\TechoTren_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Techos_Modulares_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Techos_Modulares_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Techos_Modulares_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TuberiaViaDetallada_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TuberiaViaDetallada_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\TuberiaViaDetallada_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TubosTecho_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\TubosTecho_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\TubosTecho_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Vias_roughness.jpeg",
+    "metallic": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Vias_metallic.jpeg",
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Vias_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\Vias_MSAO.png"
+  },
+  {
+    "roughness": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\WetFloorCartel_roughness.jpeg",
+    "metallic": null,
+    "ao": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\WetFloorCartel_AO.jpeg",
+    "output": "F:\\Projects\\The Karamazov train\\Assets\\Art\\Models\\Environment\\Metro\\Textures\\Packed\\WetFloorCartel_MSAO.png"
+  }
+]

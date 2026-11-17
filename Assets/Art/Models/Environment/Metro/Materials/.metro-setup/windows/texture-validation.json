@@ -1,0 +1,17 @@
+[
+  {
+    "family": "LateralTren",
+    "pixels": 4194304,
+    "verified": true
+  },
+  {
+    "family": "PuertasLaterales",
+    "pixels": 1048576,
+    "verified": true
+  },
+  {
+    "family": "PuertaDelantera",
+    "pixels": 1048576,
+    "verified": true
+  }
+]
