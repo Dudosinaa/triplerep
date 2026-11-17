@@ -109,7 +109,6 @@ public static class SetupNpcDialogue
         var data = new SerializedObject(controller);
         data.FindProperty("playerCamera").objectReferenceValue = player.GetComponentInChildren<Camera>();
         data.FindProperty("dialogueCamera").objectReferenceValue = dialogueCamera;
-        data.FindProperty("npc").objectReferenceValue = npcObject.GetComponent<NpcDialogue>();
         data.FindProperty("movement").objectReferenceValue = player.GetComponent<FirstPersonPlayer>();
         data.FindProperty("documentReader").objectReferenceValue = player.GetComponent<DocumentReader>();
         data.FindProperty("itemInspector").objectReferenceValue = player.GetComponent<ItemInspector>();

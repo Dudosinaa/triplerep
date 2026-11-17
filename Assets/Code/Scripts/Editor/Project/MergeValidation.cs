@@ -36,8 +36,9 @@ public static class MergeValidation
             Require(!string.IsNullOrEmpty(guid) && guids.Add(guid), "Missing or duplicate scene GUID: " + scene);
         }
         checks.Add("Every build scene has a distinct GUID");
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Level/Prefabs/Resources/MergedGameplay.prefab");
-        Require(prefab != null, "MergedGameplay prefab could not be imported.");
+        PlayerPrefabBuilder.Validate();
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
+        Require(prefab != null, "Player prefab could not be imported.");
         foreach (var transform in prefab.GetComponentsInChildren<Transform>(true))
             Require(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject) == 0,
                 "Missing script in gameplay prefab: " + transform.name);
@@ -47,9 +48,8 @@ public static class MergeValidation
         Require(prefab.GetComponentInChildren<DialogueController>(true) != null, "DialogueController missing");
         Require(prefab.GetComponentInChildren<PistolController>(true) != null, "PistolController missing");
         Require(prefab.GetComponentInChildren<InputSystemUIInputModule>(true) != null, "New UI input module missing");
-        Require(Resources.Load<GameObject>("MergedNpc") != null, "NPC prefab missing");
         Require(Resources.Load<AudioClip>("MergeStressSound") != null, "Stress audio missing");
-        checks.Add("Gameplay prefab, scripts, UI input, NPC and stress audio imported");
+        checks.Add("Standalone player prefab, scripts, UI input and stress audio imported; no test content");
         var projectRoot = Directory.GetParent(Application.dataPath).FullName;
         Require(File.ReadAllText(Path.Combine(projectRoot, "ProjectSettings/ProjectSettings.asset")).Contains("activeInputHandler: 1"),
             "Only Input System must be enabled");
@@ -66,10 +66,10 @@ public static class MergeValidation
             checks = checks.ToArray(),
             manualChecks = new[] {
                 "Play Metro and Home: floor collisions, spawn position, lighting and camera",
-                "Read document, inspect and rotate items, choose dialogue replies, then resume movement",
-                "Fire, aim, reload, holster and hit targets; weapon must hide during other actions",
+                "In CarxDemo or with scene-authored interaction objects: read, inspect, talk and resume movement",
+                "Fire, aim, reload, holster; in CarxDemo hit targets; weapon must hide during other actions",
                 "Space/minus change stress; Y at stress >= 40 plays smoking and recovers stress",
-                "T at NPC opens scene 2; Escape returns to the originating scene",
+                "T at a scene-authored NPC with FocusPoint opens scene 2; Escape returns to the originating scene",
                 "F near the exit travels between Metro and Home; repeat tests in the Windows build"
             }
         };

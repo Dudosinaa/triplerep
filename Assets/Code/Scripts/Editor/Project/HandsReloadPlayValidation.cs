@@ -125,6 +125,14 @@ public static class HandsReloadPlayValidation
         {
             if(SceneManager.GetActiveScene().buildIndex!=sceneIndex)SceneSwitch.LoadSceneIndex(sceneIndex);
             yield return Delay(2f);
+            // Standalone location players no longer bring test fixtures with them.
+            var demo = Resources.Load<GameObject>("MergedGameplay");
+            if (UnityEngine.Object.FindFirstObjectByType<NpcDialogue>() == null)
+                UnityEngine.Object.Instantiate(demo.GetComponentInChildren<NpcDialogue>().gameObject);
+            if (UnityEngine.Object.FindFirstObjectByType<ReadableDocument>() == null)
+                UnityEngine.Object.Instantiate(demo.GetComponentInChildren<ReadableDocument>().gameObject);
+            if (UnityEngine.Object.FindFirstObjectByType<InspectableItem>() == null)
+                UnityEngine.Object.Instantiate(demo.GetComponentInChildren<InspectableItem>().gameObject);
             Cursor.lockState=CursorLockMode.Locked;
             var pistol=UnityEngine.Object.FindFirstObjectByType<PistolController>();
             Check(pistol!=null,"Missing player in scene "+sceneIndex);
@@ -190,7 +198,7 @@ public static class HandsReloadPlayValidation
                 else if(reason=="disable") { pistol.enabled=false;restore=()=>pistol.enabled=true; }
                 else if(reason=="dialogue")
                 {
-                    var dialogue=pistol.GetComponent<DialogueController>();var npc=(NpcDialogue)Field(dialogue,"npc");
+                    var dialogue=pistol.GetComponent<DialogueController>();var npc=UnityEngine.Object.FindFirstObjectByType<NpcDialogue>();
                     Call(dialogue,"BeginDialogue",npc);Check(dialogue.IsTalking,"Dialogue not entered");restore=()=>Call(dialogue,"EndDialogue");
                 }
                 else if(reason=="reading")

@@ -20,7 +20,7 @@ public class PlayerStress : MonoBehaviour
     public AudioClip stressSound;
     [Range(0f, 100f)] public float soundThreshold = 50f;
 
-    private bool blendWithSceneProfile;
+    [SerializeField] private bool blendWithSceneProfile;
     private Vignette vignette;
     private AudioSource audioSource;
     private float vignetteVelocity;
@@ -29,8 +29,7 @@ public class PlayerStress : MonoBehaviour
 
     void Awake()
     {
-        if (volume != null && volume.profile != null)
-            volume.profile.TryGet(out vignette);
+        BindVolume(volume, blendWithSceneProfile);
 
         // Stress owns a dedicated source; footsteps and weapon sounds remain independent.
         audioSource = gameObject.AddComponent<AudioSource>();

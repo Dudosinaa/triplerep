@@ -79,7 +79,7 @@ public static class WeaponAssetValidation
                 Require(!camera.enabled, "Imported camera must not render");
             foreach (var state in new[] { "Idle", "Shot", "Reload", "ReloadEmpty", "Equip" })
                 Require(((UnityEditor.Animations.AnimatorController)definition.controller).layers[0].stateMachine.states.Any(s=>s.state.name==state), "Missing Animator state: " + state);
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Level/Prefabs/Resources/MergedGameplay.prefab");
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
             var pistol = prefab != null ? prefab.GetComponentInChildren<PistolController>(true) : null;
             Require(pistol != null, "Common player has no PistolController");
             Require(new SerializedObject(pistol).FindProperty("definition").objectReferenceValue == definition,

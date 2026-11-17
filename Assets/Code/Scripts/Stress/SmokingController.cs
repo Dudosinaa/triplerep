@@ -128,13 +128,17 @@ public sealed class SmokingController : MonoBehaviour
     {
         if (hintText == null)
         {
-            var canvas = FindFirstObjectByType<Canvas>();
+            var canvas = GetComponentInChildren<Canvas>(true);
+            // The preserved StressDemo uses PlayerMovement and a separate scene canvas.
+            if (canvas == null && GetComponent<PlayerMovement>() != null) canvas = FindFirstObjectByType<Canvas>();
             if (canvas == null) return;
             var go = new GameObject("Smoking Hint", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             go.transform.SetParent(canvas.transform, false);
             hintText = go.GetComponent<TMP_Text>();
             hintText.font = TMP_Settings.defaultFontAsset;
         }
+        // A serialized inactive TMP object has not run Awake yet. Initialize it before styling.
+        hintText.gameObject.SetActive(true);
         hintText.text = "Покурить — Y";
         var prompt = GetComponent<SmokingPromptUI>();
         if (prompt != null) prompt.Bind(hintText);

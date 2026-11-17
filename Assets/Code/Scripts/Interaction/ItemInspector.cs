@@ -41,6 +41,7 @@ public sealed class ItemInspector : MonoBehaviour
         if (previewImage != null) previewImage.texture = previewTexture;
 
         var cameraObject = new GameObject("Inspection Preview Camera");
+        cameraObject.transform.SetParent(transform, false);
         cameraObject.transform.position = PreviewPosition + Vector3.back * 6f;
         cameraObject.transform.LookAt(PreviewPosition);
         previewCamera = cameraObject.AddComponent<Camera>();
@@ -152,11 +153,15 @@ public sealed class ItemInspector : MonoBehaviour
     private void OpenInspection(InspectableItem item)
     {
         inspectedItem = item;
+        // The owned camera moves with the player between inspections; reset its remote stage.
+        previewCamera.transform.position = PreviewPosition + Vector3.back * 6f;
+        previewCamera.transform.LookAt(PreviewPosition);
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
         if (itemTitle != null) itemTitle.text = item.ItemName;
 
         previewRoot = Instantiate(item.gameObject);
         previewRoot.name = "Inspection Preview Model";
+        previewRoot.transform.SetParent(previewCamera.transform, true);
         previewRoot.transform.SetPositionAndRotation(PreviewPosition, Quaternion.identity);
         SetPreviewLayer(previewRoot.transform);
         foreach (Collider collider in previewRoot.GetComponentsInChildren<Collider>(true)) collider.enabled = false;

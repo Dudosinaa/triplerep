@@ -5,12 +5,12 @@ using UnityEngine.UI;
 public sealed class DialogueController : MonoBehaviour
 {
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Camera dialogueCamera;
-    [SerializeField] private NpcDialogue npc;
+    // Legacy demo references. Conversations now use the first-person camera.
+    [SerializeField, HideInInspector] private Camera dialogueCamera;
     [SerializeField] private FirstPersonPlayer movement;
     [SerializeField] private DocumentReader documentReader;
     [SerializeField] private ItemInspector itemInspector;
-    [SerializeField] private GameObject playerBody;
+    [SerializeField, HideInInspector] private GameObject playerBody;
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject[] otherPrompts;
     [SerializeField] private GameObject interactionPrompt;
@@ -64,7 +64,12 @@ public sealed class DialogueController : MonoBehaviour
             bool canTalk = nearbyNpc != null && (movement == null || movement.enabled) &&
                 (documentReader == null || !documentReader.IsReading) &&
                 (itemInspector == null || !itemInspector.IsInspecting);
-            if (interactionPrompt != null) interactionPrompt.SetActive(canTalk);
+            if (interactionPrompt != null)
+            {
+                interactionPrompt.SetActive(canTalk);
+                var label = interactionPrompt.GetComponent<Text>();
+                if (canTalk && label != null) label.text = "[E] Поговорить — " + nearbyNpc.CharacterName;
+            }
             if (canTalk && Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume()) BeginDialogue(nearbyNpc);
             return;
         }
@@ -83,15 +88,13 @@ public sealed class DialogueController : MonoBehaviour
 
     private NpcDialogue FindNearbyNpc()
     {
-        if (npc == null || !npc.isActiveAndEnabled) return null;
-        Vector3 delta = npc.transform.position - transform.position;
-        delta.y = 0f;
-        if (delta.sqrMagnitude > talkDistance * talkDistance || playerCamera == null) return null;
+        if (playerCamera == null) return null;
         // Compact indoor layouts can place a document and NPC within the same talk radius.
         // Select the NPC under the crosshair so proximity never steals document/item input.
         if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
                 out var hit, talkDistance, ~0, QueryTriggerInteraction.Ignore)) return null;
-        return hit.collider.GetComponentInParent<NpcDialogue>() == npc ? npc : null;
+        var target = hit.collider.GetComponentInParent<NpcDialogue>();
+        return target != null && target.isActiveAndEnabled ? target : null;
     }
 
     private void BeginDialogue(NpcDialogue npc)

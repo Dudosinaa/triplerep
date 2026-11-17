@@ -20,7 +20,8 @@ public static class AssetLayoutValidation
         Require(Resources.LoadAll<WeaponDefinition>("").Count(d=>d.name=="HandsWeapon")==1,"One runtime HandsWeapon resource");
         Require(Resources.Load<WeaponDefinition>("MakarovWeapon")!=null,"Previous weapon resource retained");
         Require(Resources.Load<TextAsset>("BillingMode")!=null,"BillingMode resource retained");
-        Require(Resources.Load<GameObject>("MergedGameplay")!=null&&Resources.Load<GameObject>("MergedNpc")!=null,"Runtime player and NPC Resources keys retained");
+        Require(Resources.Load<GameObject>("Player")!=null,"Standalone runtime Player resource resolves");
+        Require(Resources.Load<GameObject>("MergedGameplay")!=null&&Resources.Load<GameObject>("MergedNpc")!=null,"Legacy demo resources retained");
         Require(Resources.Load<AudioClip>("MergeStressSound")!=null,"Stress audio Resources key retained");
         Require(File.Exists(Path.Combine(Application.streamingAssetsPath,"Smoking/model.gltf")),"Smoking StreamingAssets path retained");
         Require(GraphicsSettings.defaultRenderPipeline!=null,"Default render pipeline reference resolves");
