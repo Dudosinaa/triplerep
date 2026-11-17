@@ -274,7 +274,6 @@ public static class PlayerPrefabPlayValidation
         // A location bootstrap must reuse a player placed by a level designer.
         var bootstrapGo = new GameObject("Temporary location services");
         var bootstrap = bootstrapGo.AddComponent<MergedGameBootstrap>();
-        bootstrap.spawnPosition = player.transform.position;
         bootstrap.locationLabel = "Validation";
         yield return Delay(0.3f);
         Check(Object.FindObjectsByType<FirstPersonPlayer>(FindObjectsSortMode.None).Length == 1 && Camera.main == camera && camera.enabled, "Bootstrap reuses a placed player and preserves its camera");
@@ -285,45 +284,15 @@ public static class PlayerPrefabPlayValidation
         {
             SceneSwitch.LoadSceneIndex(index);
             yield return Delay(2f);
-            var locationPlayer = Object.FindFirstObjectByType<FirstPersonPlayer>();
-            Check(locationPlayer != null && Object.FindObjectsByType<FirstPersonPlayer>(FindObjectsSortMode.None).Length == 1, "One standalone player in " + SceneManager.GetActiveScene().name);
-            Check(locationPlayer.GetComponents<PlayerStress>().Length == 1 && locationPlayer.GetComponents<SmokingController>().Length == 1 && locationPlayer.GetComponents<SceneSwitch>().Length == 1, "No duplicate mechanics in " + SceneManager.GetActiveScene().name);
-            Check(Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None).Length == 1, "One UI EventSystem in " + SceneManager.GetActiveScene().name);
+            Check(Object.FindObjectsByType<FirstPersonPlayer>(FindObjectsSortMode.None).Length == 0,
+                "Empty location does not create a player: " + SceneManager.GetActiveScene().name);
+            Check(GameObject.Find("Location Exit") == null, "Old runtime travel marker is removed");
+            Check(Object.FindObjectsByType<LocationTransitionZone>(FindObjectsSortMode.None).Length == 1,
+                "Location has one authored trigger zone");
             NoTestContent();
-            Check(locationPlayer.GetComponent<SceneSwitch>().hintText.transform.IsChildOf(locationPlayer.transform), "Consciousness UI stays inside player");
-            Check(GameObject.Find("Location Exit").transform.IsChildOf(Object.FindFirstObjectByType<MergedGameBootstrap>().transform), "Travel marker belongs to the scene bootstrap");
         }
-        Key(UnityEngine.InputSystem.Key.F, true);
-        yield return Delay(0.15f);
-        Key(UnityEngine.InputSystem.Key.F, false);
-        yield return Delay(1f);
-        Check(SceneManager.GetActiveScene().buildIndex == 0, "F at Home exit travels to Metro");
-        var entryPlayer = Object.FindFirstObjectByType<FirstPersonPlayer>();
-        // Keep the transition probe clear of location art; its purpose is scene travel, not spawn tuning.
-        var entryFloor = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        entryFloor.name = "Temporary transition test floor";
-        entryFloor.transform.position = new Vector3(0f, 99.5f, 0f);
-        entryFloor.transform.localScale = new Vector3(10f, 1f, 10f);
-        entryPlayer.Teleport(Vector3.up * 100.05f);
-        yield return Delay(0.1f);
-        var entryCamera = entryPlayer.GetComponentInChildren<Camera>();
-        var entryTarget = Fixture(entryCamera, "Temporary consciousness entry");
-        entryTarget.AddComponent<FocusPoint>();
-        Physics.SyncTransforms();
-        yield return Delay(0.1f);
-        Call(entryPlayer.GetComponent<SceneSwitch>(), "FindNPC", entryCamera);
-        Check(Field(entryPlayer.GetComponent<SceneSwitch>(), "currentPoint") == (object)entryTarget.GetComponent<FocusPoint>(), "Transition probe is visible under crosshair");
-        Key(UnityEngine.InputSystem.Key.T, true);
-        yield return Delay(0.1f);
-        Key(UnityEngine.InputSystem.Key.T, false);
-        yield return Delay(2.5f);
-        Check(SceneManager.GetActiveScene().buildIndex == 2, "T enters consciousness through a scene-authored FocusPoint");
-        Key(UnityEngine.InputSystem.Key.Escape, true);
-        yield return Delay(0.1f);
-        Key(UnityEngine.InputSystem.Key.Escape, false);
-        yield return Delay(2f);
-        Check(SceneManager.GetActiveScene().buildIndex == 0 && Object.FindObjectsByType<FirstPersonPlayer>(FindObjectsSortMode.None).Length == 1, "Escape returns to the originating location with one player");
-        NoTestContent();
+        // Authored-player location loading and the mind round trip are covered by
+        // LocationTransitionValidation, using temporary scenes saved only for that test.
         SceneSwitch.LoadSceneIndex(4);
         yield return Delay(2f);
         var legacySmoking = Object.FindFirstObjectByType<SmokingController>();

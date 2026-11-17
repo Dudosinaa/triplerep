@@ -70,7 +70,7 @@ public static class MergeValidation
                 "Fire, aim, reload, holster; in CarxDemo hit targets; weapon must hide during other actions",
                 "Space/minus change stress; Y at stress >= 40 plays smoking and recovers stress",
                 "T at a scene-authored NPC with FocusPoint opens scene 2; Escape returns to the originating scene",
-                "F near the exit travels between Metro and Home; repeat tests in the Windows build"
+                "Enter a LocationTransitionZone with a manually placed player: fade, async load, fade in; repeat in the Windows build"
             }
         };
         var log = Path.Combine(projectRoot, "Logs/Merge");

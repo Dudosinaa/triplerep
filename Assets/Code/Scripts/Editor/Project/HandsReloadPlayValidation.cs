@@ -125,6 +125,14 @@ public static class HandsReloadPlayValidation
         {
             if(SceneManager.GetActiveScene().buildIndex!=sceneIndex)SceneSwitch.LoadSceneIndex(sceneIndex);
             yield return Delay(2f);
+            // Explicit test fixture only: production locations never create players.
+            if (UnityEngine.Object.FindFirstObjectByType<FirstPersonPlayer>() == null)
+            {
+                UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Player"));
+                var services = UnityEngine.Object.FindFirstObjectByType<MergedGameBootstrap>();
+                if (services != null) Call(services, "Start");
+                yield return Delay(1f);
+            }
             // Standalone location players no longer bring test fixtures with them.
             var demo = Resources.Load<GameObject>("MergedGameplay");
             if (UnityEngine.Object.FindFirstObjectByType<NpcDialogue>() == null)
