@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,6 +38,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     private float distanceSinceStep;
     private int lastClipIndex = -1;
     private readonly Collider[] standingClearanceHits = new Collider[16];
+    private readonly HashSet<DoorKey> collectedKeys = new HashSet<DoorKey>();
 
     private void Awake()
     {
@@ -109,6 +111,34 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         UpdateMovement(crouching);
         UpdateZoom();
     }
+
+    // Reading, inspection and dialogue get first use of E in Update.
+    private void LateUpdate()
+    {
+        if (Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame ||
+            playerCamera == null || !playerCamera.isActiveAndEnabled) return;
+
+        const float reach = 3f;
+        if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
+                out var hit, reach, ~0, QueryTriggerInteraction.Ignore)) return;
+
+        var key = hit.collider.GetComponentInParent<DoorKey>();
+        if (key != null && key.isActiveAndEnabled)
+        {
+            if (InteractionInput.TryConsume())
+            {
+                collectedKeys.Add(key);
+                key.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        var door = hit.collider.GetComponentInParent<KeyDoor>();
+        if (door != null && door.isActiveAndEnabled && InteractionInput.TryConsume())
+            door.TryOpen(this);
+    }
+
+    public bool HasKey(DoorKey key) => key != null && collectedKeys.Contains(key);
 
     private void UpdateView()
     {

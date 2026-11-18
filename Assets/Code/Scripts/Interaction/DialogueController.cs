@@ -97,7 +97,7 @@ public sealed class DialogueController : MonoBehaviour
         }
 
         if (showingPlayerReply &&
-            (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame))
+            (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame))
             ContinueDialogue();
         else if (!showingPlayerReply)
         {
