@@ -1003,7 +1003,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1631,9 +1631,17 @@ MonoBehaviour:
   playerCamera: {fileID: 7796395533773576502}
   pistol: {fileID: 70754093935645395}
   footstepSource: {fileID: 7783277230023017499}
-  footstepClips: []
-  walkSpeed: 4
-  crouchSpeed: 2
+  footstepClips:
+  - {fileID: 8300000, guid: b993df4a93c1d304ab19d8b2eb88c9a5, type: 3}
+  - {fileID: 8300000, guid: 5c9bdbce37b06a24fa6ea793bcfd1907, type: 3}
+  - {fileID: 8300000, guid: 0909de896e9029541b92ae05fe15e4b6, type: 3}
+  - {fileID: 8300000, guid: 6ad0cf00f050bee41a2dee098475dc78, type: 3}
+  - {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  - {fileID: 8300000, guid: 14ae706fef2303e4cb71112dbd5d250b, type: 3}
+  - {fileID: 8300000, guid: b995bc1775ea83b4b8f861763e9a1424, type: 3}
+  - {fileID: 8300000, guid: d15f7338d693f0343843a6b9096d27f6, type: 3}
+  walkSpeed: 2
+  crouchSpeed: 0.5
   gravity: -20
   mouseSensitivity: 0.12
   standingHeight: 1.8
@@ -1776,7 +1784,7 @@ MonoBehaviour:
   increaseSpeed: 20
   decreaseSpeed: 20
   volume: {fileID: 2327023544688697999}
-  maxVignetteIntensity: 1
+  maxVignetteIntensity: 0.42
   vignetteSmoothTime: 0.2
   stressSound: {fileID: 8300000, guid: 50a2bd0d5d85ea168e58fcf24fd6595f, type: 3}
   soundThreshold: 70
@@ -2973,7 +2981,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1863585579162435767}
   - component: {fileID: 1692415128358983356}
-  - component: {fileID: 6178788751846462618}
+  - component: {fileID: 8766180522259608482}
   m_Layer: 0
   m_Name: Crosshair
   m_TagString: Untagged
@@ -3008,7 +3016,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8048996101749197566}
   m_CullTransparentMesh: 1
---- !u!114 &6178788751846462618
+--- !u!114 &8766180522259608482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3017,31 +3025,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8048996101749197566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.21176471}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 36
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: +
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8325258742887605324
 GameObject:
   m_ObjectHideFlags: 0

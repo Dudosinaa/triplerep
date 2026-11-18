@@ -18,7 +18,7 @@ public sealed class PistolController : MonoBehaviour
     [SerializeField, Min(0.1f)] private float aimSpeed = 14f;
     private WeaponMagazine magazine;
     private FirstPersonWeaponView weaponView;
-    private bool equipped = true;
+    private bool equipped = false;
     private bool ready;
     private float nextShot;
     private float restingCameraZ;

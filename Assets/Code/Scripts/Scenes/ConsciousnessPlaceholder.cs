@@ -18,11 +18,14 @@ public sealed class ConsciousnessPlaceholder : MonoBehaviour
         text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         text.fontSize = 26;
         text.alignment = TextAnchor.MiddleCenter;
-        text.text = "Сознание\nEsc — вернуться";
+        text.text = "Сознание\nU — вернуться";
         text.rectTransform.anchorMin = Vector2.zero;
         text.rectTransform.anchorMax = Vector2.one;
         text.rectTransform.offsetMin = text.rectTransform.offsetMax = Vector2.zero;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (!TrainMindSession.OwnsMindScene(gameObject.scene))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }

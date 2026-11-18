@@ -74,7 +74,7 @@ public sealed class SmokingController : MonoBehaviour
         if (state != null && state.normalizedTime < 1f && state.time < smokingClip.length &&
             smokingAnimation.IsPlaying(smokingClip.name)) return;
         FinishSmoking();
-        playerStress.StartCoroutine(playerStress.RecoverStressAfterSmoking());
+        playerStress.BeginSmokingRecovery();
     }
     private void FinishSmoking()
     {

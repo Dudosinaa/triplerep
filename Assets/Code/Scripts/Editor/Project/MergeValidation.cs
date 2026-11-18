@@ -69,7 +69,7 @@ public static class MergeValidation
                 "In CarxDemo or with scene-authored interaction objects: read, inspect, talk and resume movement",
                 "Fire, aim, reload, holster; in CarxDemo hit targets; weapon must hide during other actions",
                 "Space/minus change stress; Y at stress >= 40 plays smoking and recovers stress",
-                "T at a scene-authored NPC with FocusPoint opens scene 2; Escape returns to the originating scene",
+                "T at a scene-authored NPC with FocusPoint opens consciousness; U returns to the originating scene",
                 "Enter a LocationTransitionZone with a manually placed player: fade, async load, fade in; repeat in the Windows build"
             }
         };

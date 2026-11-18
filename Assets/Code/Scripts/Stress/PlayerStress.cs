@@ -24,8 +24,12 @@ public class PlayerStress : MonoBehaviour
     private Vignette vignette;
     private AudioSource audioSource;
     private float vignetteVelocity;
-    private bool isRecoveringAfterSmoking;
-    public bool IsRecoveringAfterSmoking => isRecoveringAfterSmoking;
+    private Coroutine smokingRecovery;
+    private float nextRecoveryStep;
+    private bool calmingForMind;
+    private float stressBeforeMind;
+    private float? recoveryDelayBeforeMind;
+    public bool IsRecoveringAfterSmoking => smokingRecovery != null;
 
     void Awake()
     {
@@ -49,7 +53,7 @@ public class PlayerStress : MonoBehaviour
 
     void Update()
     {
-        if (!isRecoveringAfterSmoking)
+        if (!calmingForMind && !IsRecoveringAfterSmoking)
         {
             if (Keyboard.current != null && Keyboard.current.spaceKey.isPressed)
                 stress += increaseSpeed * Time.deltaTime;
@@ -65,28 +69,54 @@ public class PlayerStress : MonoBehaviour
     // Сбрасывает стресс, сохраняя штатное обновление эффектов в Update.
     public void ResetStress()
     {
-        StopAllCoroutines();
-        isRecoveringAfterSmoking = false;
+        StopSmokingRecovery();
         stress = 0f;
         UpdateStressEffects();
     }
 
-    // После клипа снижает стресс шагами, игнорируя ручное управление.
-    public IEnumerator RecoverStressAfterSmoking()
+    public void BeginSmokingRecovery()
     {
-        if (isRecoveringAfterSmoking)
-        {
-            yield break;
-        }
+        if (!calmingForMind && !IsRecoveringAfterSmoking && stress > 0f)
+            smokingRecovery = StartCoroutine(RecoverStressAfterSmoking(0.1f));
+    }
 
-        isRecoveringAfterSmoking = true;
+    private IEnumerator RecoverStressAfterSmoking(float delay)
+    {
         while (stress > 0f)
         {
-            yield return new WaitForSeconds(0.1f);
+            nextRecoveryStep = Time.time + delay;
+            yield return new WaitForSeconds(delay);
             stress = Mathf.Max(0f, stress - 10f);
             UpdateStressEffects();
+            delay = 0.1f;
         }
-        isRecoveringAfterSmoking = false;
+        smokingRecovery = null;
+    }
+
+    private void StopSmokingRecovery()
+    {
+        if (smokingRecovery == null) return;
+        StopCoroutine(smokingRecovery);
+        smokingRecovery = null;
+    }
+
+    internal void BeginMindCalm()
+    {
+        stressBeforeMind = stress;
+        recoveryDelayBeforeMind = IsRecoveringAfterSmoking ? Mathf.Max(0f, nextRecoveryStep - Time.time) : (float?)null;
+        StopSmokingRecovery();
+        calmingForMind = true;
+    }
+
+    internal void SetMindCalmProgress(float progress) => stress = Mathf.Lerp(stressBeforeMind, 0f, progress);
+
+    internal void EndMindCalm(bool completed)
+    {
+        calmingForMind = false;
+        stress = completed ? 0f : stressBeforeMind;
+        if (!completed && recoveryDelayBeforeMind.HasValue && stress > 0f)
+            smokingRecovery = StartCoroutine(RecoverStressAfterSmoking(recoveryDelayBeforeMind.Value));
+        recoveryDelayBeforeMind = null;
     }
 
     private void UpdateStressEffects()

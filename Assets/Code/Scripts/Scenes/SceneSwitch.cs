@@ -24,7 +24,7 @@ public sealed class SceneSwitch : MonoBehaviour
         if (keyboard == null) return;
         if (returnOnly)
         {
-            if (keyboard.escapeKey.wasPressedThisFrame)
+            if (keyboard.uKey.wasPressedThisFrame && !TrainMindSession.TryReturn(gameObject.scene))
                 LoadSceneIndex(entrySceneIndex >= 0 ? entrySceneIndex : returnSceneIndex);
             return;
         }
@@ -68,26 +68,43 @@ public sealed class SceneSwitch : MonoBehaviour
         if (camera == null || point == null) yield break;
         isMoving = true;
         if (hintText != null) hintText.gameObject.SetActive(false);
-        entrySceneIndex = SceneManager.GetActiveScene().buildIndex;
         var player = camera.GetComponentInParent<CharacterController>();
+        var origin = SceneManager.GetActiveScene();
+        if (origin.path == TrainMindSession.TrainPath)
+        {
+            if (!TrainMindSession.TryBegin(this, origin, player, camera, point)) FinishTrainMindVisit();
+            yield break;
+        }
+
+        entrySceneIndex = origin.buildIndex;
         if (player != null)
         {
             foreach (var behaviour in player.GetComponents<MonoBehaviour>())
                 if (behaviour != this && !(behaviour is PlayerStress)) behaviour.enabled = false;
         }
+        yield return AnimateToNPC(camera, point, moveDuration);
+        if (point != null) LoadSceneIndex(point.sceneIndex);
+    }
+
+    internal static IEnumerator AnimateToNPC(Camera camera, FocusPoint point, float moveDuration,
+        PlayerStress calmingStress = null)
+    {
         var startPosition = camera.transform.position;
         var startRotation = camera.transform.rotation;
         var targetRotation = Quaternion.LookRotation(-point.transform.forward, Vector3.up);
         float duration = Mathf.Max(0.01f, moveDuration);
-        for (float time = 0f; time < duration; time += Time.deltaTime)
+        for (float time = 0f; time < duration && camera != null && point != null; time += Time.deltaTime)
         {
             float t = Mathf.Clamp01(time / duration);
             camera.transform.SetPositionAndRotation(Vector3.Lerp(startPosition, point.transform.position, t),
                 Quaternion.Slerp(startRotation, targetRotation, t));
+            if (calmingStress != null) calmingStress.SetMindCalmProgress(t);
             yield return null;
         }
-        LoadSceneIndex(point.sceneIndex);
+        if (calmingStress != null) calmingStress.SetMindCalmProgress(1f);
     }
+
+    internal void FinishTrainMindVisit() => isMoving = false;
     public static bool IsSceneAvailable(int index)
     {
         if (index >= 0 && index < SceneManager.sceneCountInBuildSettings) return true;

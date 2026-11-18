@@ -259,13 +259,13 @@ public static class LocationTransitionValidation
         Check(!LocationTransition.IsTransitioning, "Location trigger cannot interrupt mind entry");
         yield return (Func<bool>)(() => SceneManager.GetActiveScene().buildIndex == 2);
         Check(Object.FindFirstObjectByType<SceneSwitch>().returnOnly, "Original mind scene and return component load");
-        InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.Escape));
+        InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.U));
         yield return Delay(0.03f);
         InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
         yield return (Func<bool>)(() => SceneManager.GetActiveScene().path == A);
         yield return Delay(0.2f);
         Check(Players() == 1 && Object.FindFirstObjectByType<FirstPersonPlayer>().enabled,
-            "Escape returns to the original authored scene with one functional player");
+            "U returns to the original authored scene with one functional player");
         Check(errors.Count == 0, "No unexpected runtime errors");
     }
 

@@ -1,0 +1,47 @@
+# Blender 5.2.4 LTS MTL File: 'Sketchfab_2023_06_01_16_35_29.blend'
+# www.blender.org
+
+newmtl ErnestClothes
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/OldManErnestClothes_BaseColor.png
+map_Ns C:/OldManErnestClothes_Roughness.png
+map_refl C:/OldManErnestClothes_Metallic.png
+map_Bump -bm 1.000000 C:/OldManErnestClothes_Normal.png
+
+newmtl OldManHatEtc
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 9
+map_Kd C:/OldManErnestHatEtc_BaseColor.png
+map_Ns C:/OldManErnestHatEtc_Roughness.png
+map_refl C:/OldManErnestHatEtc_Metallic.png
+map_d C:/OldManErnestClothes_Alpha2.png
+map_Bump -bm 1.000000 C:/OldManErnestHatEtc_Normal.png
+
+newmtl high-poly.001
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 3
+map_Kd C:/brown_eye.png
+map_d C:/brown_eye.png
+
+newmtl male_generic
+Ns 9.600003
+Ka 1.000000 1.000000 1.000000
+Kd 0.712732 0.544202 0.427117
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 1.500000 C:/ErnestPersonNormal.png

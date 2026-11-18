@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public sealed class DialogueController : MonoBehaviour
 {
+    private const float ExitIconSize = 22f;
+    private const float ExitIconGap = 8f;
+
     [SerializeField] private Camera playerCamera;
     // Legacy demo references. Conversations now use the first-person camera.
     [SerializeField, HideInInspector] private Camera dialogueCamera;
@@ -31,6 +34,7 @@ public sealed class DialogueController : MonoBehaviour
     private bool inspectorWasEnabled;
     private bool crosshairWasActive;
     private bool[] otherPromptsWereActive;
+    private (Text Label, DialogueExitIcon Icon, Vector2 OriginalOffsetMin)[] choiceViews;
 
     public bool IsTalking => activeNpc != null;
 
@@ -44,15 +48,33 @@ public sealed class DialogueController : MonoBehaviour
         if (playerBody != null) playerBody.SetActive(false);
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        if (choiceButtons != null)
+        choiceViews = new (Text, DialogueExitIcon, Vector2)[choiceButtons?.Length ?? 0];
+        for (int i = 0; i < choiceViews.Length; i++)
         {
-            for (int i = 0; i < choiceButtons.Length; i++)
-            {
-                int index = i;
-                if (choiceButtons[i] != null) choiceButtons[i].onClick.AddListener(() => SelectChoice(index));
-            }
+            Button button = choiceButtons[i];
+            if (button == null) continue;
+            int index = i;
+            button.onClick.AddListener(() => SelectChoice(index));
+            Text label = button.GetComponentInChildren<Text>(true);
+            if (label != null)
+                choiceViews[i] = (label, CreateExitIcon(label), label.rectTransform.offsetMin);
         }
         if (continueButton != null) continueButton.onClick.AddListener(ContinueDialogue);
+    }
+
+    private DialogueExitIcon CreateExitIcon(Text label)
+    {
+        var iconObject = new GameObject("Dialogue Exit Icon", typeof(RectTransform), typeof(DialogueExitIcon));
+        iconObject.SetActive(false);
+        var icon = iconObject.GetComponent<DialogueExitIcon>();
+        icon.color = speakerText != null ? speakerText.color : label.color;
+        icon.raycastTarget = false;
+        RectTransform rect = icon.rectTransform;
+        rect.SetParent(label.rectTransform, false);
+        rect.anchorMin = rect.anchorMax = new Vector2(0f, 0.5f);
+        rect.sizeDelta = Vector2.one * ExitIconSize;
+        rect.anchoredPosition = new Vector2(-ExitIconGap - ExitIconSize * 0.5f, 0f);
+        return icon;
     }
 
     private void Update()
@@ -74,9 +96,8 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && InteractionInput.TryConsume()) EndDialogue();
-        else if (showingPlayerReply &&
-                 (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame))
+        if (showingPlayerReply &&
+            (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame))
             ContinueDialogue();
         else if (!showingPlayerReply)
         {
@@ -94,12 +115,13 @@ public sealed class DialogueController : MonoBehaviour
         if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
                 out var hit, talkDistance, ~0, QueryTriggerInteraction.Ignore)) return null;
         var target = hit.collider.GetComponentInParent<NpcDialogue>();
-        return target != null && target.isActiveAndEnabled ? target : null;
+        return target != null && target.isActiveAndEnabled && target.GetStartNodeIndex() >= 0 ? target : null;
     }
 
     private void BeginDialogue(NpcDialogue npc)
     {
-        if (npc.Nodes == null || npc.Nodes.Length == 0 || playerCamera == null) return;
+        int startIndex = npc.GetStartNodeIndex();
+        if (startIndex < 0 || playerCamera == null) return;
         activeNpc = npc;
         movementWasEnabled = movement != null && movement.enabled;
         readerWasEnabled = documentReader != null && documentReader.enabled;
@@ -129,7 +151,7 @@ public sealed class DialogueController : MonoBehaviour
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        nodeIndex = 0;
+        nodeIndex = startIndex;
         ShowNpcNode();
     }
 
@@ -145,13 +167,22 @@ public sealed class DialogueController : MonoBehaviour
         if (speakerText != null) speakerText.text = activeNpc.CharacterName;
         if (dialogueText != null) dialogueText.text = node.npcText;
         if (continueButton != null) continueButton.gameObject.SetActive(false);
-        for (int i = 0; i < choiceButtons.Length; i++)
+        for (int i = 0; i < choiceViews.Length; i++)
         {
             Button button = choiceButtons[i];
             if (button == null) continue;
-            bool show = node.choices != null && i < node.choices.Length;
-            button.gameObject.SetActive(show);
-            if (show) button.GetComponentInChildren<Text>().text = (i + 1) + ". " + node.choices[i].text;
+            NpcDialogue.Choice choice = node.choices != null && i < node.choices.Length ? node.choices[i] : null;
+            var (label, icon, originalOffsetMin) = choiceViews[i];
+            if (label != null)
+            {
+                bool showExit = choice != null && choice.EndsDialogue;
+                icon.gameObject.SetActive(showExit);
+                label.rectTransform.offsetMin = showExit
+                    ? originalOffsetMin + Vector2.right * (ExitIconSize + ExitIconGap)
+                    : originalOffsetMin;
+                if (choice != null) label.text = (i + 1) + ". " + choice.text;
+            }
+            button.gameObject.SetActive(choice != null);
         }
     }
 
@@ -161,7 +192,13 @@ public sealed class DialogueController : MonoBehaviour
         NpcDialogue.Choice[] choices = activeNpc.Nodes[nodeIndex].choices;
         if (choices == null || index < 0 || index >= choices.Length) return;
         NpcDialogue.Choice choice = choices[index];
-        pendingNextNode = choice.nextNode;
+        if (choice == null) return;
+        if (choice.EndsDialogue)
+        {
+            EndDialogue();
+            return;
+        }
+        pendingNextNode = activeNpc.GetNextNodeIndex(choice);
         showingPlayerReply = true;
         if (speakerText != null) speakerText.text = "Вы";
         if (dialogueText != null) dialogueText.text = choice.text;

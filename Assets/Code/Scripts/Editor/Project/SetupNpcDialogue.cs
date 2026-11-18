@@ -150,6 +150,7 @@ public static class SetupNpcDialogue
     {
         var data = new SerializedObject(npc);
         data.FindProperty("characterName").stringValue = "Смотритель";
+        data.FindProperty("startNodeId").intValue = 1;
         var nodes = data.FindProperty("nodes");
         nodes.arraySize = 4;
         SetNode(nodes, 0, "Привет! Я присматриваю за этим местом. Что тебя интересует?",
@@ -159,14 +160,16 @@ public static class SetupNpcDialogue
         SetNode(nodes, 2, "Можно читать записки и осматривать предметы. Подойди поближе и нажми E.",
             new[] { "Понятно, спасибо!", "У меня ещё вопрос." }, new[] { 3, 0 });
         SetNode(nodes, 3, "Удачи с исследованием! Если понадобится помощь, я буду здесь.",
-            new[] { "Закончить разговор", "Спросить ещё" }, new[] { -1, 0 });
+            new[] { "Закончить разговор", "Спросить ещё" }, new[] { -1, 0 }, exitChoice: 0);
         data.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(npc);
     }
 
-    private static void SetNode(SerializedProperty nodes, int index, string text, string[] labels, int[] destinations)
+    private static void SetNode(SerializedProperty nodes, int index, string text, string[] labels, int[] destinations,
+        int exitChoice = -1)
     {
         var node = nodes.GetArrayElementAtIndex(index);
+        node.FindPropertyRelative("id").intValue = index + 1;
         node.FindPropertyRelative("npcText").stringValue = text;
         var choices = node.FindPropertyRelative("choices");
         choices.arraySize = labels.Length;
@@ -174,7 +177,10 @@ public static class SetupNpcDialogue
         {
             var choice = choices.GetArrayElementAtIndex(i);
             choice.FindPropertyRelative("text").stringValue = labels[i];
-            choice.FindPropertyRelative("nextNode").intValue = destinations[i];
+            choice.FindPropertyRelative("targetNodeId").intValue = destinations[i] + 1;
+            choice.FindPropertyRelative("action").intValue = (int)(i == exitChoice
+                ? NpcDialogue.ChoiceAction.EndDialogue
+                : NpcDialogue.ChoiceAction.NextNode);
         }
     }
 
