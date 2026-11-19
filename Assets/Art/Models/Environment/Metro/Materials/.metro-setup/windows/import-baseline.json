@@ -25,6 +25,12 @@
             ]
         },
         {
+            "name": "BaseLuzCorta_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/LuzTunelCorta.001.mat"
+            ]
+        },
+        {
             "name": "BottleWater_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CanTrash.001.mat"
@@ -67,6 +73,12 @@
             ]
         },
         {
+            "name": "CableLateralVias2_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableLateralViasBarra_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
@@ -74,6 +86,12 @@
         },
         {
             "name": "CableLateralViasBarra_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableLateralViasBarra_LP.002",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -109,6 +127,12 @@
             ]
         },
         {
+            "name": "CableTunelVias10_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias11_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
@@ -133,7 +157,19 @@
             ]
         },
         {
+            "name": "CableTunelVias12_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias13_LP",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias13_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -145,13 +181,31 @@
             ]
         },
         {
+            "name": "CableTunelVias14_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias15_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
         },
         {
+            "name": "CableTunelVias15_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias16_LP",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias16_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -193,6 +247,18 @@
             ]
         },
         {
+            "name": "CableTunelVias2_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias2_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias3_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
@@ -200,6 +266,18 @@
         },
         {
             "name": "CableTunelVias3_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias3_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias3_LP.003",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -217,7 +295,25 @@
             ]
         },
         {
+            "name": "CableTunelVias4_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias4_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias5_LP",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias5_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -229,7 +325,19 @@
             ]
         },
         {
+            "name": "CableTunelVias7_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
             "name": "CableTunelVias9_LP",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
+            ]
+        },
+        {
+            "name": "CableTunelVias9_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CableTexturePack.001.mat"
             ]
@@ -303,6 +411,30 @@
         },
         {
             "name": "CajaViasTornillos_LP.004",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CajaVias.001.mat"
+            ]
+        },
+        {
+            "name": "CajaViasTornillos_LP.005",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CajaVias.001.mat"
+            ]
+        },
+        {
+            "name": "CajaViasTornillos_LP.006",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CajaVias.001.mat"
+            ]
+        },
+        {
+            "name": "CajaViasTornillos_LP.007",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/CajaVias.001.mat"
+            ]
+        },
+        {
+            "name": "CajaViasTornillos_LP.008",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/CajaVias.001.mat"
             ]
@@ -1013,12 +1145,6 @@
             ]
         },
         {
-            "name": "Hierro1_LP",
-            "materialPaths": [
-                "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat"
-            ]
-        },
-        {
             "name": "Hierro1_LP.003",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/Maleta.001.mat"
@@ -1386,6 +1512,12 @@
         },
         {
             "name": "NumeroViasSujeta_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/NumeroVias.001.mat"
+            ]
+        },
+        {
+            "name": "NumeroViasSujeta_LP.002",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/NumeroVias.001.mat"
             ]
@@ -1817,6 +1949,18 @@
             ]
         },
         {
+            "name": "PortaCables_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SujeccionesCables.001.mat"
+            ]
+        },
+        {
+            "name": "PortaCables_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SujeccionesCables.001.mat"
+            ]
+        },
+        {
             "name": "Poste_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/Poste.001.mat"
@@ -2111,6 +2255,102 @@
             ]
         },
         {
+            "name": "SueloViasTunel_LP.016",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.017",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.018",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.019",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.020",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.021",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.022",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.023",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.024",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.025",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.026",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.027",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.028",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.029",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.030",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
+            "name": "SueloViasTunel_LP.031",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
+            ]
+        },
+        {
             "name": "SueloVias_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/SueloVias.003.mat"
@@ -2208,6 +2448,12 @@
         },
         {
             "name": "SujetaTubos_LP",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat"
+            ]
+        },
+        {
+            "name": "SujetaTubos_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat"
             ]
@@ -26957,6 +27203,342 @@
             ]
         },
         {
+            "name": "TuberiaViaDetallada_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.004",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.005",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.006",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.007",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.008",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.009",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.010",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.011",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.012",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.013",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.014",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.015",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.016",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.017",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.018",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.019",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.020",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.021",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.022",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.023",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.024",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.025",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.026",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.027",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.028",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.029",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.030",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.031",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.032",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.033",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.034",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.035",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.036",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.037",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.038",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.039",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.040",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.041",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.042",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.043",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.044",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.045",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.046",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.047",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.048",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.049",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.050",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.051",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.052",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.053",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.054",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.055",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.056",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuberiaViaDetallada_LP.057",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
             "name": "TuboTechoDesvio_LP",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat"
@@ -26970,6 +27552,19 @@
         },
         {
             "name": "TuboTecho_LP.001",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat",
+                "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
+            ]
+        },
+        {
+            "name": "TuboTecho_LP.002",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat"
+            ]
+        },
+        {
+            "name": "TuboTecho_LP.003",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/TubosTecho.001.mat",
                 "Assets/Art/Models/Environment/Metro/Materials/TuberiaViaDetallada.001.mat"
@@ -27000,6 +27595,12 @@
             ]
         },
         {
+            "name": "TunelModular_LP.004",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
             "name": "TunelModular_LP.005",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
@@ -27024,15 +27625,75 @@
             ]
         },
         {
+            "name": "TunelModular_LP.009",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.010",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.011",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.012",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.013",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.014",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
+            "name": "TunelModular_LP.015",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/ParedTunel.006.mat"
+            ]
+        },
+        {
             "name": "Vias_LP",
+            "materialPaths": [
+                "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat"
+            ]
+        },
+        {
+            "name": "Vias_LP.001",
             "materialPaths": [
                 "Assets/Art/Models/Environment/Metro/Materials/Vias.001.mat"
             ]
         },
         {
-            "name": "WetFloorCartel_LP",
+            "name": "Vias_LP.002",
             "materialPaths": [
-                "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat"
+                "Assets/Art/Models/Environment/Metro/Materials/Vias.001.mat"
+            ]
+        },
+        {
+            "name": "Vias_LP.003",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/Vias.001.mat"
+            ]
+        },
+        {
+            "name": "Vias_LP.004",
+            "materialPaths": [
+                "Assets/Art/Models/Environment/Metro/Materials/Vias.001.mat"
             ]
         },
         {
