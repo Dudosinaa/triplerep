@@ -778,6 +778,7 @@ GameObject:
   - component: {fileID: 2103288172079621573}
   - component: {fileID: 7722085464717741349}
   - component: {fileID: 545081310331056554}
+  - component: {fileID: 3717436238706590843}
   m_Layer: 0
   m_Name: ParedModular_LP.039
   m_TagString: Untagged
@@ -857,6 +858,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3717436238706590843
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122125395832000103}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.068294026, y: 0.12524813, z: 0.07408824}
 --- !u!1 &123361542829884122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,6 +1979,7 @@ GameObject:
   - component: {fileID: 7726148172065003873}
   - component: {fileID: 7905473779884206767}
   - component: {fileID: 2479943854010498614}
+  - component: {fileID: 7783609524032647004}
   m_Layer: 0
   m_Name: Papelera_LP.001
   m_TagString: Untagged
@@ -2036,6 +2059,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7783609524032647004
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299096342664514470}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3996030968741005932, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &322043442769067074
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,6 +2092,7 @@ GameObject:
   - component: {fileID: 5746690354104510174}
   - component: {fileID: 4876000447415251145}
   - component: {fileID: 7861824342315479614}
+  - component: {fileID: 6676398314275299283}
   m_Layer: 0
   m_Name: Escalera_LP.047
   m_TagString: Untagged
@@ -2126,6 +2172,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6676398314275299283
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322043442769067074}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017500073, z: 0.001230605}
 --- !u!1 &323551503063703495
 GameObject:
   m_ObjectHideFlags: 0
@@ -2929,6 +2996,7 @@ GameObject:
   - component: {fileID: 5210335862770234250}
   - component: {fileID: 4524516951604660276}
   - component: {fileID: 3384409799829821759}
+  - component: {fileID: 9190817740603544932}
   m_Layer: 0
   m_Name: Escalera_LP.044
   m_TagString: Untagged
@@ -3008,6 +3076,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &9190817740603544932
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515015716300337861}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499849, z: 0.0012306031}
 --- !u!1 &524452001446505426
 GameObject:
   m_ObjectHideFlags: 0
@@ -3469,6 +3558,7 @@ GameObject:
   - component: {fileID: 4179479703722944019}
   - component: {fileID: 5409724168725331106}
   - component: {fileID: 647209274232724117}
+  - component: {fileID: 5693021008773024188}
   m_Layer: 0
   m_Name: SueloModularModular_LP.013
   m_TagString: Untagged
@@ -3548,6 +3638,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5693021008773024188
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610728606860777632}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.025000028, z: -0.00097077}
 --- !u!1 &637424684811136147
 GameObject:
   m_ObjectHideFlags: 0
@@ -3559,6 +3670,7 @@ GameObject:
   - component: {fileID: 6550454832564131092}
   - component: {fileID: 2891255584956920582}
   - component: {fileID: 3829469962076872801}
+  - component: {fileID: 1182861077719436257}
   m_Layer: 0
   m_Name: Escalera_LP.030
   m_TagString: Untagged
@@ -3638,6 +3750,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1182861077719436257
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637424684811136147}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499849, z: 0.0012306022}
 --- !u!1 &656724859003095875
 GameObject:
   m_ObjectHideFlags: 0
@@ -4130,6 +4263,7 @@ GameObject:
   - component: {fileID: 5586249883899856976}
   - component: {fileID: 3796385935794314419}
   - component: {fileID: 176617365135870232}
+  - component: {fileID: 8812662009792569093}
   m_Layer: 0
   m_Name: ParedModular_LP.038
   m_TagString: Untagged
@@ -4209,6 +4343,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8812662009792569093
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798665660311868185}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455831}
+  m_Center: {x: -0.08958884, y: 0.07524813, z: 0.051724453}
 --- !u!1 &817095436264929672
 GameObject:
   m_ObjectHideFlags: 0
@@ -4400,6 +4555,7 @@ GameObject:
   - component: {fileID: 5486188472252862403}
   - component: {fileID: 1159883322891209317}
   - component: {fileID: 8932455646206290495}
+  - component: {fileID: 7840799896844538138}
   m_Layer: 0
   m_Name: Escalera_LP.036
   m_TagString: Untagged
@@ -4479,6 +4635,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7840799896844538138
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884377748289486340}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.0012306031}
 --- !u!1 &885974483349390921
 GameObject:
   m_ObjectHideFlags: 0
@@ -5993,6 +6170,7 @@ GameObject:
   - component: {fileID: 4878218738091460062}
   - component: {fileID: 2809389660860290547}
   - component: {fileID: 6308801621624329468}
+  - component: {fileID: 1714933304556330038}
   m_Layer: 0
   m_Name: ParedModular_LP.025
   m_TagString: Untagged
@@ -6072,6 +6250,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1714933304556330038
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148597974093778601}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455831}
+  m_Center: {x: -0.068294026, y: 0.07524813, z: 0.051724453}
 --- !u!1 &1157024225266205274
 GameObject:
   m_ObjectHideFlags: 0
@@ -6263,6 +6462,7 @@ GameObject:
   - component: {fileID: 7994975633927894967}
   - component: {fileID: 1712514568196520081}
   - component: {fileID: 6833326921296256899}
+  - component: {fileID: 301852841041987885}
   m_Layer: 0
   m_Name: CajaExtintor_LP
   m_TagString: Untagged
@@ -6342,6 +6542,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &301852841041987885
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183296092999636377}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.004966501, y: 0.0031163811, z: 0.009088576}
+  m_Center: {x: -0.0000000034224819, y: -0.0015581886, z: -0.0000000020954758}
 --- !u!1 &1205505959694433339
 GameObject:
   m_ObjectHideFlags: 0
@@ -8487,6 +8708,7 @@ GameObject:
   - component: {fileID: 1323973241506772050}
   - component: {fileID: 1898488129167989230}
   - component: {fileID: 8863035007056148680}
+  - component: {fileID: 552212212740738489}
   m_Layer: 0
   m_Name: ParedModular_LP.035
   m_TagString: Untagged
@@ -8566,6 +8788,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &552212212740738489
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531756241518700319}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.08958884, y: 0.17524812, z: 0.016378377}
 --- !u!1 &1569057581075652100
 GameObject:
   m_ObjectHideFlags: 0
@@ -8577,6 +8820,7 @@ GameObject:
   - component: {fileID: 897694917830628683}
   - component: {fileID: 2547724993201465843}
   - component: {fileID: 2557326586183132754}
+  - component: {fileID: 4863617370438502914}
   m_Layer: 0
   m_Name: ParedModular_LP.022
   m_TagString: Untagged
@@ -8656,6 +8900,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4863617370438502914
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569057581075652100}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455824}
+  m_Center: {x: -0.068294026, y: 0.025248127, z: 0.08018028}
 --- !u!1 &1615793707243142350
 GameObject:
   m_ObjectHideFlags: 0
@@ -9418,6 +9683,7 @@ GameObject:
   - component: {fileID: 2485904619950785735}
   - component: {fileID: 7238249875588117151}
   - component: {fileID: 3096574527188490948}
+  - component: {fileID: 6657789987590582772}
   m_Layer: 0
   m_Name: ParedModular_LP.032
   m_TagString: Untagged
@@ -9497,6 +9763,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6657789987590582772
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754358351125336168}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.068294026, y: 0.12524813, z: 0.045632407}
 --- !u!1 &1771729053220783341
 GameObject:
   m_ObjectHideFlags: 0
@@ -9508,6 +9795,7 @@ GameObject:
   - component: {fileID: 2775203904679471342}
   - component: {fileID: 5629052572790590975}
   - component: {fileID: 1521771770789331977}
+  - component: {fileID: 1035263745856530266}
   m_Layer: 0
   m_Name: SueloModularModular_LP.001
   m_TagString: Untagged
@@ -9587,6 +9875,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1035263745856530266
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771729053220783341}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077014}
 --- !u!1 &1775683312769685574
 GameObject:
   m_ObjectHideFlags: 0
@@ -9778,6 +10087,7 @@ GameObject:
   - component: {fileID: 232065652899383232}
   - component: {fileID: 1303504341752840967}
   - component: {fileID: 2670839609641935900}
+  - component: {fileID: 8401362308633227401}
   m_Layer: 0
   m_Name: ParedModular_LP.027
   m_TagString: Untagged
@@ -9857,6 +10167,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8401362308633227401
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809282922171380174}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.08958884, y: 0.17524812, z: 0.045632407}
 --- !u!1 &1887253342231654133
 GameObject:
   m_ObjectHideFlags: 0
@@ -9930,6 +10261,7 @@ GameObject:
   - component: {fileID: 7747928597755441145}
   - component: {fileID: 4187151312864674532}
   - component: {fileID: 1882734277101721091}
+  - component: {fileID: 7664293665353775640}
   m_Layer: 0
   m_Name: ParedModularSinBajos_LP.003
   m_TagString: Untagged
@@ -10009,6 +10341,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7664293665353775640
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907518850921246495}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &1935316580036425433
 GameObject:
   m_ObjectHideFlags: 0
@@ -10020,6 +10373,7 @@ GameObject:
   - component: {fileID: 4334306414525028177}
   - component: {fileID: 1038937996681161712}
   - component: {fileID: 8330862708197455555}
+  - component: {fileID: 4592273117312127086}
   m_Layer: 0
   m_Name: Escalera_LP.028
   m_TagString: Untagged
@@ -10099,6 +10453,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4592273117312127086
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935316580036425433}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.0012305994}
 --- !u!1 &1945934447794232700
 GameObject:
   m_ObjectHideFlags: 0
@@ -10802,6 +11177,7 @@ GameObject:
   - component: {fileID: 8707413647257253079}
   - component: {fileID: 3534161835535890891}
   - component: {fileID: 4528078290729362103}
+  - component: {fileID: 3681267683586891004}
   m_Layer: 0
   m_Name: SueloModularModular_LP.006
   m_TagString: Untagged
@@ -10881,6 +11257,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3681267683586891004
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009994612155961918}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999991, z: -0.00097077014}
 --- !u!1 &2014226958735327470
 GameObject:
   m_ObjectHideFlags: 0
@@ -11522,6 +11919,7 @@ GameObject:
   - component: {fileID: 4199299005879071895}
   - component: {fileID: 2972424796624967275}
   - component: {fileID: 1256146600072450587}
+  - component: {fileID: 2098350693259413322}
   m_Layer: 0
   m_Name: SueloModularModular_LP.007
   m_TagString: Untagged
@@ -11601,6 +11999,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2098350693259413322
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097395319345038887}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &2120548955557543699
 GameObject:
   m_ObjectHideFlags: 0
@@ -12423,6 +12842,7 @@ GameObject:
   - component: {fileID: 5389648763155326218}
   - component: {fileID: 7092666779933140773}
   - component: {fileID: 970852065871956767}
+  - component: {fileID: 1138947530907799631}
   m_Layer: 0
   m_Name: Escalera_LP.039
   m_TagString: Untagged
@@ -12502,6 +12922,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1138947530907799631
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2308866440964254026}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012305956}
 --- !u!1 &2359462107704514100
 GameObject:
   m_ObjectHideFlags: 0
@@ -12513,6 +12954,7 @@ GameObject:
   - component: {fileID: 1496676280029455937}
   - component: {fileID: 5582158840193792271}
   - component: {fileID: 282629398839782754}
+  - component: {fileID: 8157420432737723347}
   m_Layer: 0
   m_Name: ParedModular_LP.043
   m_TagString: Untagged
@@ -12592,6 +13034,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8157420432737723347
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359462107704514100}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.025000028, z: 0.015026119}
 --- !u!1 &2367710666682413836
 GameObject:
   m_ObjectHideFlags: 0
@@ -13418,6 +13881,7 @@ GameObject:
   - component: {fileID: 7603689382496889973}
   - component: {fileID: 7922499387637289331}
   - component: {fileID: 91909270102250471}
+  - component: {fileID: 7525537886418949632}
   m_Layer: 0
   m_Name: Pilar_LP.002
   m_TagString: Untagged
@@ -13497,6 +13961,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7525537886418949632
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2727878010315964397}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345762, z: 0.025585745}
+  m_Center: {x: 0, y: -0.21383056, z: 0.012853019}
 --- !u!1 &2749865385010546157
 GameObject:
   m_ObjectHideFlags: 0
@@ -13958,6 +14443,7 @@ GameObject:
   - component: {fileID: 9080230628197035039}
   - component: {fileID: 134771436420653052}
   - component: {fileID: 3238973459847350822}
+  - component: {fileID: 6314110374505853689}
   m_Layer: 0
   m_Name: ParedModular_LP.031
   m_TagString: Untagged
@@ -14037,6 +14523,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6314110374505853689
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2851577257268257811}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999995, z: 0.015026119}
 --- !u!1 &2863371750034251070
 GameObject:
   m_ObjectHideFlags: 0
@@ -16247,6 +16754,7 @@ GameObject:
   - component: {fileID: 8348122728003201546}
   - component: {fileID: 8441957153066286225}
   - component: {fileID: 361418384062156810}
+  - component: {fileID: 6608405158468674625}
   m_Layer: 0
   m_Name: SueloModularModular_LP.011
   m_TagString: Untagged
@@ -16326,6 +16834,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6608405158468674625
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241126268111901619}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077014}
 --- !u!1 &3247192314037638841
 GameObject:
   m_ObjectHideFlags: 0
@@ -17540,6 +18069,7 @@ GameObject:
   - component: {fileID: 1977623019895590701}
   - component: {fileID: 6550350675751357216}
   - component: {fileID: 7669320005727315438}
+  - component: {fileID: 2061495432164109917}
   m_Layer: 0
   m_Name: Pilar_LP
   m_TagString: Untagged
@@ -17619,6 +18149,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2061495432164109917
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3430248155816708151}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345764, z: 0.025585745}
+  m_Center: {x: 0, y: 0.000000007450581, z: 0.012853019}
 --- !u!1 &3462127780266962174
 GameObject:
   m_ObjectHideFlags: 0
@@ -18082,6 +18633,7 @@ GameObject:
   - component: {fileID: 2486946444751812960}
   - component: {fileID: 4683155123380434653}
   - component: {fileID: 890137558437875382}
+  - component: {fileID: 7682447223597843017}
   m_Layer: 0
   m_Name: Escalera_LP.046
   m_TagString: Untagged
@@ -18161,6 +18713,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7682447223597843017
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3522041616535585389}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306031}
 --- !u!1 &3528979265755737913
 GameObject:
   m_ObjectHideFlags: 0
@@ -19404,6 +19977,7 @@ GameObject:
   - component: {fileID: 3852613373406649367}
   - component: {fileID: 2564115254483283304}
   - component: {fileID: 1622107221554816271}
+  - component: {fileID: 7356399307965794708}
   m_Layer: 0
   m_Name: Escalera_LP.041
   m_TagString: Untagged
@@ -19483,6 +20057,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7356399307965794708
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3674229678043627089}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306035}
 --- !u!1 &3684833574044712362
 GameObject:
   m_ObjectHideFlags: 0
@@ -19494,6 +20089,7 @@ GameObject:
   - component: {fileID: 2202479657977159880}
   - component: {fileID: 5516068711070618642}
   - component: {fileID: 7509209089093872335}
+  - component: {fileID: 2878947168348560344}
   m_Layer: 0
   m_Name: Escalera_LP.049
   m_TagString: Untagged
@@ -19573,6 +20169,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2878947168348560344
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3684833574044712362}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012305994}
 --- !u!1 &3713992105590418878
 GameObject:
   m_ObjectHideFlags: 0
@@ -19584,6 +20201,7 @@ GameObject:
   - component: {fileID: 1103600923633438382}
   - component: {fileID: 511344602482740212}
   - component: {fileID: 7326283552826003894}
+  - component: {fileID: 6762525536486054259}
   m_Layer: 0
   m_Name: SueloModularModular_LP.003
   m_TagString: Untagged
@@ -19663,6 +20281,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6762525536486054259
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3713992105590418878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999995, z: -0.00097077}
 --- !u!1 &3719280330253360419
 GameObject:
   m_ObjectHideFlags: 0
@@ -19764,6 +20403,7 @@ GameObject:
   - component: {fileID: 7290058396917135138}
   - component: {fileID: 5145393328445635485}
   - component: {fileID: 4455456450468853494}
+  - component: {fileID: 928850755108025356}
   m_Layer: 0
   m_Name: Pilar_LP.001
   m_TagString: Untagged
@@ -19843,6 +20483,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &928850755108025356
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3748398749307084326}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345762, z: 0.025585745}
+  m_Center: {x: 0, y: -0.10691527, z: 0.012853019}
 --- !u!1 &3749160370629793577
 GameObject:
   m_ObjectHideFlags: 0
@@ -20696,6 +21357,7 @@ GameObject:
   - component: {fileID: 2133075900766729411}
   - component: {fileID: 7232769078764838830}
   - component: {fileID: 5641542723762974609}
+  - component: {fileID: 7846367649723981891}
   m_Layer: 0
   m_Name: SueloModularModular_LP.012
   m_TagString: Untagged
@@ -20775,6 +21437,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7846367649723981891
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3955358247818089191}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.025000028, z: -0.00097077}
 --- !u!1 &3960047510624109425
 GameObject:
   m_ObjectHideFlags: 0
@@ -20786,6 +21469,7 @@ GameObject:
   - component: {fileID: 3386897007933522492}
   - component: {fileID: 5296961220373574752}
   - component: {fileID: 8335921095481786297}
+  - component: {fileID: 5279367464855074583}
   m_Layer: 0
   m_Name: ParedModular_LP.033
   m_TagString: Untagged
@@ -20865,6 +21549,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5279367464855074583
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3960047510624109425}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455824}
+  m_Center: {x: -0.068294026, y: 0.07524813, z: 0.08018028}
 --- !u!1 &3961687608193940680
 GameObject:
   m_ObjectHideFlags: 0
@@ -21242,6 +21947,7 @@ GameObject:
   - component: {fileID: 7718680697011110582}
   - component: {fileID: 7673255954043991339}
   - component: {fileID: 3057864588800886509}
+  - component: {fileID: 4467228054757646331}
   m_Layer: 0
   m_Name: SueloModularModular_LP.014
   m_TagString: Untagged
@@ -21321,6 +22027,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4467228054757646331
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4008412170659038491}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.033398237, y: 0.7, z: 0}
+  m_Center: {x: -0.016699122, y: -0.35, z: 7.4505804e-11}
 --- !u!1 &4011874527364079698
 GameObject:
   m_ObjectHideFlags: 0
@@ -21332,6 +22059,7 @@ GameObject:
   - component: {fileID: 8221832632899329796}
   - component: {fileID: 3569718961845845480}
   - component: {fileID: 3486020510242138584}
+  - component: {fileID: 6380642564518257664}
   m_Layer: 0
   m_Name: ParedModular_LP.036
   m_TagString: Untagged
@@ -21411,6 +22139,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6380642564518257664
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011874527364079698}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455824}
+  m_Center: {x: -0.08958884, y: 0.025248127, z: 0.08018028}
 --- !u!1 &4026757727102372346
 GameObject:
   m_ObjectHideFlags: 0
@@ -22685,6 +23434,7 @@ GameObject:
   - component: {fileID: 6411678908531976205}
   - component: {fileID: 3217249050666243732}
   - component: {fileID: 5532557883965700160}
+  - component: {fileID: 1088368308036463100}
   m_Layer: 0
   m_Name: Poste_LP
   m_TagString: Untagged
@@ -22764,6 +23514,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1088368308036463100
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4393146473000397493}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7093681699368798557, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &4395985790099628994
 GameObject:
   m_ObjectHideFlags: 0
@@ -23135,6 +23907,7 @@ GameObject:
   - component: {fileID: 5205356689382748787}
   - component: {fileID: 7789825562039205572}
   - component: {fileID: 3324840594414589050}
+  - component: {fileID: 1544209052669732450}
   m_Layer: 0
   m_Name: WetFloorCartel_LP.002
   m_TagString: Untagged
@@ -23214,6 +23987,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1544209052669732450
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4465273286816875536}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0033937702, y: 0.0033937695, z: 0.009506304}
+  m_Center: {x: 1.582094e-10, y: 0.000000002644391, z: 0.004753152}
 --- !u!1 &4479552704020704612
 GameObject:
   m_ObjectHideFlags: 0
@@ -23859,6 +24653,7 @@ GameObject:
   - component: {fileID: 1881645989362145313}
   - component: {fileID: 7114259625558402514}
   - component: {fileID: 4663184904666465489}
+  - component: {fileID: 195460683447029485}
   m_Layer: 0
   m_Name: ParedModularAlternativa_LP.001
   m_TagString: Untagged
@@ -23938,6 +24733,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &195460683447029485
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4624857388717448788}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1450660105463749112, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &4630676945517138015
 GameObject:
   m_ObjectHideFlags: 0
@@ -24759,6 +25576,7 @@ GameObject:
   - component: {fileID: 8417074625562789404}
   - component: {fileID: 7101423632143731274}
   - component: {fileID: 3358528530828394254}
+  - component: {fileID: 3649718447691310666}
   m_Layer: 0
   m_Name: SueloModularModular_LP
   m_TagString: Untagged
@@ -24838,6 +25656,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3649718447691310666
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4727783013101307526}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &4736433074343451699
 GameObject:
   m_ObjectHideFlags: 0
@@ -25652,6 +26491,7 @@ GameObject:
   - component: {fileID: 2133827502699023276}
   - component: {fileID: 6014010227519929689}
   - component: {fileID: 5477557863562271516}
+  - component: {fileID: 365133922399235772}
   m_Layer: 0
   m_Name: SueloModularModular_LP.008
   m_TagString: Untagged
@@ -25731,6 +26571,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &365133922399235772
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4877054358719792777}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &4887072887373849921
 GameObject:
   m_ObjectHideFlags: 0
@@ -25953,6 +26814,7 @@ GameObject:
   - component: {fileID: 9028097918560022061}
   - component: {fileID: 302044956884938729}
   - component: {fileID: 1570766767358734175}
+  - component: {fileID: 5922974015539183102}
   m_Layer: 0
   m_Name: Escalera_LP.033
   m_TagString: Untagged
@@ -26032,6 +26894,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5922974015539183102
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4954842677569774674}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012305994}
 --- !u!1 &4958220932551797713
 GameObject:
   m_ObjectHideFlags: 0
@@ -26403,6 +27286,7 @@ GameObject:
   - component: {fileID: 1295256615041411994}
   - component: {fileID: 3942116833275284694}
   - component: {fileID: 8807664876352090156}
+  - component: {fileID: 4973645435506134665}
   m_Layer: 0
   m_Name: ParedModular_LP.042
   m_TagString: Untagged
@@ -26482,6 +27366,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4973645435506134665
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5013190983306641312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &5038349462402172904
 GameObject:
   m_ObjectHideFlags: 0
@@ -26583,6 +27488,7 @@ GameObject:
   - component: {fileID: 181426883680871572}
   - component: {fileID: 2915132069926621722}
   - component: {fileID: 830768600983886788}
+  - component: {fileID: 1739993617560359576}
   m_Layer: 0
   m_Name: ParedModular_LP.034
   m_TagString: Untagged
@@ -26662,6 +27568,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1739993617560359576
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048123043805766780}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &5049134566525292866
 GameObject:
   m_ObjectHideFlags: 0
@@ -27424,6 +28351,7 @@ GameObject:
   - component: {fileID: 755288944598567067}
   - component: {fileID: 174572111618328073}
   - component: {fileID: 5477133472627057108}
+  - component: {fileID: 3340004819449919254}
   m_Layer: 0
   m_Name: SueloModularModular_LP.010
   m_TagString: Untagged
@@ -27503,6 +28431,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3340004819449919254
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5249762714969785246}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.025000028, z: -0.00097077}
 --- !u!1 &5259242265471094139
 GameObject:
   m_ObjectHideFlags: 0
@@ -27964,6 +28913,7 @@ GameObject:
   - component: {fileID: 4693453780448379637}
   - component: {fileID: 3607926555110230933}
   - component: {fileID: 5152450933918059644}
+  - component: {fileID: 5035616904255270932}
   m_Layer: 0
   m_Name: Escalera_LP.031
   m_TagString: Untagged
@@ -28043,6 +28993,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5035616904255270932
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5312643292772394591}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499849, z: 0.0012306031}
 --- !u!1 &5324778757312026209
 GameObject:
   m_ObjectHideFlags: 0
@@ -29404,6 +30375,7 @@ GameObject:
   - component: {fileID: 6104639724107933491}
   - component: {fileID: 8820538562269015153}
   - component: {fileID: 5173207233587467236}
+  - component: {fileID: 5828655154097245368}
   m_Layer: 0
   m_Name: ParedModular_LP.028
   m_TagString: Untagged
@@ -29483,6 +30455,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5828655154097245368
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593831260857018092}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999991, z: 0.015026119}
 --- !u!1 &5605604417885297267
 GameObject:
   m_ObjectHideFlags: 0
@@ -29854,6 +30847,7 @@ GameObject:
   - component: {fileID: 7180694505653171576}
   - component: {fileID: 4132053622522017929}
   - component: {fileID: 6891765617172439913}
+  - component: {fileID: 7168992652001128459}
   m_Layer: 0
   m_Name: ParedModular_LP.029
   m_TagString: Untagged
@@ -29933,6 +30927,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7168992652001128459
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5722532468407936781}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.08958884, y: 0.12524813, z: 0.045632407}
 --- !u!1 &5737062986122087579
 GameObject:
   m_ObjectHideFlags: 0
@@ -29977,6 +30992,7 @@ GameObject:
   - component: {fileID: 7520855309499976761}
   - component: {fileID: 3394371579033448611}
   - component: {fileID: 1775734163707367801}
+  - component: {fileID: 1467420733395875135}
   m_Layer: 0
   m_Name: WetFloorCartel_LP.001
   m_TagString: Untagged
@@ -30056,6 +31072,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1467420733395875135
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5759296280908455983}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0033937702, y: 0.0033937695, z: 0.009506304}
+  m_Center: {x: 5.7937884e-11, y: -0.0000000012466007, z: 0.004753152}
 --- !u!1 &5764184841028966317
 GameObject:
   m_ObjectHideFlags: 0
@@ -30459,6 +31496,7 @@ GameObject:
   - component: {fileID: 823501170437651183}
   - component: {fileID: 2600583409297826502}
   - component: {fileID: 7619159264213984673}
+  - component: {fileID: 8172098686910258532}
   m_Layer: 0
   m_Name: ParedModular_LP.037
   m_TagString: Untagged
@@ -30538,6 +31576,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8172098686910258532
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5826688551165811411}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &5847761896806302585
 GameObject:
   m_ObjectHideFlags: 0
@@ -30850,6 +31909,7 @@ GameObject:
   - component: {fileID: 2056670476958600282}
   - component: {fileID: 5600368299974027874}
   - component: {fileID: 3573635026543645738}
+  - component: {fileID: 6370248916857179766}
   m_Layer: 0
   m_Name: Escalera_LP.037
   m_TagString: Untagged
@@ -30929,6 +31989,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6370248916857179766
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5881248500365941677}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306031}
 --- !u!1 &5884003225167924726
 GameObject:
   m_ObjectHideFlags: 0
@@ -32787,6 +33868,7 @@ GameObject:
   - component: {fileID: 8223954210045454973}
   - component: {fileID: 6616337526193626223}
   - component: {fileID: 2509748430775544131}
+  - component: {fileID: 1491530614855041882}
   m_Layer: 0
   m_Name: Pilar_LP.005
   m_TagString: Untagged
@@ -32866,6 +33948,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1491530614855041882
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6260817772334763910}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345762, z: 0.025585745}
+  m_Center: {x: 0, y: -0.5345764, z: 0.012853019}
 --- !u!1 &6331661485665013918
 GameObject:
   m_ObjectHideFlags: 0
@@ -33417,6 +34520,7 @@ GameObject:
   - component: {fileID: 5172098707537400487}
   - component: {fileID: 2098211954429265887}
   - component: {fileID: 3452075510301294611}
+  - component: {fileID: 3422997284257599576}
   m_Layer: 0
   m_Name: Escalera_LP.026
   m_TagString: Untagged
@@ -33496,6 +34600,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3422997284257599576
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6452323538342221047}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.001230605}
 --- !u!1 &6457583864595371295
 GameObject:
   m_ObjectHideFlags: 0
@@ -34831,6 +35956,7 @@ GameObject:
   - component: {fileID: 895814345994920774}
   - component: {fileID: 1494940080159552818}
   - component: {fileID: 7989992920164554099}
+  - component: {fileID: 88403474919078045}
   m_Layer: 0
   m_Name: Escalera_LP.029
   m_TagString: Untagged
@@ -34910,6 +36036,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &88403474919078045
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6661304131823770885}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306031}
 --- !u!1 &6666136755583093183
 GameObject:
   m_ObjectHideFlags: 0
@@ -35551,6 +36698,7 @@ GameObject:
   - component: {fileID: 8041390294166908401}
   - component: {fileID: 5730325181036214198}
   - component: {fileID: 1593174469701621930}
+  - component: {fileID: 45027520589861566}
   m_Layer: 0
   m_Name: ParedModular_LP.041
   m_TagString: Untagged
@@ -35630,6 +36778,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &45027520589861566
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6764483339927598973}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.08958884, y: 0.12524813, z: 0.07408824}
 --- !u!1 &6803043308606082829
 GameObject:
   m_ObjectHideFlags: 0
@@ -35641,6 +36810,7 @@ GameObject:
   - component: {fileID: 5000884440948550917}
   - component: {fileID: 3307857019487425784}
   - component: {fileID: 499282013712889733}
+  - component: {fileID: 5077649727198414632}
   m_Layer: 0
   m_Name: CajaMetalicaPlasticos_LP
   m_TagString: Untagged
@@ -35721,6 +36891,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5077649727198414632
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6803043308606082829}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2404209939091407018, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &6806430619068752850
 GameObject:
   m_ObjectHideFlags: 0
@@ -35732,6 +36924,7 @@ GameObject:
   - component: {fileID: 7155565293203308820}
   - component: {fileID: 1736896258818547923}
   - component: {fileID: 7508618599587799846}
+  - component: {fileID: 5549889952010089117}
   m_Layer: 0
   m_Name: SueloModularModular_LP.002
   m_TagString: Untagged
@@ -35811,6 +37004,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5549889952010089117
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6806430619068752850}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &6806952461638181812
 GameObject:
   m_ObjectHideFlags: 0
@@ -36918,6 +38132,7 @@ GameObject:
   - component: {fileID: 8037190177370003319}
   - component: {fileID: 1983168152319501178}
   - component: {fileID: 4708738014749287797}
+  - component: {fileID: 1394847629977749887}
   m_Layer: 0
   m_Name: ParedModular_LP.023
   m_TagString: Untagged
@@ -36997,6 +38212,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1394847629977749887
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7028442766269714758}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &7039462319812006772
 GameObject:
   m_ObjectHideFlags: 0
@@ -38003,6 +39239,7 @@ GameObject:
   - component: {fileID: 1304264945490026019}
   - component: {fileID: 4631634958845317963}
   - component: {fileID: 8968691004622337304}
+  - component: {fileID: 6937036218984156924}
   m_Layer: 0
   m_Name: Escalera_LP.038
   m_TagString: Untagged
@@ -38082,6 +39319,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6937036218984156924
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7186745518664456343}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.001230605}
 --- !u!1 &7188396428786742381
 GameObject:
   m_ObjectHideFlags: 0
@@ -38934,6 +40192,7 @@ GameObject:
   - component: {fileID: 2260466540949306523}
   - component: {fileID: 5203425925609907804}
   - component: {fileID: 2192151961557837162}
+  - component: {fileID: 5174325418382945385}
   m_Layer: 0
   m_Name: SueloModularModular_LP.009
   m_TagString: Untagged
@@ -39013,6 +40272,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5174325418382945385
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7322941139495532338}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &7343964467515195748
 GameObject:
   m_ObjectHideFlags: 0
@@ -39204,6 +40484,7 @@ GameObject:
   - component: {fileID: 6020318573877142344}
   - component: {fileID: 5273677199607884164}
   - component: {fileID: 9130754938518974912}
+  - component: {fileID: 3955846072205714177}
   m_Layer: 0
   m_Name: Pilar_LP.004
   m_TagString: Untagged
@@ -39283,6 +40564,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3955846072205714177
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396086797619655144}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345762, z: 0.025585745}
+  m_Center: {x: 0, y: -0.42766112, z: 0.012853019}
 --- !u!1 &7416817612229291684
 GameObject:
   m_ObjectHideFlags: 0
@@ -40496,6 +41798,7 @@ GameObject:
   - component: {fileID: 6514882848408606824}
   - component: {fileID: 765601002248163116}
   - component: {fileID: 3804357393668307277}
+  - component: {fileID: 3422305698315888187}
   m_Layer: 0
   m_Name: ParedModular_LP.040
   m_TagString: Untagged
@@ -40575,6 +41878,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3422305698315888187
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7652069692757911761}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.028455827}
+  m_Center: {x: -0.068294026, y: 0.17524812, z: 0.045632407}
 --- !u!1 &7697599528916419280
 GameObject:
   m_ObjectHideFlags: 0
@@ -40676,6 +42000,7 @@ GameObject:
   - component: {fileID: 7686805766385075995}
   - component: {fileID: 3927642613260539796}
   - component: {fileID: 3608422878974516859}
+  - component: {fileID: 4742775127015601729}
   m_Layer: 0
   m_Name: Escalera_LP.032
   m_TagString: Untagged
@@ -40755,6 +42080,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4742775127015601729
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713815065129144569}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306031}
 --- !u!1 &7730008215979628203
 GameObject:
   m_ObjectHideFlags: 0
@@ -41697,6 +43043,7 @@ GameObject:
   - component: {fileID: 3368435237710149800}
   - component: {fileID: 2059571750237943538}
   - component: {fileID: 1478772426709309423}
+  - component: {fileID: 4122576434077890917}
   m_Layer: 0
   m_Name: Escalera_LP.025
   m_TagString: Untagged
@@ -41776,6 +43123,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4122576434077890917
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7957384507618589531}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499849, z: 0.0012306031}
 --- !u!1 &7989733177413126914
 GameObject:
   m_ObjectHideFlags: 0
@@ -41787,6 +43155,7 @@ GameObject:
   - component: {fileID: 4591963522467996802}
   - component: {fileID: 8437568665484460677}
   - component: {fileID: 3607909556046993876}
+  - component: {fileID: 6979353916185786567}
   m_Layer: 0
   m_Name: Escalera_LP.027
   m_TagString: Untagged
@@ -41866,6 +43235,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6979353916185786567
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7989733177413126914}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012306031}
 --- !u!1 &8006511727384960111
 GameObject:
   m_ObjectHideFlags: 0
@@ -42268,6 +43658,7 @@ GameObject:
   - component: {fileID: 3167750001556841925}
   - component: {fileID: 7036272123318444443}
   - component: {fileID: 9102520607822988161}
+  - component: {fileID: 9183784563547151451}
   m_Layer: 0
   m_Name: Escalera_LP.040
   m_TagString: Untagged
@@ -42347,6 +43738,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &9183784563547151451
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8109770521619298729}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.001230605}
 --- !u!1 &8165084443359648135
 GameObject:
   m_ObjectHideFlags: 0
@@ -42718,6 +44130,7 @@ GameObject:
   - component: {fileID: 5568475653090235086}
   - component: {fileID: 8455949921047380162}
   - component: {fileID: 2751319401042959554}
+  - component: {fileID: 5455621278290575248}
   m_Layer: 0
   m_Name: Escalera_LP.048
   m_TagString: Untagged
@@ -42797,6 +44210,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5455621278290575248
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201011439035100219}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.0012305994}
 --- !u!1 &8203871099283357554
 GameObject:
   m_ObjectHideFlags: 0
@@ -43379,6 +44813,7 @@ GameObject:
   - component: {fileID: 7878719862399941866}
   - component: {fileID: 8782605694437947149}
   - component: {fileID: 1182479168459317890}
+  - component: {fileID: 5155339598064998629}
   m_Layer: 0
   m_Name: ParedModular_LP.024
   m_TagString: Untagged
@@ -43458,6 +44893,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5155339598064998629
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8301884400101694991}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.05, z: 0.028455824}
+  m_Center: {x: -0.08958884, y: 0.07524813, z: 0.08018028}
 --- !u!1 &8313442011755542643
 GameObject:
   m_ObjectHideFlags: 0
@@ -43559,6 +45015,7 @@ GameObject:
   - component: {fileID: 8926102382643784383}
   - component: {fileID: 2586423723923579919}
   - component: {fileID: 7193967439830372434}
+  - component: {fileID: 504173949472764689}
   m_Layer: 0
   m_Name: SueloModularModular_LP.004
   m_TagString: Untagged
@@ -43638,6 +45095,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &504173949472764689
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8315984348590860678}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999999, z: -0.00097077}
 --- !u!1 &8320586252052377486
 GameObject:
   m_ObjectHideFlags: 0
@@ -43860,6 +45338,7 @@ GameObject:
   - component: {fileID: 4196924842358322082}
   - component: {fileID: 2198833736261654625}
   - component: {fileID: 5995868841060301206}
+  - component: {fileID: 8415922376922733675}
   m_Layer: 0
   m_Name: Escalera_LP.043
   m_TagString: Untagged
@@ -43939,6 +45418,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8415922376922733675
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8376816693733933593}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017500073, z: 0.0012306031}
 --- !u!1 &8376936931683588930
 GameObject:
   m_ObjectHideFlags: 0
@@ -44220,6 +45720,7 @@ GameObject:
   - component: {fileID: 2052184179535172414}
   - component: {fileID: 4595287484847473323}
   - component: {fileID: 1550641412018506379}
+  - component: {fileID: 4328908289223594007}
   m_Layer: 0
   m_Name: SueloModularModular_LP.005
   m_TagString: Untagged
@@ -44299,6 +45800,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4328908289223594007
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8440903858139816993}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.049999997, z: 0.0019415403}
+  m_Center: {x: -0.020000001, y: -0.024999991, z: -0.00097077}
 --- !u!1 &8481493792947372028
 GameObject:
   m_ObjectHideFlags: 0
@@ -44401,6 +45923,7 @@ GameObject:
   - component: {fileID: 2535061431921231581}
   - component: {fileID: 5855460214590060711}
   - component: {fileID: 8514791137933164251}
+  - component: {fileID: 3373079666020441395}
   m_Layer: 0
   m_Name: Escalera_LP.034
   m_TagString: Untagged
@@ -44480,6 +46003,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3373079666020441395
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8500596413237062231}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499849, z: 0.001230604}
 --- !u!1 &8502036347373137965
 GameObject:
   m_ObjectHideFlags: 0
@@ -44761,6 +46305,7 @@ GameObject:
   - component: {fileID: 5335397880188312278}
   - component: {fileID: 3782546251683566124}
   - component: {fileID: 9055964796921044169}
+  - component: {fileID: 8134659331755292743}
   m_Layer: 0
   m_Name: ParedModularSinBajos_LP.004
   m_TagString: Untagged
@@ -44840,6 +46385,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8134659331755292743
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8546326897136603165}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999999, z: 0.015026119}
 --- !u!1 &8550995667135321052
 GameObject:
   m_ObjectHideFlags: 0
@@ -45211,6 +46777,7 @@ GameObject:
   - component: {fileID: 8864744676930618018}
   - component: {fileID: 8056980358837018209}
   - component: {fileID: 1055201376190676587}
+  - component: {fileID: 4356909072414574886}
   m_Layer: 0
   m_Name: Escalera_LP.042
   m_TagString: Untagged
@@ -45290,6 +46857,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4356909072414574886
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632713569974744444}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.0012305994}
 --- !u!1 &8644146370088832276
 GameObject:
   m_ObjectHideFlags: 0
@@ -45301,6 +46889,7 @@ GameObject:
   - component: {fileID: 6033159150894906493}
   - component: {fileID: 1776351556263032953}
   - component: {fileID: 3516853976729976191}
+  - component: {fileID: 5697412928799736073}
   m_Layer: 0
   m_Name: ParedModular_LP.030
   m_TagString: Untagged
@@ -45380,6 +46969,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5697412928799736073
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644146370088832276}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.0000000037252903, y: -0.024999991, z: 0.015026119}
 --- !u!1 &8654190023011543611
 GameObject:
   m_ObjectHideFlags: 0
@@ -45481,6 +47091,7 @@ GameObject:
   - component: {fileID: 7687602770375839472}
   - component: {fileID: 4017261554996245554}
   - component: {fileID: 546685506406891934}
+  - component: {fileID: 1186117926794759272}
   m_Layer: 0
   m_Name: BancoMadera_LP.001
   m_TagString: Untagged
@@ -45560,6 +47171,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1186117926794759272
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8686365384906244633}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2545399552967537484, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &8690812012369988860
 GameObject:
   m_ObjectHideFlags: 0
@@ -45782,6 +47415,7 @@ GameObject:
   - component: {fileID: 8195157926193274719}
   - component: {fileID: 2415723129321386233}
   - component: {fileID: 4580741567782772837}
+  - component: {fileID: 7965553338954339312}
   m_Layer: 0
   m_Name: Escalera_LP.045
   m_TagString: Untagged
@@ -45861,6 +47495,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7965553338954339312
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8724194219048753109}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499998, z: 0.0012305956}
 --- !u!1 &8747047640499555633
 GameObject:
   m_ObjectHideFlags: 0
@@ -46385,6 +48040,7 @@ GameObject:
   - component: {fileID: 9031109758271736735}
   - component: {fileID: 2673460688627834336}
   - component: {fileID: 3512805471999872332}
+  - component: {fileID: 8955661197116148921}
   m_Layer: 0
   m_Name: Pilar_LP.003
   m_TagString: Untagged
@@ -46464,6 +48120,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8955661197116148921
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8896420949051632867}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0043869107, y: 0.005345762, z: 0.025585745}
+  m_Center: {x: 0, y: -0.32074586, z: 0.012853019}
 --- !u!1 &8911580817575782413
 GameObject:
   m_ObjectHideFlags: 0
@@ -47714,6 +49391,7 @@ GameObject:
   - component: {fileID: 7932519549013820223}
   - component: {fileID: 492566093055249897}
   - component: {fileID: 4460229458408460791}
+  - component: {fileID: 8882139192633416466}
   m_Layer: 0
   m_Name: Escalera_LP.035
   m_TagString: Untagged
@@ -47793,6 +49471,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8882139192633416466
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9084777923154986374}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.0035000006, z: 0.0025}
+  m_Center: {x: 0, y: -0.0017499924, z: 0.0012305956}
 --- !u!1 &9089508424328301605
 GameObject:
   m_ObjectHideFlags: 0
@@ -47804,6 +49503,7 @@ GameObject:
   - component: {fileID: 9014607359932347281}
   - component: {fileID: 4270748311614041823}
   - component: {fileID: 7629776150577197418}
+  - component: {fileID: 4130533160615021635}
   m_Layer: 0
   m_Name: Hierro1_LP.003
   m_TagString: Untagged
@@ -47883,6 +49583,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4130533160615021635
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9089508424328301605}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7518471670789111407, guid: a604f11c609202f48a93d013c2b2d537, type: 3}
 --- !u!1 &9093965262258276384
 GameObject:
   m_ObjectHideFlags: 0
@@ -48164,6 +49886,7 @@ GameObject:
   - component: {fileID: 2076341005468509750}
   - component: {fileID: 8131612877602616141}
   - component: {fileID: 2674725188078058592}
+  - component: {fileID: 258419156443957821}
   m_Layer: 0
   m_Name: ParedModular_LP.026
   m_TagString: Untagged
@@ -48243,6 +49966,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &258419156443957821
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9135036139370818782}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0, y: 0.049999997, z: 0.030052237}
+  m_Center: {x: -0.08958884, y: 0.12524813, z: 0.016378377}
 --- !u!1 &9156205442878043409
 GameObject:
   m_ObjectHideFlags: 0
