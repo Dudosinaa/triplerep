@@ -1856,18 +1856,6 @@ PrefabInstance:
       propertyPath: block
       value: 
       objectReference: {fileID: 956921409}
-    - target: {fileID: 4614250603263719525, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
-      propertyPath: distance
-      value: -105
-      objectReference: {fileID: 0}
-    - target: {fileID: 4614250603263719525, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
-      propertyPath: startDelay
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4614250603263719525, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
-      propertyPath: moveDuration
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

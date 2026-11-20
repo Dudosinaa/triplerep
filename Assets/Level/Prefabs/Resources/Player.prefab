@@ -1475,7 +1475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1497873518158736528
 Transform:
   m_ObjectHideFlags: 0
@@ -1650,8 +1650,8 @@ MonoBehaviour:
   normalFieldOfView: 70
   zoomFieldOfView: 45
   zoomSmoothness: 10
-  walkingStepDistance: 1.8
-  crouchingStepDistance: 2.3
+  walkingStepDistance: 1.5
+  crouchingStepDistance: 1.8
 --- !u!114 &7539625107214149701
 MonoBehaviour:
   m_ObjectHideFlags: 0

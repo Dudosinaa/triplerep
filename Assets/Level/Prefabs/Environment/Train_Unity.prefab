@@ -40110,9 +40110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MetroTrainArrival
   axis: 2
-  distance: -114.1
-  startDelay: 3
-  moveDuration: 5
+  distance: -105
+  startDelay: 5
+  moveDuration: 10
   block: {fileID: 0}
 --- !u!1 &1017768726585185657
 GameObject:
