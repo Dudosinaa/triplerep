@@ -139,6 +139,7 @@ public sealed class DialogueController : MonoBehaviour
     {
         int startIndex = npc.GetStartNodeIndex();
         if (startIndex < 0 || playerCamera == null) return;
+        npc.NotifyConversationStarted();
         activeNpc = npc;
         nodeIndex = startIndex;
         OpenDialogue(npc.transform);
@@ -233,7 +234,7 @@ public sealed class DialogueController : MonoBehaviour
         if (choice == null) return;
         if (choice.EndsDialogue)
         {
-            EndDialogue();
+            EndDialogue(completed: true);
             return;
         }
         pendingNextNode = activeNpc.GetNextNodeIndex(choice);
@@ -258,15 +259,16 @@ public sealed class DialogueController : MonoBehaviour
         if (activeNpc == null || !showingPlayerReply) return;
         if (pendingNextNode < 0 || pendingNextNode >= activeNpc.Nodes.Length)
         {
-            EndDialogue();
+            EndDialogue(completed: true);
             return;
         }
         nodeIndex = pendingNextNode;
         ShowNpcNode();
     }
 
-    private void EndDialogue()
+    private void EndDialogue(bool completed = false)
     {
+        var npc = activeNpc;
         activeNpc = null;
         phoneLines = null;
         showingPlayerReply = false;
@@ -288,6 +290,7 @@ public sealed class DialogueController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+        if (completed && npc != null) npc.NotifyConversationCompleted(movement);
     }
 
     private void OnDisable()

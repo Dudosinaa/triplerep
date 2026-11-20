@@ -12,10 +12,8 @@ public sealed class PistolController : MonoBehaviour
     [SerializeField] private FirstPersonPlayer movement;
     [SerializeField] private Transform viewModel;
     [SerializeField] private WeaponDefinition definition;
-    [SerializeField] private Text ammoText;
     [SerializeField] private Text statusText;
     [SerializeField] private int magazineSize = 8;
-    [SerializeField] private int reserveAmmo = 32;
     [SerializeField] private float shotRange = 60f;
     [SerializeField] private float shotCooldown = 0.22f;
     [SerializeField, Min(0f)] private float aimCameraForward = 0.08f;
@@ -32,7 +30,7 @@ public sealed class PistolController : MonoBehaviour
     public bool IsEquipping => actionState == "Equip" || (equipped && equipOnShow);
     public bool IsEquipped => equipped;
     public int Rounds => magazine != null ? magazine.Rounds : 0;
-    public int ReserveAmmo => magazine != null ? magazine.Reserve : reserveAmmo;
+    public int ReserveAmmo => magazine?.Reserve ?? int.MaxValue;
     public bool IsReloading => magazine != null && magazine.IsReloading;
     public FirstPersonWeaponView WeaponView => weaponView;
     public bool CanUseWeapon => ready && isActiveAndEnabled && movement != null && movement.enabled &&
@@ -43,7 +41,7 @@ public sealed class PistolController : MonoBehaviour
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (movement == null) movement = GetComponent<FirstPersonPlayer>();
         if (definition == null) definition = Resources.Load<WeaponDefinition>("HandsWeapon");
-        magazine = new WeaponMagazine(Mathf.Max(1, magazineSize), Mathf.Max(0, reserveAmmo));
+        magazine = new WeaponMagazine(Mathf.Max(1, magazineSize), 0, unlimitedReserve: true);
         if (playerCamera == null || definition == null || !definition.IsComplete)
         {
             Debug.LogError("PistolController requires a player camera and the Hands weapon definition.", this);
@@ -72,7 +70,6 @@ public sealed class PistolController : MonoBehaviour
         bool canUse = CanUseWeapon;
         if (!canUse && (actionState != null || IsReloading)) CancelAction();
         weaponView.SetVisible(equipped && canUse);
-        if (ammoText != null) ammoText.enabled = canUse;
         if (statusText != null) statusText.enabled = canUse;
         bool aiming = canUse && equipped && !IsReloading && !IsEquipping && Mouse.current != null && Mouse.current.rightButton.isPressed;
         float blend = 1f - Mathf.Exp(-aimSpeed * Time.deltaTime);
@@ -99,7 +96,6 @@ public sealed class PistolController : MonoBehaviour
         bool canUse = CanUseWeapon;
         if (!canUse && (actionState != null || IsReloading)) CancelAction();
         if (weaponView != null) weaponView.SetVisible(equipped && canUse);
-        if (ammoText != null) ammoText.enabled = canUse;
         if (statusText != null) statusText.enabled = canUse;
         if (canUse && equipped) TickAction(Time.deltaTime);
     }
@@ -121,7 +117,6 @@ public sealed class PistolController : MonoBehaviour
             if (target != null) target.Hit();
             break;
         }
-        UpdateHud();
         return true;
     }
     public bool TryReload()
@@ -191,7 +186,7 @@ public sealed class PistolController : MonoBehaviour
     private void OnMagazineInserted(int operationId)
     {
         if (!CanUseWeapon || !equipped || !IsReloading) return;
-        if (magazine.ApplyInsertionEvent(operationId)) UpdateHud();
+        magazine.ApplyInsertionEvent(operationId);
     }
     public void SetEquipped(bool value)
     {
@@ -223,7 +218,6 @@ public sealed class PistolController : MonoBehaviour
     {
         CancelAction();
         if (weaponView != null) weaponView.SetVisible(false);
-        if (ammoText != null) ammoText.enabled = false;
         if (statusText != null) statusText.enabled = false;
         if (playerCamera != null)
         {
@@ -238,7 +232,6 @@ public sealed class PistolController : MonoBehaviour
     }
     private void UpdateHud()
     {
-        if (ammoText != null) ammoText.text = equipped ? $"{Rounds} / {ReserveAmmo}" : "Оружие убрано";
         if (statusText != null) statusText.text = !equipped ? "Q — достать пистолет   ПКМ — приблизить" :
             IsReloading ? "Перезарядка..." : "ЛКМ — выстрел   ПКМ — прицел   R — перезарядка   Q — убрать";
     }

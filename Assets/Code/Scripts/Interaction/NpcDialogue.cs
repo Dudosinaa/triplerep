@@ -37,6 +37,12 @@ public sealed class NpcDialogue : MonoBehaviour
     [SerializeField, HideInInspector] private int startNodeId;
     [SerializeField] private Node[] nodes;
 
+    internal event Action ConversationStarted;
+    internal event Action<FirstPersonPlayer> ConversationCompleted;
+
+    internal void NotifyConversationStarted() => ConversationStarted?.Invoke();
+    internal void NotifyConversationCompleted(FirstPersonPlayer player) => ConversationCompleted?.Invoke(player);
+
     public string CharacterName => characterName;
     public Node[] Nodes => nodes;
     public int StartNodeId => startNodeId;

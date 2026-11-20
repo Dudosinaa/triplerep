@@ -12,7 +12,6 @@ using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
 // Batch-only integration checks. Run on a disposable copy, never on the user's open scene.
 [InitializeOnLoad]
@@ -159,7 +158,6 @@ public static class HandsReloadPlayValidation
             var hit=target.AddComponent<ShootingTarget>();Physics.SyncTransforms();
             Check(pistol.TryFire(),"Shot rejected");Check(pistol.Rounds==7,"Shot did not consume round");
             Check((float)Field(hit,"flashEnd")>Time.time,"Raycast did not hit target");
-            Check(((Text)Field(pistol,"ammoText")).text=="7 / 40","HUD did not update on shot");
             UnityEngine.Object.Destroy(target);
             yield return Delay(.8f);
             Vector3 hip=((Transform)Field(pistol,"viewModel")).localPosition;

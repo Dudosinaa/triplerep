@@ -10,12 +10,15 @@ public sealed class WeaponMagazine
     public bool ReloadCommitted { get; private set; }
     public int ReloadOperationId { get; private set; }
     private int operationSerial;
-    public WeaponMagazine(int capacity, int reserve)
+    public bool HasUnlimitedReserve { get; }
+
+    public WeaponMagazine(int capacity, int reserve, bool unlimitedReserve = false)
     {
         if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
         if (reserve < 0) throw new ArgumentOutOfRangeException(nameof(reserve));
         Capacity = Rounds = capacity;
-        Reserve = reserve;
+        HasUnlimitedReserve = unlimitedReserve;
+        Reserve = unlimitedReserve ? int.MaxValue : reserve;
     }
     public bool TryFire()
     {
@@ -25,7 +28,7 @@ public sealed class WeaponMagazine
     }
     public bool TryBeginReload()
     {
-        if (IsReloading || Rounds >= Capacity || Reserve <= 0) return false;
+        if (IsReloading || Rounds >= Capacity || (!HasUnlimitedReserve && Reserve <= 0)) return false;
         IsReloading = true;
         ReloadCommitted = false;
         operationSerial = unchecked(operationSerial + 1);
@@ -37,9 +40,10 @@ public sealed class WeaponMagazine
     {
         if (!IsReloading || ReloadCommitted || float.IsNaN(normalizedTime) || normalizedTime < commitAt)
             return false;
-        int loaded = Math.Min(Capacity - Rounds, Reserve);
+        int deficit = Capacity - Rounds;
+        int loaded = HasUnlimitedReserve ? deficit : Math.Min(deficit, Reserve);
         Rounds += loaded;
-        Reserve -= loaded;
+        if (!HasUnlimitedReserve) Reserve -= loaded;
         ReloadCommitted = true;
         return true;
     }

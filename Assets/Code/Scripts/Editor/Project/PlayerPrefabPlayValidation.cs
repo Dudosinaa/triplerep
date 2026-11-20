@@ -201,7 +201,7 @@ public static class PlayerPrefabPlayValidation
         yield return Delay(0.5f);
         Check(pistol.TryReload(), "Reload starts");
         yield return (Func<bool>)(() => !pistol.IsReloading);
-        Check(pistol.Rounds == 8 && pistol.ReserveAmmo == 31, "Animation event completes reload and transfers only the deficit");
+        Check(pistol.Rounds == 8 && pistol.ReserveAmmo == int.MaxValue, "Animation event fills the deficit and preserves unlimited reserve");
         InputSystem.QueueStateEvent(Mouse.current, new MouseState { buttons = 2 });
         yield return Delay(0.5f);
         Check(Vector3.Distance(((Transform)Field(pistol, "viewModel")).localPosition, pistol.WeaponView.AimOffset) < 0.005f, "Right mouse aims the weapon");
