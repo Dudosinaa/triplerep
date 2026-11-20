@@ -26,6 +26,8 @@ public sealed class DialogueController : MonoBehaviour
 
     private NpcDialogue activeNpc;
     private NpcDialogue nearbyNpc;
+    private Collider aimedCollider;
+    private PhoneCall.Line[] phoneLines;
     private readonly RaycastHit[] aimHits = new RaycastHit[16];
     private int nodeIndex;
     private int pendingNextNode;
@@ -37,7 +39,7 @@ public sealed class DialogueController : MonoBehaviour
     private bool[] otherPromptsWereActive;
     private (Text Label, DialogueExitIcon Icon, Vector2 OriginalOffsetMin)[] choiceViews;
 
-    public bool IsTalking => activeNpc != null;
+    public bool IsTalking => activeNpc != null || phoneLines != null;
 
     private void Awake()
     {
@@ -81,26 +83,35 @@ public sealed class DialogueController : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current == null) return;
-        if (activeNpc == null)
+        if (!IsTalking)
         {
             nearbyNpc = FindNearbyNpc();
-            bool canTalk = nearbyNpc != null && (movement == null || movement.enabled) &&
+            var phone = aimedCollider != null ? aimedCollider.GetComponentInParent<PhoneCall>() : null;
+            bool targetReady = phone != null ? phone.CanAnswer : nearbyNpc != null;
+            bool canTalk = targetReady && (movement == null || movement.enabled) &&
                 (documentReader == null || !documentReader.IsReading) &&
                 (itemInspector == null || !itemInspector.IsInspecting);
             if (interactionPrompt != null)
             {
                 interactionPrompt.SetActive(canTalk);
                 var label = interactionPrompt.GetComponent<Text>();
-                if (canTalk && label != null) label.text = "[E] Поговорить — " + nearbyNpc.CharacterName;
+                if (canTalk && label != null)
+                    label.text = phone != null ? "[E] Ответить на звонок" : "[E] Поговорить — " + nearbyNpc.CharacterName;
             }
-            if (canTalk && Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume()) BeginDialogue(nearbyNpc);
+            if (canTalk && Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
+            {
+                if (phone != null) AnswerPhone(phone);
+                else BeginDialogue(nearbyNpc);
+            }
             return;
         }
 
-        if (showingPlayerReply &&
-            (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame))
-            ContinueDialogue();
-        else if (!showingPlayerReply)
+        if (showingPlayerReply || phoneLines != null)
+        {
+            if (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame)
+                ContinueDialogue();
+        }
+        else
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectChoice(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectChoice(1);
@@ -110,10 +121,18 @@ public sealed class DialogueController : MonoBehaviour
 
     private NpcDialogue FindNearbyNpc()
     {
-        // Compact indoor layouts can place a document and NPC within the same talk radius.
-        // Select the NPC under the crosshair so proximity never steals document/item input.
-        NpcDialogue.FindAimedCollider(playerCamera, transform, talkDistance, aimHits, out var target);
+        // Use the same unobstructed aim target for NPC dialogue and calls.
+        aimedCollider = NpcDialogue.FindAimedCollider(playerCamera, transform, talkDistance, aimHits, out var target);
         return target != null && target.isActiveAndEnabled && target.GetStartNodeIndex() >= 0 ? target : null;
+    }
+
+    private void AnswerPhone(PhoneCall phone)
+    {
+        if (!phone.TryAnswer(out phoneLines)) return;
+        nodeIndex = 0;
+        OpenDialogue(phone.transform);
+        ShowChoices(null);
+        ShowPhoneLine();
     }
 
     private void BeginDialogue(NpcDialogue npc)
@@ -121,6 +140,13 @@ public sealed class DialogueController : MonoBehaviour
         int startIndex = npc.GetStartNodeIndex();
         if (startIndex < 0 || playerCamera == null) return;
         activeNpc = npc;
+        nodeIndex = startIndex;
+        OpenDialogue(npc.transform);
+        ShowNpcNode();
+    }
+
+    private void OpenDialogue(Transform target)
+    {
         movementWasEnabled = movement != null && movement.enabled;
         readerWasEnabled = documentReader != null && documentReader.enabled;
         inspectorWasEnabled = itemInspector != null && itemInspector.enabled;
@@ -138,10 +164,10 @@ public sealed class DialogueController : MonoBehaviour
                 otherPrompts[i].SetActive(false);
             }
         }
-        Vector3 towardNpc = npc.transform.position - playerCamera.transform.position;
-        towardNpc.y = 0f;
-        if (towardNpc.sqrMagnitude > 0.001f)
-            transform.rotation = Quaternion.LookRotation(towardNpc);
+        Vector3 towardTarget = target.position - playerCamera.transform.position;
+        towardTarget.y = 0f;
+        if (towardTarget.sqrMagnitude > 0.001f)
+            transform.rotation = Quaternion.LookRotation(towardTarget);
         crosshairWasActive = crosshair != null && crosshair.activeSelf;
         if (crosshair != null) crosshair.SetActive(false);
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
@@ -149,8 +175,12 @@ public sealed class DialogueController : MonoBehaviour
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        nodeIndex = startIndex;
-        ShowNpcNode();
+    }
+
+    private void ShowPhoneLine()
+    {
+        var line = phoneLines[nodeIndex];
+        ShowLine(line.speaker, line.text, true);
     }
 
     private void ShowNpcNode()
@@ -162,14 +192,24 @@ public sealed class DialogueController : MonoBehaviour
         }
         showingPlayerReply = false;
         NpcDialogue.Node node = activeNpc.Nodes[nodeIndex];
-        if (speakerText != null) speakerText.text = activeNpc.CharacterName;
-        if (dialogueText != null) dialogueText.text = node.npcText;
-        if (continueButton != null) continueButton.gameObject.SetActive(false);
+        ShowLine(activeNpc.CharacterName, node.npcText, false);
+        ShowChoices(node.choices);
+    }
+
+    private void ShowLine(string speaker, string line, bool canContinue)
+    {
+        if (speakerText != null) speakerText.text = speaker;
+        if (dialogueText != null) dialogueText.text = line;
+        if (continueButton != null) continueButton.gameObject.SetActive(canContinue);
+    }
+
+    private void ShowChoices(NpcDialogue.Choice[] choices)
+    {
         for (int i = 0; i < choiceViews.Length; i++)
         {
             Button button = choiceButtons[i];
             if (button == null) continue;
-            NpcDialogue.Choice choice = node.choices != null && i < node.choices.Length ? node.choices[i] : null;
+            NpcDialogue.Choice choice = choices != null && i < choices.Length ? choices[i] : null;
             var (label, icon, originalOffsetMin) = choiceViews[i];
             if (label != null)
             {
@@ -207,6 +247,14 @@ public sealed class DialogueController : MonoBehaviour
 
     private void ContinueDialogue()
     {
+        if (phoneLines != null)
+        {
+            nodeIndex++;
+            if (nodeIndex < phoneLines.Length) ShowPhoneLine();
+            else EndDialogue();
+            return;
+        }
+
         if (activeNpc == null || !showingPlayerReply) return;
         if (pendingNextNode < 0 || pendingNextNode >= activeNpc.Nodes.Length)
         {
@@ -220,6 +268,7 @@ public sealed class DialogueController : MonoBehaviour
     private void EndDialogue()
     {
         activeNpc = null;
+        phoneLines = null;
         showingPlayerReply = false;
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         if (dialogueCamera != null) dialogueCamera.enabled = false;
@@ -243,7 +292,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (activeNpc != null) EndDialogue();
+        if (IsTalking) EndDialogue();
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
     }
 }

@@ -4,6 +4,10 @@ using UnityEngine.UI;
 
 public sealed class PistolController : MonoBehaviour
 {
+    private const float ReloadDropDistance = 0.15f;
+    private const float ReloadLowerDuration = 0.22f;
+    private const float ReloadRaiseDuration = 0.26f;
+
     [SerializeField] private Camera playerCamera;
     [SerializeField] private FirstPersonPlayer movement;
     [SerializeField] private Transform viewModel;
@@ -13,7 +17,7 @@ public sealed class PistolController : MonoBehaviour
     [SerializeField] private int magazineSize = 8;
     [SerializeField] private int reserveAmmo = 32;
     [SerializeField] private float shotRange = 60f;
-    [SerializeField] private float shotCooldown = 0.35f;
+    [SerializeField] private float shotCooldown = 0.22f;
     [SerializeField, Min(0f)] private float aimCameraForward = 0.08f;
     [SerializeField, Min(0.1f)] private float aimSpeed = 14f;
     private WeaponMagazine magazine;
@@ -23,8 +27,7 @@ public sealed class PistolController : MonoBehaviour
     private float nextShot;
     private float restingCameraZ;
     private string actionState;
-    private AnimationClip actionClip;
-    private float actionClock;
+    private float reloadDropProgress;
     private bool equipOnShow = true;
     public bool IsEquipping => actionState == "Equip" || (equipped && equipOnShow);
     public bool IsEquipped => equipped;
@@ -67,7 +70,7 @@ public sealed class PistolController : MonoBehaviour
     private void Update()
     {
         bool canUse = CanUseWeapon;
-        if (!canUse && actionState != null) CancelAction();
+        if (!canUse && (actionState != null || IsReloading)) CancelAction();
         weaponView.SetVisible(equipped && canUse);
         if (ammoText != null) ammoText.enabled = canUse;
         if (statusText != null) statusText.enabled = canUse;
@@ -82,7 +85,7 @@ public sealed class PistolController : MonoBehaviour
         if (equipped && equipOnShow)
         {
             equipOnShow = false;
-            if (definition.equipClip != null) BeginAction("Equip", definition.equipClip);
+            if (definition.equipClip != null) BeginAction("Equip");
         }
         if (Keyboard.current == null || Mouse.current == null) return;
         if (Keyboard.current.qKey.wasPressedThisFrame) SetEquipped(!equipped);
@@ -94,7 +97,7 @@ public sealed class PistolController : MonoBehaviour
     {
         // Observe completion after Animator evaluation. Only the insertion AnimationEvent transfers ammunition.
         bool canUse = CanUseWeapon;
-        if (!canUse && actionState != null) CancelAction();
+        if (!canUse && (actionState != null || IsReloading)) CancelAction();
         if (weaponView != null) weaponView.SetVisible(equipped && canUse);
         if (ammoText != null) ammoText.enabled = canUse;
         if (statusText != null) statusText.enabled = canUse;
@@ -106,7 +109,7 @@ public sealed class PistolController : MonoBehaviour
         if (Rounds == 0) { TryReload(); return false; }
         if (!magazine.TryFire()) return false;
         nextShot = Time.time + shotCooldown;
-        BeginAction("Shot", definition.shotClip);
+        BeginAction("Shot");
         weaponView.PlayShotSound();
         var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         var hits = Physics.RaycastAll(ray, shotRange, ~0, QueryTriggerInteraction.Ignore);
@@ -124,31 +127,34 @@ public sealed class PistolController : MonoBehaviour
     public bool TryReload()
     {
         if (!CanUseWeapon || !equipped || IsEquipping || !magazine.TryBeginReload()) return false;
-        bool empty = Rounds == 0;
-        var clip = empty ? definition.emptyReloadClip : definition.reloadClip;
-        weaponView.ArmReloadEvent(magazine.ReloadOperationId, empty);
-        BeginAction(empty ? "ReloadEmpty" : "Reload", clip);
+        // Let any active recoil finish while the holder moves below the camera.
+        actionState = null;
         UpdateHud();
         return true;
     }
-    private void BeginAction(string state, AnimationClip clip)
+    private void BeginAction(string state)
     {
         actionState = state;
-        actionClip = clip;
-        actionClock = 0f;
         weaponView.PlayState(state);
     }
     private void TickAction(float deltaTime)
     {
-        if (actionState == null) return;
-        actionClock += deltaTime;
-        float progress;
-        if (weaponView.IsInState(actionState)) progress = weaponView.NormalizedTime;
-        else if (weaponView.IsInState("Idle") && actionClock >= actionClip.length)
-            progress = 1f; // Shot's exit transition may already have run this frame.
-        else { CancelAction(); return; }
+        if (actionState == null)
+        {
+            if (IsReloading) MoveReloadView(deltaTime);
+            return;
+        }
 
-        if (progress < 1f) return;
+        if (weaponView.IsInState(actionState))
+        {
+            if (weaponView.NormalizedTime < 1f) return;
+        }
+        else if (actionState != "Shot" || !weaponView.IsInState("Idle"))
+        {
+            CancelAction();
+            return;
+        }
+
         if (IsReloading)
         {
             if (!magazine.ReloadCommitted)
@@ -157,13 +163,30 @@ public sealed class PistolController : MonoBehaviour
                 CancelAction();
                 return;
             }
-            magazine.EndReload();
             weaponView.InvalidateReloadEvent();
         }
         weaponView.CompleteAction();
         actionState = null;
-        actionClip = null;
-        UpdateHud();
+    }
+    private void MoveReloadView(float deltaTime)
+    {
+        // With no active clip, an uncommitted reload is lowering; a committed one is returning.
+        bool raising = magazine.ReloadCommitted;
+        float duration = raising ? ReloadRaiseDuration : ReloadLowerDuration;
+        reloadDropProgress = Mathf.MoveTowards(reloadDropProgress, raising ? 0f : 1f, deltaTime / duration);
+        weaponView.SetReloadDrop(ReloadDropDistance * Mathf.SmoothStep(0f, 1f, reloadDropProgress));
+
+        if (raising && reloadDropProgress == 0f)
+        {
+            magazine.EndReload();
+            UpdateHud();
+        }
+        else if (!raising && reloadDropProgress == 1f)
+        {
+            bool empty = Rounds == 0;
+            weaponView.ArmReloadEvent(magazine.ReloadOperationId, empty);
+            BeginAction(empty ? "ReloadEmpty" : "Reload");
+        }
     }
     private void OnMagazineInserted(int operationId)
     {
@@ -186,11 +209,12 @@ public sealed class PistolController : MonoBehaviour
     public void CancelAction()
     {
         actionState = null;
-        actionClip = null;
+        reloadDropProgress = 0f;
         magazine?.CancelReload();
         if (weaponView != null)
         {
             weaponView.InvalidateReloadEvent();
+            weaponView.SetReloadDrop(0f);
             weaponView.PlayIdle();
         }
         UpdateHud();

@@ -1056,7 +1056,7 @@ GameObject:
   - component: {fileID: 869938837}
   - component: {fileID: 869938836}
   m_Layer: 0
-  m_Name: Tresh
+  m_Name: Trash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1822,7 +1822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2202954341853839501, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2202954341853839501, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
       propertyPath: m_LocalRotation.w

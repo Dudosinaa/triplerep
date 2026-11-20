@@ -13,6 +13,8 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
     public AnimationClip RuntimeReloadClip => reloadAnimation;
     public AnimationClip RuntimeEmptyReloadClip => emptyReloadAnimation;
     private WeaponDefinition definition;
+    private Transform calibration;
+    private Vector3 restingCalibrationPosition;
     private AnimationClip reloadAnimation;
     private AnimationClip emptyReloadAnimation;
     private AnimatorOverrideController runtimeController;
@@ -34,7 +36,7 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
             Debug.LogError("Weapon definition is incomplete. No replacement geometry will be created.", this);
             return false;
         }
-        var calibration = new GameObject("Weapon Camera Alignment").transform;
+        calibration = new GameObject("Weapon Camera Alignment").transform;
         calibration.SetParent(transform, false);
         Model = Instantiate(definition.modelPrefab, calibration, false);
         Model.name = definition.displayName;
@@ -53,6 +55,7 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
         Quaternion correction = transform.rotation * Quaternion.Inverse(authoredCamera.transform.rotation);
         calibration.rotation = correction * calibration.rotation;
         calibration.position += transform.position - authoredCamera.transform.position;
+        restingCalibrationPosition = calibration.localPosition;
         foreach (var camera in Model.GetComponentsInChildren<Camera>(true))
         {
             camera.enabled = false;
@@ -134,6 +137,11 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
         PlayIdle();
         initialized = true;
         return true;
+    }
+    public void SetReloadDrop(float distance)
+    {
+        if (calibration != null)
+            calibration.localPosition = restingCalibrationPosition + Vector3.down * distance;
     }
     public void ArmReloadEvent(int operationId, bool empty)
     {

@@ -15,6 +15,7 @@ public sealed class DocumentReader : MonoBehaviour
     [SerializeField] private Text bodyText;
     [SerializeField] private ScrollRect bodyScrollRect;
 
+    private readonly RaycastHit[] aimHits = new RaycastHit[8];
     private ReadableDocument openDocument;
 
     private void Awake()
@@ -52,8 +53,30 @@ public sealed class DocumentReader : MonoBehaviour
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (!Physics.Raycast(ray, out RaycastHit hit, readingDistance, ~0, QueryTriggerInteraction.Ignore))
             return null;
+        if (!hit.collider.transform.IsChildOf(transform))
+            return hit.collider.GetComponentInParent<ReadableDocument>();
 
-        return hit.collider.GetComponentInParent<ReadableDocument>();
+        // A downward ray can hit the player's own controller before reaching a document.
+        var hits = aimHits;
+        int count = Physics.RaycastNonAlloc(ray, hits, readingDistance, ~0, QueryTriggerInteraction.Ignore);
+        if (count == hits.Length)
+        {
+            // A full buffer can omit a closer hit.
+            hits = Physics.RaycastAll(ray, readingDistance, ~0, QueryTriggerInteraction.Ignore);
+            count = hits.Length;
+        }
+
+        Collider closest = null;
+        float closestDistance = float.PositiveInfinity;
+        for (int i = 0; i < count; i++)
+        {
+            var collider = hits[i].collider;
+            if (hits[i].distance >= closestDistance || collider.transform.IsChildOf(transform)) continue;
+
+            closest = collider;
+            closestDistance = hits[i].distance;
+        }
+        return closest != null ? closest.GetComponentInParent<ReadableDocument>() : null;
     }
 
     private void OpenDocument(ReadableDocument document)

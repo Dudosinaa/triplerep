@@ -3092,7 +3092,7 @@ MonoBehaviour:
   magazineSize: 8
   reserveAmmo: 32
   shotRange: 60
-  shotCooldown: 0.35
+  shotCooldown: 0.22
   aimCameraForward: 0.08
   aimSpeed: 14
 --- !u!1 &784646097
