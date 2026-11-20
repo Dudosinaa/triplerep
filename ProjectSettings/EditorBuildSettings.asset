@@ -15,9 +15,18 @@ EditorBuildSettings:
     path: Assets/Level/Scenes/Locations/Train.unity
     guid: bdd2e3a44f1c34a4aa61d8f11e34e415
   - enabled: 1
+    path: Assets/Level/Scenes/Locations/MindsScenes/FirstMind.unity
+    guid: 446ee6e3754519441a2176af0e75cc27
+  - enabled: 1
+    path: Assets/Level/Scenes/Locations/MindsScenes/AirportCargoMemory.unity
+    guid: 6f93c0f36ffbfb24394d1609532ab88e
+  - enabled: 1
+    path: Assets/Level/Scenes/Locations/MindsScenes/ThirdMind-interogation_room.unity
+    guid: 14556afba0386ae46b6d21d57bb79b2a
+  - enabled: 1
     path: Assets/Level/Scenes/Locations/Lab.unity
     guid: fcb5193f4739a2d41835e29f9744ef73
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level/Scenes/Gameplay/ConsciousnessScene.unity
     guid: af8fe1ebfa1f2564cac4139ef96ea314
   - enabled: 0
