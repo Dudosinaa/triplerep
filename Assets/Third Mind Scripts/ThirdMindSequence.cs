@@ -426,6 +426,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         phase = Phase.Done;
+        if (TrainMindSession.TryReturn(gameObject.scene)) yield break;
         if (SceneSwitch.IsSceneAvailable(returnSceneIndex)) SceneSwitch.LoadSceneIndex(returnSceneIndex);
         else SceneManager.LoadScene("Train");
     }
@@ -464,11 +465,13 @@ public sealed class ThirdMindSequence : MonoBehaviour
     private void BuildInterface()
     {
         var canvasObject = new GameObject("Third Mind UI", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+        SceneManager.MoveGameObjectToScene(canvasObject, gameObject.scene);
         canvas = canvasObject.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = 50;
         var scaler = canvasObject.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1920, 1080); scaler.matchWidthOrHeight = 0.5f;
         if (EventSystem.current == null)
         {
             var eventObject = new GameObject("Third Mind EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            SceneManager.MoveGameObjectToScene(eventObject, gameObject.scene);
             eventObject.GetComponent<EventSystem>().sendNavigationEvents = false;
         }
         dialoguePanel = Panel("Dialogue Panel", canvas.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1440, 228), new Color(0.035f, 0.052f, 0.067f, 0.96f));

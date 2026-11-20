@@ -28,6 +28,8 @@ public class PlayerStress : MonoBehaviour
     private float nextRecoveryStep;
     private bool calmingForMind;
     private float stressBeforeMind;
+    private float vignetteBeforeMind;
+    private float vignetteVelocityBeforeMind;
     private float? recoveryDelayBeforeMind;
     public bool IsRecoveringAfterSmoking => smokingRecovery != null;
 
@@ -103,6 +105,9 @@ public class PlayerStress : MonoBehaviour
     internal void BeginMindCalm()
     {
         stressBeforeMind = stress;
+        if (vignette != null)
+            vignetteBeforeMind = blendWithSceneProfile ? volume.weight : vignette.intensity.value;
+        vignetteVelocityBeforeMind = vignetteVelocity;
         recoveryDelayBeforeMind = IsRecoveringAfterSmoking ? Mathf.Max(0f, nextRecoveryStep - Time.time) : (float?)null;
         StopSmokingRecovery();
         calmingForMind = true;
@@ -114,6 +119,12 @@ public class PlayerStress : MonoBehaviour
     {
         calmingForMind = false;
         stress = completed ? 0f : stressBeforeMind;
+        if (vignette != null)
+        {
+            if (blendWithSceneProfile) volume.weight = vignetteBeforeMind;
+            else vignette.intensity.value = vignetteBeforeMind;
+        }
+        vignetteVelocity = vignetteVelocityBeforeMind;
         if (!completed && recoveryDelayBeforeMind.HasValue && stress > 0f)
             smokingRecovery = StartCoroutine(RecoverStressAfterSmoking(recoveryDelayBeforeMind.Value));
         recoveryDelayBeforeMind = null;

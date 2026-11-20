@@ -1764,7 +1764,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwitch
   interactionDistance: 2.7
   moveDuration: 2
-  hideDelay: 0.1
   hintText: {fileID: 5150568573778180011}
   returnOnly: 0
   returnSceneIndex: 0

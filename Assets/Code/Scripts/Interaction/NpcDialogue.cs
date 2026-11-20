@@ -41,6 +41,37 @@ public sealed class NpcDialogue : MonoBehaviour
     public Node[] Nodes => nodes;
     public int StartNodeId => startNodeId;
 
+    internal static Collider FindAimedCollider(Camera camera, Transform player, float distance,
+        RaycastHit[] hits, out NpcDialogue npc)
+    {
+        npc = null;
+        if (camera == null || !camera.isActiveAndEnabled) return null;
+
+        var ray = new Ray(camera.transform.position, camera.transform.forward);
+        int count = Physics.RaycastNonAlloc(ray, hits, distance, ~0, QueryTriggerInteraction.Collide);
+        if (count == hits.Length)
+        {
+            // A full buffer may omit a closer NPC or obstruction.
+            hits = Physics.RaycastAll(ray, distance, ~0, QueryTriggerInteraction.Collide);
+            count = hits.Length;
+        }
+
+        Collider closest = null;
+        float closestDistance = float.PositiveInfinity;
+        for (int i = 0; i < count; i++)
+        {
+            var collider = hits[i].collider;
+            if (hits[i].distance >= closestDistance || collider.transform.IsChildOf(player)) continue;
+
+            var owner = collider.GetComponentInParent<NpcDialogue>();
+            if (collider.isTrigger && owner == null) continue;
+            closest = collider;
+            closestDistance = hits[i].distance;
+            npc = owner;
+        }
+        return closest;
+    }
+
     public int GetStartNodeIndex()
     {
         if (nodes == null || nodes.Length == 0) return -1;

@@ -26,6 +26,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private NpcDialogue activeNpc;
     private NpcDialogue nearbyNpc;
+    private readonly RaycastHit[] aimHits = new RaycastHit[16];
     private int nodeIndex;
     private int pendingNextNode;
     private bool showingPlayerReply;
@@ -109,12 +110,9 @@ public sealed class DialogueController : MonoBehaviour
 
     private NpcDialogue FindNearbyNpc()
     {
-        if (playerCamera == null) return null;
         // Compact indoor layouts can place a document and NPC within the same talk radius.
         // Select the NPC under the crosshair so proximity never steals document/item input.
-        if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
-                out var hit, talkDistance, ~0, QueryTriggerInteraction.Ignore)) return null;
-        var target = hit.collider.GetComponentInParent<NpcDialogue>();
+        NpcDialogue.FindAimedCollider(playerCamera, transform, talkDistance, aimHits, out var target);
         return target != null && target.isActiveAndEnabled && target.GetStartNodeIndex() >= 0 ? target : null;
     }
 
@@ -246,5 +244,6 @@ public sealed class DialogueController : MonoBehaviour
     private void OnDisable()
     {
         if (activeNpc != null) EndDialogue();
+        if (interactionPrompt != null) interactionPrompt.SetActive(false);
     }
 }
