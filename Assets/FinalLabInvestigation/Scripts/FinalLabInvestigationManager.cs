@@ -1,0 +1,338 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace FinalLab.Investigation
+{
+    [DefaultExecutionOrder(30)]
+    public sealed class FinalLabInvestigationManager : MonoBehaviour
+    {
+        public enum ViewState { Walking, Moving, Overview, Detail }
+
+        [SerializeField] private FirstPersonPlayer player;
+        [SerializeField] private Camera view;
+        [SerializeField] private FinalLabInvestigationUI ui;
+        [SerializeField] private InvestigationPoint[] points;
+
+        private readonly RaycastHit[] hits = new RaycastHit[32];
+        private DocumentInspectionCamera inspection;
+        private InvestigationProgress progress;
+        private InvestigationPoint active;
+        private InvestigationDocument selected, hovered;
+        private ViewState state;
+        private Action arrived;
+        private bool keyOpened, reactionShown, hinted, playerWasEnabled;
+        private float lastAction, zoomTarget, detailFov;
+        private CursorLockMode oldCursor;
+        private bool oldCursorVisible;
+        private Pose documentHome, paperFrom, paperTo;
+        private Transform movingPaper;
+
+        public ViewState State => state;
+        public InvestigationPoint ActivePoint => active;
+        public InvestigationPoint ObjectivePoint => progress != null && progress.Count < points.Length ? points[progress.Count] : null;
+        public InvestigationDocument Selected => selected;
+        public int Completed => progress?.Count ?? 0;
+        public InvestigationPoint[] Points => points;
+
+        public void Configure(FirstPersonPlayer motor, Camera camera, FinalLabInvestigationUI display,
+            InvestigationPoint[] orderedPoints)
+        {
+            player = motor;
+            view = camera;
+            ui = display;
+            points = orderedPoints;
+        }
+
+        private void Start()
+        {
+            inspection = new DocumentInspectionCamera(view, player.transform);
+            progress = new InvestigationProgress(points.Length);
+            lastAction = Time.unscaledTime;
+            UpdateObjective(true);
+        }
+
+        private void Update()
+        {
+            if (progress == null) return;
+            if (state == ViewState.Moving)
+            {
+                bool ended = inspection.Advance(Time.unscaledDeltaTime, out float amount);
+                if (movingPaper != null)
+                    movingPaper.SetPositionAndRotation(Vector3.LerpUnclamped(paperFrom.position, paperTo.position, amount),
+                        Quaternion.SlerpUnclamped(paperFrom.rotation, paperTo.rotation, amount));
+                if (ended)
+                {
+                    movingPaper = null;
+                    var callback = arrived;
+                    arrived = null;
+                    callback?.Invoke();
+                }
+                return;
+            }
+
+            var keyboard = Keyboard.current;
+            var mouse = Mouse.current;
+            bool back = keyboard != null && keyboard.escapeKey.wasPressedThisFrame;
+            bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
+            if (state == ViewState.Walking)
+            {
+                var point = player.enabled ? NearbyPoint() : null;
+                ui.SetPrompt(point != null ? point.Prompt : "");
+                if (point != null && keyboard != null && keyboard.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
+                    TryOpen(point);
+                if (active == null && !hinted && ObjectivePoint != null && Time.unscaledTime - lastAction >= 20f)
+                {
+                    ui.Hint(ObjectivePoint.Hint);
+                    hinted = true;
+                }
+                return;
+            }
+            if (state == ViewState.Overview)
+            {
+                var candidate = mouse != null ? DocumentAt(view.ScreenPointToRay(mouse.position.ReadValue())) : null;
+                Highlight(candidate);
+                if (back && InteractionInput.TryConsume()) Close();
+                else if (click && candidate != null) TrySelect(candidate);
+                return;
+            }
+            if (back || click)
+            {
+                if (!back || InteractionInput.TryConsume()) Close();
+                return;
+            }
+            if (mouse != null) Scroll(mouse.scroll.ReadValue().y / 120f);
+            inspection.Zoom(zoomTarget, Time.unscaledDeltaTime);
+        }
+
+        public InvestigationPoint NearbyPoint()
+        {
+            if (inspection == null || !player.enabled) return null;
+            Pose eye = inspection.Current;
+            Ray look = new(eye.position, eye.forward);
+            if (NearestHit(look, 3.2f, out var aimed))
+                foreach (var point in points)
+                    if (aimed.distance <= point.Range && point.Owns(aimed.collider)) return point;
+
+            InvestigationPoint best = null;
+            float bestScore = 0.57f;
+            foreach (var point in points)
+            {
+                Vector3 offset = point.Focus.position - eye.position;
+                float distance = offset.magnitude;
+                if (distance > point.Range || distance < 0.02f) continue;
+                float score = Vector3.Dot(eye.forward, offset / distance) - distance * 0.04f;
+                if (score <= bestScore) continue;
+                if (NearestHit(new Ray(eye.position, offset / distance), distance, out var blocker) &&
+                    !point.Owns(blocker.collider)) continue;
+                best = point;
+                bestScore = score;
+            }
+            return best;
+        }
+
+        public InvestigationDocument DocumentAt(Ray ray)
+        {
+            if (active == null || !NearestHit(ray, 5f, out var hit)) return null;
+            var item = hit.collider.GetComponentInParent<InvestigationDocument>();
+            return item != null && active.Owns(item) ? item : null;
+        }
+
+        public bool TryOpen(InvestigationPoint point)
+        {
+            if (state != ViewState.Walking || inspection == null || point == null || !player.enabled ||
+                Array.IndexOf(points, point) < 0 || NearbyPoint() != point ||
+                !inspection.CanReach(view.transform.position, point.Overview.position)) return false;
+            active = point;
+            keyOpened = false;
+            reactionShown = progress.IsStudied(Array.IndexOf(points, point));
+            playerWasEnabled = player.enabled;
+            oldCursor = Cursor.lockState;
+            oldCursorVisible = Cursor.visible;
+            inspection.Remember();
+            player.enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            lastAction = Time.unscaledTime;
+            ui.ClearHint();
+            ui.SetPrompt("");
+            Move(OverviewPose(), OverviewFov(), 0.53f, ShowOverview);
+            return true;
+        }
+
+        public bool TrySelect(InvestigationDocument item)
+        {
+            if (state != ViewState.Overview || item == null || !active.Owns(item)) return false;
+            Pose from = inspection.Current;
+            float dist = Mathf.Max(0.41f, item.Size.y * 1.33f, item.Size.x * 1.33f / Mathf.Max(0.70f, view.aspect));
+            Pose cameraTarget = from;
+            if (!item.Lifts)
+            {
+                Vector3 front = -item.transform.forward;
+                cameraTarget = new Pose(item.transform.position + front * dist,
+                    Quaternion.LookRotation(-front, item.transform.up));
+                if (!inspection.CanReach(from.position, cameraTarget.position)) return false;
+            }
+            Highlight(null);
+            selected = item;
+            documentHome = new Pose(item.transform.position, item.transform.rotation);
+            if (item.Lifts) AnimatePaper(item.transform, new Pose(from.position + from.forward * dist, from.rotation));
+            detailFov = 48;
+            Move(cameraTarget, detailFov, item.Lifts ? 0.49f : 0.52f, () =>
+            {
+                zoomTarget = detailFov;
+                if (item.Id == active.KeyId) keyOpened = true;
+                state = ViewState.Detail;
+                lastAction = Time.unscaledTime;
+                ui.SetControls(item.Lifts
+                    ? "Колёсико — Масштаб\nЛКМ / Esc — Положить документ"
+                    : active.Wall
+                        ? "Колёсико — Масштаб\nЛКМ / Esc — Вернуться к стене"
+                        : "Колёсико — Масштаб\nЛКМ / Esc — Вернуться к контейнеру");
+            });
+            return true;
+        }
+
+        public void Scroll(float steps)
+        {
+            if (state == ViewState.Detail)
+                zoomTarget = Mathf.Clamp(zoomTarget - Mathf.Clamp(steps, -3f, 3f) * 5.3f, detailFov - 19, detailFov + 17);
+        }
+
+        public bool Close()
+        {
+            if (state == ViewState.Detail)
+            {
+                if (selected.Lifts) AnimatePaper(selected.transform, documentHome);
+                Move(OverviewPose(), OverviewFov(), 0.46f, () =>
+                {
+                    RestorePaper();
+                    ShowOverview();
+                    if (keyOpened && !reactionShown && !active.Container) ShowReaction();
+                });
+                return true;
+            }
+            if (state != ViewState.Overview) return false;
+            Highlight(null);
+            ui.SetControls("");
+            Move(inspection.GameplayPose, inspection.GameplayFov, 0.50f, FinishPoint);
+            return true;
+        }
+
+        private void ShowOverview()
+        {
+            state = ViewState.Overview;
+            ui.SetControls(active.Container ? "ЛКМ — Выбрать документ или деталь\nEsc — Закрыть осмотр"
+                : "ЛКМ — Выбрать документ\nEsc — Выйти");
+        }
+
+        private void FinishPoint()
+        {
+            int before = Completed;
+            if (keyOpened && progress.Complete(Array.IndexOf(points, active)))
+            {
+                if (!reactionShown) ShowReaction();
+                lastAction = Time.unscaledTime;
+            }
+            active = null;
+            state = ViewState.Walking;
+            RestorePlayer();
+            if (before != Completed)
+            {
+                hinted = false;
+                UpdateObjective(false);
+            }
+        }
+
+        private void ShowReaction()
+        {
+            reactionShown = true;
+            ui.React(active.Reaction);
+        }
+
+        private void UpdateObjective(bool immediate)
+        {
+            var target = ObjectivePoint;
+            foreach (var point in points) point.SetHighlighted(point == target);
+            ui.Progress(Completed, points.Length, target != null ? target.Objective : "", immediate);
+        }
+
+        private Pose OverviewPose() => new(active.Overview.position, active.Overview.rotation);
+
+        private float OverviewFov() => active.Wall ? 62f : 58f;
+
+        private void AnimatePaper(Transform paper, Pose target)
+        {
+            movingPaper = paper;
+            paperFrom = new Pose(paper.position, paper.rotation);
+            paperTo = target;
+        }
+
+        private void Move(Pose target, float fov, float seconds, Action callback)
+        {
+            state = ViewState.Moving;
+            arrived = callback;
+            inspection.Move(target, fov, seconds);
+        }
+
+        private void Highlight(InvestigationDocument item)
+        {
+            if (hovered == item) return;
+            if (hovered != null) hovered.SetHighlighted(false);
+            hovered = item;
+            if (hovered != null) hovered.SetHighlighted(true);
+        }
+
+        private void RestorePaper()
+        {
+            if (selected != null && selected.Lifts)
+                selected.transform.SetPositionAndRotation(documentHome.position, documentHome.rotation);
+            selected = null;
+        }
+
+        private void RestorePlayer()
+        {
+            if (view != null) inspection.Restore();
+            if (player != null) player.enabled = playerWasEnabled;
+            Cursor.lockState = oldCursor;
+            Cursor.visible = oldCursorVisible;
+        }
+
+        private void OnDisable()
+        {
+            Highlight(null);
+            RestorePaper();
+            if (active != null && inspection != null)
+            {
+                RestorePlayer();
+                active = null;
+                arrived = null;
+                movingPaper = null;
+                state = ViewState.Walking;
+                if (ui != null) ui.SetControls("");
+            }
+        }
+
+        private bool NearestHit(Ray ray, float range, out RaycastHit nearest)
+        {
+            var results = hits;
+            int count = Physics.RaycastNonAlloc(ray, results, range, ~0, QueryTriggerInteraction.Collide);
+            if (count == results.Length)
+            {
+                results = Physics.RaycastAll(ray, range, ~0, QueryTriggerInteraction.Collide);
+                count = results.Length;
+            }
+            nearest = default;
+            float distance = float.PositiveInfinity;
+            for (int i = 0; i < count; i++)
+            {
+                var hit = results[i];
+                if (hit.distance >= distance || hit.collider.transform.IsChildOf(player.transform)) continue;
+                if (hit.collider.isTrigger && hit.collider.GetComponent<InvestigationDocument>() == null) continue;
+                nearest = hit;
+                distance = hit.distance;
+            }
+            return nearest.collider != null;
+        }
+    }
+}

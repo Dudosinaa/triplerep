@@ -13,11 +13,13 @@ using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 [InitializeOnLoad]
-public static class FinalLabVerification
+public static partial class FinalLabVerification
 {
     private const string RunFlag = "FinalLab.RunTour";
     private static bool HasRefinement => GameObject.Find(FinalLabRefinement.LadderMount) != null;
-    private static string LogFolder => HasRefinement ? FinalLabRefinement.LogFolder : "Logs/FinalLab";
+    private static bool HasDressing => GameObject.Find(FinalLabProps.RootName) != null;
+    private static string LogFolder => HasDressing ? FinalLabPropsSurvey.Logs :
+        HasRefinement ? FinalLabRefinement.LogFolder : "Logs/FinalLab";
     private static readonly List<string> Results = new();
     private static readonly List<string> RuntimeErrors = new();
     private static IEnumerator tour;
@@ -315,6 +317,11 @@ public static class FinalLabVerification
                 new Vector3(0, 0.012f, plateZ))) yield return frame;
         }
         foreach (var frame in Walk(player, 0, 6.57f, "hall entry")) yield return frame;
+        if (HasDressing)
+        {
+            foreach (var frame in DecoratedTour(player, camera, motor)) yield return frame;
+            yield break;
+        }
         foreach (var frame in Walk(player, 0, 10.62f, "laboratory hall")) yield return frame;
         foreach (var frame in Capture(camera, "04-main-hall", new Vector3(0.01f, 1.66f, 6.19f), new Vector3(-0.02f, 1.32f, 13.5f))) yield return frame;
         VerifyOpenings();
