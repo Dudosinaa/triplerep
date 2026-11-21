@@ -42,6 +42,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     private float distanceSinceStep;
     private int lastClipIndex = -1;
     private readonly Collider[] standingClearanceHits = new Collider[16];
+    private readonly RaycastHit[] keyInteractionHits = new RaycastHit[8];
     private readonly HashSet<DoorKey> collectedKeys = new HashSet<DoorKey>();
 
     private void Awake()
@@ -125,8 +126,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
         bool pressedE = keyboard.eKey.wasPressedThisFrame;
         if (!pressedE && (interactionHints == null || !interactionHints.CanShow)) return;
-        if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
-                out var hit, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
+        if (!TryGetKeyInteractionHit(out var hit)) return;
 
         var key = hit.collider.GetComponentInParent<DoorKey>();
         if (key != null && key.isActiveAndEnabled)
@@ -144,6 +144,39 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         if (door == null || !door.isActiveAndEnabled) return;
         if (door.CanOpen(this)) interactionHints?.OfferFocus(door);
         if (pressedE && InteractionInput.TryConsume()) door.TryOpen(this);
+    }
+
+    private bool TryGetKeyInteractionHit(out RaycastHit hit)
+    {
+        var view = playerCamera.transform;
+        var ray = new Ray(view.position, view.forward);
+        if (!Physics.Raycast(ray, out hit, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore))
+            return false;
+        if (!hit.collider.transform.IsChildOf(transform))
+            return true;
+
+        // Looking down at the key can hit the player's capsule before the key.
+        RaycastHit[] hits = keyInteractionHits;
+        int count = Physics.RaycastNonAlloc(ray, hits, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore);
+        if (count == hits.Length)
+        {
+            hits = Physics.RaycastAll(ray, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore);
+            count = hits.Length;
+        }
+
+        hit = default;
+        float closestDistance = float.PositiveInfinity;
+        for (int i = 0; i < count; i++)
+        {
+            var candidate = hits[i];
+            if (candidate.distance >= closestDistance || candidate.collider == null ||
+                candidate.collider.transform.IsChildOf(transform))
+                continue;
+
+            hit = candidate;
+            closestDistance = candidate.distance;
+        }
+        return hit.collider != null;
     }
 
     public bool HasKey(DoorKey key) => key != null && collectedKeys.Contains(key);
