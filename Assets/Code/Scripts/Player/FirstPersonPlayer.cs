@@ -16,6 +16,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     [SerializeField, Min(0.1f)] private float crouchSpeed = 2f;
     [SerializeField] private float gravity = -20f;
     [SerializeField, Min(0.1f)] private float mouseSensitivity = 0.12f;
+    [SerializeField, Range(-85f, 85f)] private float initialViewPitch;
 
     [Header("Crouch")]
     [SerializeField, Min(0.5f)] private float standingHeight = 1.8f;
@@ -49,6 +50,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         controller = GetComponent<CharacterController>();
         interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
+        cameraPitch = initialViewPitch;
+        if (playerCamera != null && initialViewPitch != 0f)
+            playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
         if (footstepSource == null) footstepSource = GetComponent<AudioSource>();
         if (pistol == null) pistol = GetComponent<PistolController>();
 
