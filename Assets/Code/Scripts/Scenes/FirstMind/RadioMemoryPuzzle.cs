@@ -3,9 +3,8 @@ using UnityEngine.InputSystem;
 
 public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 {
-    private enum Target { None, Radio, Fuse }
+    private enum Target { None, Radio, Fuse, Photo, Lamp }
     private enum DragPart { None, Fuse, SpeakerPlug }
-    private static readonly string[] Sockets = { "АНТЕННА", "ДИНАМИК", "ВНЕШНИЙ\nВХОД" };
     private static readonly string[] Subtitles =
     {
         "Отец: Я говорил тебе, что K-17 нельзя перевозить отдельно.",
@@ -34,16 +33,9 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
     private void Awake()
     {
         if (player == null || view == null) { enabled = false; return; }
-        var renderers = GetComponentsInChildren<Renderer>();
-        if (renderers.Length == 0) { enabled = false; return; }
-        var bounds = renderers[0].bounds;
-        foreach (var renderer in renderers) bounds.Encapsulate(renderer.bounds);
-        var target = new GameObject("Radio interaction target");
-        target.transform.SetPositionAndRotation(bounds.center, Quaternion.identity);
-        target.transform.SetParent(transform, true);
-        radioTarget = target.AddComponent<BoxCollider>();
-        radioTarget.isTrigger = true;
-        radioTarget.size = bounds.size + Vector3.one * .04f;
+        radioModel = GetComponentsInChildren<MeshRenderer>();
+        if (radioModel.Length == 0) { enabled = false; return; }
+        radioTarget = InteractionBox("Radio interaction target", radioModel);
         if (recordingSource == null)
         {
             recordingSource = gameObject.AddComponent<AudioSource>();
@@ -51,6 +43,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         }
         CreateFusePickup();
         CreateRoomAudio();
+        CreateHouseActivities();
     }
 
     private void Update()
@@ -72,7 +65,9 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             keyboard.uKey.wasPressedThisFrame && TrainMindSession.TryReturn(gameObject.scene)) return;
         if (panelOpen)
         {
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) Close();
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (photoCloseup != null) UpdatePhoto();
+            else UpdateRadio();
             return;
         }
 
@@ -89,9 +84,21 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             aimedTarget = Target.None;
             return;
         }
+        if (aimedTarget == Target.Lamp)
+        {
+            ToggleDeskLamp();
+            return;
+        }
         panelOpen = true;
-        feedback = "";
+        if (speakerConnected)
+            feedback = externalInput ? "Нажми Play на магнитофоне." : "Переведи переключатель на внешний вход.";
+        else if (fuseInstalled)
+            feedback = "Отпусти штекер над разъёмом 2, когда стрелка окажется в зелёной зоне.";
+        else
+            feedback = hasFuse ? "Перетащи предохранитель с подставки в гнездо." : "В гнезде отсутствует предохранитель.";
         player.enabled = false;
+        if (aimedTarget == Target.Photo) OpenPhoto();
+        else OpenRadio();
     }
 
     private Target FindTarget()
@@ -101,9 +108,12 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         float reach = hasSolid ? hit.distance + .02f : 2.2f;
         bool radioAimed = radioTarget.Raycast(ray, out var radioHit, 2.2f) &&
             (radioHit.distance <= reach || (hasSolid && hit.transform.IsChildOf(transform)));
-        if (!hasFuse && fusePickup != null && fusePickup.Raycast(ray, out var fuseHit, reach) &&
-            (!radioAimed || fuseHit.distance < radioHit.distance)) return Target.Fuse;
-        return radioAimed ? Target.Radio : Target.None;
+        Target target = radioAimed ? Target.Radio : Target.None;
+        if (radioAimed) reach = radioHit.distance;
+        CheckTarget(photoTarget, Target.Photo, ray, ref reach, ref target);
+        CheckTarget(lampTarget, Target.Lamp, ray, ref reach, ref target);
+        if (!hasFuse) CheckTarget(fusePickup, Target.Fuse, ray, ref reach, ref target);
+        return target;
     }
 
     private void Close()
@@ -111,6 +121,10 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         if (!panelOpen) return;
         panelOpen = false;
         dragging = DragPart.None;
+        radioCloseup?.Dispose();
+        radioCloseup = null;
+        photoCloseup?.Dispose();
+        photoCloseup = null;
         if (player != null && player.gameObject.activeInHierarchy) player.enabled = true;
     }
 
@@ -175,9 +189,6 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 
     private void OnGUI()
     {
-        if (dragControlId != 0 && dragging == DragPart.None)
-            ReleaseDragControl();
-
         if (titleStyle == null)
         {
             titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 23, fontStyle = FontStyle.Bold };
@@ -191,7 +202,14 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1));
         float width = Screen.width / scale, height = Screen.height / scale;
         if (panelOpen)
-            DrawPanel(new Rect((width - 800) / 2, (height - 570) / 2, 800, 570));
+        {
+            var help = new Rect((width - 760f) / 2, height - 85f, 760f, 67f);
+            Backdrop(help);
+            string instructions = photoCloseup != null
+                ? "Лето на даче, 1984 год.   •   ЛКМ — повернуть   •   Esc — положить"
+                : feedback + "\nЛКМ — взять или нажать   •   Esc — отойти";
+            GUI.Label(new Rect(help.x + 18, help.y + 4, help.width - 36, 60), instructions, centeredStyle);
+        }
         else if (line >= 0)
         {
             var rect = new Rect((width - 720) / 2, height - 106, 720, 76);
@@ -200,8 +218,14 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         }
         else if (aimedTarget != Target.None || Time.unscaledTime < noticeUntil)
         {
-            string hint = aimedTarget == Target.Radio ? "[E] Осмотреть радиокомплекс" :
-                aimedTarget == Target.Fuse ? "[E] Взять предохранитель" : notice;
+            string hint = aimedTarget switch
+            {
+                Target.Radio => "[E] Осмотреть радиокомплекс",
+                Target.Fuse => "[E] Взять предохранитель",
+                Target.Photo => "[E] Рассмотреть фотографию",
+                Target.Lamp => deskLight.enabled ? "[E] Выключить лампу" : "[E] Включить лампу",
+                _ => notice
+            };
             var rect = new Rect((width - 460) / 2, height * .76f, 460, 42);
             Backdrop(rect);
             GUI.Label(rect, hint, centeredStyle);

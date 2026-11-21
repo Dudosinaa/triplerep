@@ -84879,6 +84879,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 736122398}
     m_Modifications:
+    - target: {fileID: -9122968271479951678, guid: 6cb0da6bdbd0cf14b927b4a78e720263, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -7903194950292402723, guid: 6cb0da6bdbd0cf14b927b4a78e720263, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -86986,30 +86990,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2100000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651943699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b367b930c61f4876808fbf44e0696c1f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::RadioMemoryPuzzle
-  player: {fileID: 151400209}
-  view: {fileID: 1493103625}
-  recordingSource: {fileID: 0}
-  voiceLines: []
-  room: {fileID: 1502283062}
-  wallClock: {fileID: 1849136783}
-  fuseSpots:
-  - {x: 2.15, y: 1.296, z: -0.38}
-  - {x: 0.48, y: 1.03, z: 2.43}
-  - {x: 1.51, y: 1.205, z: 2.3}
-  - {x: 0.45, y: 0.478, z: 0.16}
-  - {x: 2.75, y: 0.478, z: 1.55}
 --- !u!4 &1651943700
 Transform:
   m_ObjectHideFlags: 0
@@ -110291,6 +110271,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4071390273635838, guid: 78f6b68ad931a824c920d7b953612370, type: 3}
   m_PrefabInstance: {fileID: 2097416642}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2100000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651943699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b367b930c61f4876808fbf44e0696c1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadioMemoryPuzzle
+  familyPhoto: {fileID: 2800000, guid: f9c930aa5d24473a896b734fe3020023, type: 3}
+  deskLamp: {fileID: 2102355443}
+  deskLight: {fileID: 1797078182}
+  photoPosition: {x: 0.5, y: 1.107, z: 2.64}
+  room: {fileID: 1502283062}
+  wallClock: {fileID: 1849136783}
+  fuseSpots:
+  - {x: 2.15, y: 1.296, z: -0.38}
+  - {x: 0.48, y: 1.03, z: 2.43}
+  - {x: 1.51, y: 1.205, z: 2.3}
+  - {x: 0.45, y: 0.478, z: 0.16}
+  - {x: 2.75, y: 0.478, z: 1.55}
+  player: {fileID: 151400209}
+  view: {fileID: 1493103625}
+  recordingSource: {fileID: 0}
+  voiceLines: []
 --- !u!1 &2100014962
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,323 +1,186 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed partial class RadioMemoryPuzzle
 {
-    private static readonly Color Metal = new Color32(66, 66, 57, 255);
-    private static readonly Color Recess = new Color32(23, 24, 21, 255);
-    private static readonly Color Edge = new Color32(120, 113, 91, 255);
-    private static readonly Color Brass = new Color32(204, 169, 104, 255);
-    private static readonly Color Copper = new Color32(177, 83, 49, 255);
-    private static readonly Color Green = new Color32(142, 183, 102, 255);
-    private static readonly Rect FuseHolder = new Rect(70, 189, 119, 54);
-    private static readonly Rect FuseTray = new Rect(70, 268, 119, 42);
-    private static readonly Vector2 LoosePlug = new Vector2(645, 281);
-    private static readonly Vector2 SpeakerLead = new Vector2(697, 231);
-    private static readonly Vector2 DeckSocket = new Vector2(515, 218);
-    private static readonly Vector2 DeckLead = new Vector2(543, 354);
-    private static readonly Rect[] PortTargets =
+    private static readonly Vector3 FuseBay = new Vector3(-2.12f, .86f, -.46f);
+    private static readonly Vector3 FuseRest = new Vector3(-2.40f, .18f, -.95f);
+    private static readonly Vector3 PlugRest = new Vector3(2.02f, .25f, -.80f);
+    private static readonly Vector3 SpeakerLead = new Vector3(2.60f, .49f, -.53f);
+    private static readonly Vector3[] PortCenters =
     {
-        new Rect(250, 190, 90, 56),
-        new Rect(360, 190, 90, 56),
-        new Rect(470, 190, 90, 56)
+        new Vector3(-.76f, .86f, -.46f),
+        new Vector3(.17f, .86f, -.46f),
+        new Vector3(1.10f, .86f, -.46f)
     };
-    private static Texture2D discTexture;
-    private GUIStyle socketLabelStyle;
-    private int dragControlId;
-    private const int CableWidth = 800;
-    private const int CableHeight = 516;
-    private Texture2D cableTexture;
-    private Color32[] cablePixels;
-    private Vector2 renderedPlug;
+    private FirstMindCloseup radioCloseup;
+    private MeshRenderer[] radioModel;
+    private Collider fuseBayTarget, fuseTarget, plugTarget, playTarget, selectorTarget;
+    private readonly Collider[] portTargets = new Collider[3];
+    private Transform fuseModel, plugModel, needle, selectorLever;
+    private LineRenderer speakerCable;
+    private Renderer powerLamp;
+    private Material green, dead, signal;
 
-    private void DrawPanel(Rect area)
+    private void OpenRadio()
     {
-        if (Time.unscaledTime < faultUntil) Plate(area, new Color32(40, 23, 19, 255), Copper);
-        else Backdrop(area);
-        GUI.BeginGroup(area);
-        GUI.Label(new Rect(28, 17, 590, 32), "Радиокомплекс", titleStyle);
-        if (HardwareButton(new Rect(675, 17, 97, 31), "Esc", Metal)) Close();
-        else DrawRadio();
+        radioCloseup = new FirstMindCloseup(view, gameObject.scene,
+            new Vector3(0, 2.52f, -8), new Vector3(0, 1.14f, 0), 1.95f, 3.55f);
+        var wood = radioCloseup.Material(new Color(.33f, .20f, .12f));
+        var enamel = radioCloseup.Material(new Color(.26f, .28f, .22f));
+        var rim = radioCloseup.Material(new Color(.62f, .56f, .38f));
+        dead = radioCloseup.Material(new Color(.065f, .067f, .052f));
+        green = radioCloseup.Material(new Color(.48f, .72f, .28f), true);
+        signal = radioCloseup.Material(new Color(.87f, .72f, .35f), true);
+        var copper = radioCloseup.Material(new Color(.74f, .30f, .13f), true);
+        var glass = radioCloseup.Material(new Color(.35f, .67f, .58f));
 
-        GUI.Label(new Rect(30, 517, 740, 47), feedback, bodyStyle);
-        GUI.EndGroup();
+        Box("Workbench", new Vector3(0, -.17f, .10f), new Vector3(6.8f, .32f, 2.85f), wood);
+        Box("Amplifier", new Vector3(-.44f, .91f, .13f), new Vector3(4.27f, .70f, 1.05f), enamel);
+        Box("Amplifier face", new Vector3(-.44f, .91f, -.403f), new Vector3(4.21f, .64f, .033f), dead);
+        if (radioModel.Length > 0) radioCloseup.ShowExistingRadio(radioModel, new Vector3(-.76f, 1.27f, .20f));
+        fuseBayTarget = Box("Fuse bay", FuseBay + Vector3.back * .045f,
+            new Vector3(.49f, .25f, .18f), enamel, true).GetComponent<Collider>();
+        Box("Left fuse terminal", FuseBay + new Vector3(-.19f, 0, -.14f), new Vector3(.077f, .12f, .065f), rim);
+        Box("Right fuse terminal", FuseBay + new Vector3(.19f, 0, -.14f), new Vector3(.077f, .12f, .065f), rim);
+        radioCloseup.Engrave("0,5 А", FuseBay + new Vector3(0, -.19f, -.055f), .020f);
+
+        string[] ports = { "1  АНТЕННА", "2  ДИНАМИК", "3  ВНЕШ. ВХОД" };
+        for (int i = 0; i < PortCenters.Length; i++)
+        {
+            Vector3 center = PortCenters[i];
+            Cylinder("Socket rim", center, .25f, .054f, rim);
+            portTargets[i] = Cylinder("Socket " + (i + 1), center + Vector3.back * .037f,
+                .19f, .028f, dead, true).GetComponent<Collider>();
+            radioCloseup.Engrave(ports[i], center + new Vector3(0, -.20f, -.052f), .016f);
+        }
+
+        Box("Timing gauge", new Vector3(-.35f, 1.143f, -.445f), new Vector3(2.58f, .113f, .067f), enamel);
+        Box("Safe window", new Vector3(-1.58f + 2.46f * (SafeStart + SafeEnd) * .5f, 1.143f, -.486f),
+            new Vector3(2.46f * (SafeEnd - SafeStart), .063f, .018f), green);
+        needle = Box("Timing needle", new Vector3(-1.58f, 1.143f, -.51f), new Vector3(.026f, .115f, .024f), signal).transform;
+
+        Box("Speaker cabinet", new Vector3(2.59f, .64f, -.08f), new Vector3(1.14f, 1.22f, .80f), wood);
+        Cylinder("Speaker trim", new Vector3(2.59f, .75f, -.485f), .75f, .048f, rim);
+        Cylinder("Speaker cone", new Vector3(2.59f, .75f, -.518f), .64f, .040f, dead);
+        Cylinder("Speaker center", new Vector3(2.59f, .75f, -.55f), .20f, .066f, enamel);
+
+        Box("Cassette deck", new Vector3(.02f, .27f, .13f), new Vector3(3.54f, .53f, 1.05f), enamel);
+        Box("Cassette well", new Vector3(.11f, .27f, -.412f), new Vector3(1.52f, .34f, .058f), dead);
+        Cylinder("Tape left reel", new Vector3(-.28f, .28f, -.46f), .22f, .028f, rim);
+        Cylinder("Tape right reel", new Vector3(.50f, .28f, -.46f), .22f, .028f, rim);
+        powerLamp = Cylinder("Power indicator", new Vector3(1.54f, .379f, -.46f), .074f, .02f, dead).GetComponent<Renderer>();
+        playTarget = Box("Play button", new Vector3(1.30f, .219f, -.50f),
+            new Vector3(.48f, .19f, .16f), rim, true).GetComponent<Collider>();
+        radioCloseup.Engrave("PLAY", new Vector3(1.30f, .215f, -.586f), .020f);
+        selectorTarget = Box("Input switch", new Vector3(-1.17f, .275f, -.50f),
+            new Vector3(.72f, .24f, .17f), dead, true).GetComponent<Collider>();
+        selectorLever = Box("Selector lever", new Vector3(-1.39f, .28f, -.62f), new Vector3(.16f, .15f, .17f), rim).transform;
+        radioCloseup.Engrave("РАДИО / ВНЕШ.", new Vector3(-1.17f, .105f, -.50f), .016f);
+
+        Box("Parts tray", FuseRest + Vector3.down * .12f, new Vector3(.68f, .08f, .46f), rim);
+        fuseModel = Box("Fuse", FuseRest, new Vector3(.39f, .14f, .19f), glass, true).transform;
+        fuseTarget = fuseModel.GetComponent<Collider>();
+        foreach (float x in new[] { -.43f, .43f })
+            radioCloseup.Part("Fuse cap", PrimitiveType.Cube, new Vector3(x, 0, 0),
+                new Vector3(.25f, 1.08f, 1.08f), rim, parent: fuseModel);
+        plugModel = Box("Speaker plug", PlugRest, new Vector3(.26f, .14f, .22f), copper, true).transform;
+        plugTarget = plugModel.GetComponent<Collider>();
+        radioCloseup.Part("Plug tip", PrimitiveType.Cube, new Vector3(0, 0, .64f),
+            new Vector3(.37f, .35f, .45f), rim, parent: plugModel);
+        speakerCable = radioCloseup.Cable("Speaker lead", copper, .047f);
+        ShapeCable(radioCloseup.Cable("Cassette input cable", dead, .044f),
+            PortCenters[2] + Vector3.back * .065f, new Vector3(.91f, .39f, -.47f));
+        UpdateRadioParts(null);
+        Physics.SyncTransforms();
     }
 
-    private void DrawRadio()
+    private GameObject Box(string name, Vector3 pos, Vector3 size, Material material, bool pickable = false) =>
+        radioCloseup.Part(name, PrimitiveType.Cube, pos, size, material, pickable);
+
+    private GameObject Cylinder(string name, Vector3 pos, float diameter, float depth, Material material, bool pickable = false)
     {
-        Vector2 pointer = Event.current.mousePosition;
-        var input = Event.current;
-        int control = GUIUtility.GetControlID(FocusType.Passive);
-        var type = input.GetTypeForControl(control);
-        if (HandleRadioPointer(type, input.button, pointer))
-        {
-            if (dragging == DragPart.None) ReleaseDragControl();
-            else GUIUtility.hotControl = dragControlId = control;
-            input.Use();
-        }
-        GUI.Label(new Rect(30, 54, 740, 38),
-            "Перетащи детали в гнёзда, выбери вход и запусти кассету.", bodyStyle);
-        Plate(new Rect(30, 96, 740, 239), Metal, Edge);
-        Plate(new Rect(51, 111, 520, 208), new Color32(49, 49, 43, 255), Edge);
-        GUI.Label(new Rect(68, 119, 150, 29), "ПРЕДОХР. 0,5 А", bodyStyle);
-        GUI.Label(new Rect(250, 120, 312, 29), "СХЕМА РАЗЪЁМОВ", bodyStyle);
-        GUI.Label(new Rect(70, 151, 119, 30), "ГНЕЗДО", centeredStyle);
-
-        bool fuseHover = dragging == DragPart.Fuse && FuseHolder.Contains(pointer);
-        Plate(FuseHolder, Recess, fuseHover ? Green : Edge);
-        Fill(new Rect(79, 203, 16, 23), Edge);
-        Fill(new Rect(164, 203, 16, 23), Edge);
-        if (fuseInstalled) DrawFuse(FuseArtAt(FuseHolder.center));
-        else if (hasFuse)
-        {
-            Plate(FuseTray, Recess, FuseTray.Contains(pointer) ? Brass : Edge);
-            if (dragging != DragPart.Fuse) DrawFuse(FuseArtAt(FuseTray.center));
-        }
-
-        socketLabelStyle ??= new GUIStyle(centeredStyle) { fontSize = 14 };
-        for (int i = 0; i < PortTargets.Length; i++)
-        {
-            var port = PortTargets[i];
-            bool hover = dragging == DragPart.SpeakerPlug && port.Contains(pointer);
-            Disc(port.center, 38, hover ? Brass : Edge);
-            Disc(port.center, 29, Recess);
-            Disc(port.center, 11, new Color32(11, 12, 11, 255));
-            GUI.Label(new Rect(port.center.x - 54, 149, 108, 38), $"{i + 1} · {Sockets[i]}", socketLabelStyle);
-        }
-
-        Plate(new Rect(647, 114, 99, 117), Recess, Edge);
-        Disc(new Vector2(696, 161), 61, Edge);
-        Disc(new Vector2(696, 161), 55, Metal);
-        for (int y = 145; y <= 177; y += 8)
-            Fill(new Rect(674, y, 44, 2), Recess);
-        GUI.Label(new Rect(647, 197, 99, 25), "Динамик", centeredStyle);
-
-        Vector2 plug = speakerConnected ? PortTargets[1].center :
-            dragging == DragPart.SpeakerPlug ? pointer : LoosePlug;
-        DrawDeck();
-        DrawTimingMeter();
-        DrawCables(plug);
-        Disc(DeckSocket, 15, Edge);
-        Disc(DeckLead, 12, Edge);
-        DrawPlug(plug);
-        if (dragging == DragPart.Fuse) DrawFuse(FuseArtAt(pointer));
+        var part = radioCloseup.Part(name, PrimitiveType.Cylinder, pos,
+            new Vector3(diameter, depth * .5f, diameter), material, pickable);
+        part.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        return part;
     }
 
-    private void DrawTimingMeter()
+    private void UpdateRadio()
     {
-        Plate(new Rect(30, 464, 740, 48), Metal, Edge);
-        GUI.Label(new Rect(52, 475, 217, 24), "ОКНО ПОДКЛЮЧЕНИЯ", bodyStyle);
-        var track = new Rect(272, 477, 465, 22);
-        Plate(track, Recess, Edge);
-        if (!fuseInstalled || speakerConnected)
-        {
-            GUI.Label(track, speakerConnected ? "КОНТАКТ УСТАНОВЛЕН" : "НЕТ ПИТАНИЯ", centeredStyle);
-            return;
-        }
-        Fill(new Rect(track.x + track.width * SafeStart, track.y + 2,
-            track.width * (SafeEnd - SafeStart), track.height - 4), Green);
-        float phase = TimingPhase;
-        Fill(new Rect(track.x + track.width * phase - 2, track.y - 4, 4, track.height + 8), Color.white);
+        if (radioCloseup == null) return;
+        radioCloseup.UpdateFraming();
+        var mouse = Mouse.current;
+        if (mouse == null) { dragging = DragPart.None; UpdateRadioParts(null); return; }
+        Ray ray = radioCloseup.Camera.ScreenPointToRay(mouse.position.ReadValue());
+        if (mouse.leftButton.wasPressedThisFrame) BeginPartInteraction(ray);
+        if (!panelOpen) return;
+        if (mouse.leftButton.wasReleasedThisFrame) PlacePart(ray);
+        UpdateRadioParts(ray);
     }
 
-    private void ReleaseDragControl()
+    private void BeginPartInteraction(Ray ray)
     {
-        if (GUIUtility.hotControl == dragControlId) GUIUtility.hotControl = 0;
-        dragControlId = 0;
-    }
-
-    private bool HandleRadioPointer(EventType eventType, int button, Vector2 pointer)
-    {
-        if (eventType == EventType.Ignore && dragging != DragPart.None)
+        if (hasFuse && !fuseInstalled && Hits(fuseTarget, ray)) dragging = DragPart.Fuse;
+        else if (!speakerConnected && Hits(plugTarget, ray)) dragging = DragPart.SpeakerPlug;
+        else if (Hits(playTarget, ray)) PlayRecording();
+        else if (Hits(selectorTarget, ray))
         {
-            dragging = DragPart.None;
-            return false;
-        }
-        if (button != 0) return false;
-        if (eventType == EventType.MouseDown && dragging == DragPart.None)
-        {
-            if (hasFuse && !fuseInstalled && FuseTray.Contains(pointer)) dragging = DragPart.Fuse;
-            else if (!speakerConnected && new Rect(618, 257, 54, 49).Contains(pointer))
-                dragging = DragPart.SpeakerPlug;
-            else return false;
-            return true;
-        }
-        else if (eventType == EventType.MouseUp && dragging != DragPart.None)
-        {
-            DragPart part = dragging;
-            dragging = DragPart.None;
-            if (part == DragPart.Fuse && FuseHolder.Contains(pointer)) InstallFuse();
-            if (part == DragPart.SpeakerPlug)
-                for (int i = 0; i < PortTargets.Length; i++)
-                    if (PortTargets[i].Contains(pointer)) ConnectSpeaker(i);
-            return true;
-        }
-        return false;
-    }
-
-    private void DrawDeck()
-    {
-        Plate(new Rect(30, 345, 740, 112), Metal, Edge);
-        GUI.Label(new Rect(55, 349, 160, 27), "ВХОД УСИЛИТЕЛЯ", bodyStyle);
-        var radio = new Rect(55, 384, 95, 43);
-        var external = new Rect(154, 384, 103, 43);
-        var selected = new Color32(112, 81, 38, 255);
-        if (HardwareButton(radio, "Радио", !externalInput ? selected : Recess) && externalInput)
-        {
-            externalInput = false;
+            externalInput = !externalInput;
             PlayEffect(contactClick);
-        }
-        if (HardwareButton(external, "Внешний", externalInput ? selected : Recess) && !externalInput)
-        {
-            externalInput = true;
-            PlayEffect(contactClick);
-        }
-
-        Plate(new Rect(295, 368, 265, 67), Recess, Edge);
-        Disc(new Vector2(368, 401), 37, Metal);
-        Disc(new Vector2(485, 401), 37, Metal);
-        Disc(new Vector2(368, 401), 14, Edge);
-        Disc(new Vector2(485, 401), 14, Edge);
-        Fill(new Rect(387, 418, 79, 4), Edge);
-        Disc(new Vector2(603, 379), 12, fuseInstalled ? Green : Recess);
-        GUI.Label(new Rect(617, 367, 116, 23), "Питание", bodyStyle);
-        if (HardwareButton(new Rect(595, 395, 147, 41), "▶  PLAY", Recess)) PlayRecording();
-    }
-
-    private bool HardwareButton(Rect rect, string label, Color color)
-    {
-        bool hover = rect.Contains(Event.current.mousePosition);
-        Plate(rect, hover ? Color.Lerp(color, Edge, .4f) : color, hover ? Brass : Edge);
-        GUI.Label(rect, label, centeredStyle);
-        return GUI.Button(rect, GUIContent.none, GUIStyle.none);
-    }
-
-    private static Rect FuseArtAt(Vector2 center) => new Rect(center.x - 42, center.y - 10, 84, 20);
-
-    private static void DrawFuse(Rect rect)
-    {
-        Fill(rect, new Color32(121, 150, 139, 255));
-        Fill(new Rect(rect.x, rect.y + 2, rect.width, 3), new Color32(196, 214, 191, 255));
-        Fill(new Rect(rect.x, rect.center.y, rect.width, 2), Brass);
-        Fill(new Rect(rect.x, rect.y, 15, rect.height), Edge);
-        Fill(new Rect(rect.xMax - 15, rect.y, 15, rect.height), Edge);
-    }
-
-    private static void DrawPlug(Vector2 center)
-    {
-        Plate(new Rect(center.x - 16, center.y - 8, 24, 16), Copper, Recess);
-        Fill(new Rect(center.x + 8, center.y - 4, 10, 8), Brass);
-    }
-
-    private void DrawCables(Vector2 plug)
-    {
-        if (Event.current.type != EventType.Repaint) return;
-        if (cableTexture == null || renderedPlug != plug)
-            UpdateCableTexture(plug);
-        GUI.DrawTexture(new Rect(0, 0, CableWidth, CableHeight), cableTexture);
-    }
-
-    private void UpdateCableTexture(Vector2 plug)
-    {
-        if (cableTexture == null)
-        {
-            cableTexture = new Texture2D(CableWidth, CableHeight, TextureFormat.RGBA32, false)
-                { hideFlags = HideFlags.HideAndDontSave, wrapMode = TextureWrapMode.Clamp };
-            cablePixels = new Color32[CableWidth * CableHeight];
-        }
-        renderedPlug = plug;
-        System.Array.Clear(cablePixels, 0, cablePixels.Length);
-
-        // Paint in panel coordinates so every bend uses the same transform as the hardware.
-        PaintCurve(DeckSocket, new Vector2(515, 275), new Vector2(543, 308), DeckLead, 5, Recess);
-        PaintCurve(DeckSocket, new Vector2(515, 275), new Vector2(543, 308), DeckLead, 2, Edge);
-        Vector2 plugTail = plug + Vector2.left * 13;
-        float sag = Mathf.Min(CableHeight - 12, Mathf.Max(SpeakerLead.y, plug.y) + 83);
-        var firstBend = new Vector2(SpeakerLead.x, sag);
-        var lastBend = new Vector2(plugTail.x, sag);
-        PaintCurve(SpeakerLead, firstBend, lastBend, plugTail, 8, Recess);
-        PaintCurve(SpeakerLead, firstBend, lastBend, plugTail, 3, Copper);
-
-        cableTexture.SetPixels32(cablePixels);
-        cableTexture.Apply(false);
-    }
-
-    private void PaintCurve(Vector2 start, Vector2 firstBend, Vector2 lastBend,
-        Vector2 end, float thickness, Color32 ink)
-    {
-        const int steps = 32;
-        Vector2 previous = start;
-        for (int i = 1; i <= steps; i++)
-        {
-            float t = i / (float)steps;
-            float u = 1f - t;
-            Vector2 point = start * (u * u * u) + firstBend * (3 * u * u * t) +
-                lastBend * (3 * u * t * t) + end * (t * t * t);
-            PaintCableSpan(previous, point, thickness * .5f, ink);
-            previous = point;
+            feedback = externalInput ? "Выбран внешний вход." : "Выбран вход радио.";
         }
     }
 
-    private void PaintCableSpan(Vector2 from, Vector2 to, float radius, Color32 ink)
+    private void PlacePart(Ray ray)
     {
-        float margin = radius + 1;
-        int minX = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(from.x, to.x) - margin));
-        int maxX = Mathf.Min(CableWidth - 1, Mathf.CeilToInt(Mathf.Max(from.x, to.x) + margin));
-        int minY = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(from.y, to.y) - margin));
-        int maxY = Mathf.Min(CableHeight - 1, Mathf.CeilToInt(Mathf.Max(from.y, to.y) + margin));
-        Vector2 span = to - from;
-        float lengthSquared = Mathf.Max(span.sqrMagnitude, .001f);
-        for (int y = minY; y <= maxY; y++)
-            for (int x = minX; x <= maxX; x++)
+        if (dragging == DragPart.Fuse && Hits(fuseBayTarget, ray)) InstallFuse();
+        if (dragging == DragPart.SpeakerPlug)
+            for (int i = 0; i < portTargets.Length; i++)
             {
-                var pixel = new Vector2(x + .5f, y + .5f);
-                float t = Mathf.Clamp01(Vector2.Dot(pixel - from, span) / lengthSquared);
-                float alpha = Mathf.Clamp01(radius + .5f - Vector2.Distance(pixel, from + span * t));
-                int index = (CableHeight - y - 1) * CableWidth + x;
-                if (alpha > 0) cablePixels[index] = Color32.Lerp(cablePixels[index], ink, alpha);
+                if (!Hits(portTargets[i], ray)) continue;
+                ConnectSpeaker(i);
+                break;
             }
+        dragging = DragPart.None;
     }
 
-    private void OnDestroy()
-    {
-        if (cableTexture != null) Destroy(cableTexture);
-        DisposeRoomProps();
-    }
+    private static bool Hits(Collider target, Ray ray) => target.Raycast(ray, out _, 20f);
 
-    private static void Plate(Rect rect, Color fill, Color edge)
+    private void UpdateRadioParts(Ray? pointer)
     {
-        Fill(rect, edge);
-        Fill(new Rect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4), fill);
-    }
-
-    private static void Disc(Vector2 center, float size, Color color)
-    {
-        if (discTexture == null)
+        Vector3 fusePosition = fuseInstalled ? FuseBay + Vector3.back * .18f : FuseRest;
+        Vector3 plugPosition = speakerConnected ? PortCenters[1] + Vector3.back * .13f : PlugRest;
+        if (dragging != DragPart.None && pointer.HasValue)
         {
-            const int resolution = 48;
-            discTexture = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false)
-                { hideFlags = HideFlags.HideAndDontSave, wrapMode = TextureWrapMode.Clamp };
-            var pixels = new Color32[resolution * resolution];
-            float radius = resolution * .5f - .5f;
-            var origin = Vector2.one * radius;
-            for (int y = 0; y < resolution; y++)
-                for (int x = 0; x < resolution; x++)
-                {
-                    float alpha = Mathf.Clamp01(radius - Vector2.Distance(new Vector2(x, y), origin));
-                    pixels[y * resolution + x] = new Color32(255, 255, 255, (byte)(alpha * 255));
-                }
-            discTexture.SetPixels32(pixels);
-            discTexture.Apply(false, true);
+            var plane = new Plane(Vector3.back, radioCloseup.Root.TransformPoint(new Vector3(0, 0, -.77f)));
+            Ray ray = pointer.Value;
+            if (plane.Raycast(ray, out float distance))
+            {
+                Vector3 position = radioCloseup.Root.InverseTransformPoint(ray.GetPoint(distance));
+                if (dragging == DragPart.Fuse) fusePosition = position;
+                else plugPosition = position;
+            }
         }
-        DrawTexture(new Rect(center.x - size / 2, center.y - size / 2, size, size), discTexture, color);
+        fuseModel.gameObject.SetActive(hasFuse);
+        fuseModel.localPosition = fusePosition;
+        plugModel.localPosition = plugPosition;
+        ShapeCable(speakerCable, SpeakerLead, plugPosition + Vector3.back * .115f);
+        needle.gameObject.SetActive(fuseInstalled && !speakerConnected);
+        needle.localPosition = new Vector3(-1.58f + 2.46f * TimingPhase, 1.143f, -.51f);
+        selectorLever.localPosition = new Vector3(externalInput ? -.95f : -1.39f, .28f, -.62f);
+        powerLamp.sharedMaterial = fuseInstalled ? green : Time.unscaledTime < faultUntil ? signal : dead;
     }
 
-    private static void Fill(Rect rect, Color color) => DrawTexture(rect, Texture2D.whiteTexture, color);
-
-    private static void DrawTexture(Rect rect, Texture texture, Color color)
+    private static void ShapeCable(LineRenderer cable, Vector3 from, Vector3 to)
     {
-        var previous = GUI.color;
-        GUI.color = color;
-        GUI.DrawTexture(rect, texture);
-        GUI.color = previous;
+        for (int i = 0; i < cable.positionCount; i++)
+        {
+            float t = i / (float)(cable.positionCount - 1);
+            Vector3 point = Vector3.Lerp(from, to, t);
+            point.y -= Mathf.Sin(t * Mathf.PI) * .20f;
+            point.z -= Mathf.Sin(t * Mathf.PI) * .30f;
+            cable.SetPosition(i, point);
+        }
     }
 }
