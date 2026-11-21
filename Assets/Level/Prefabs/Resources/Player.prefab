@@ -1389,6 +1389,7 @@ GameObject:
   - component: {fileID: 9018715995945556438}
   - component: {fileID: 7461390873260063324}
   - component: {fileID: 3008450648221154411}
+  - component: {fileID: 3549026786987396123}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1739,6 +1740,23 @@ MonoBehaviour:
   gltfPath: Smoking/model.gltf
   smokingThreshold: 40
   hintText: {fileID: 4101974430614877461}
+--- !u!114 &3549026786987396123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4269297301735063308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 531150be323d4bde9aa286f55684a45c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionHints
+  outlineColor: {r: 1, g: 0.86, b: 0.45, a: 0.95}
+  outlineWidth: 2
+  pulseInterval: 5
+  pulseDuration: 0.8
+  pulseColor: {r: 1, g: 0.72, b: 0.28, a: 0.48}
 --- !u!1 &4481001025783628976
 GameObject:
   m_ObjectHideFlags: 0

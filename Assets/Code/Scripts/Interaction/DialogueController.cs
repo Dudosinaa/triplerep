@@ -24,6 +24,9 @@ public sealed class DialogueController : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField, Min(0.1f)] private float talkDistance = 2.7f;
 
+    internal float HintDistance => talkDistance;
+
+    private InteractionHints interactionHints;
     private NpcDialogue activeNpc;
     private NpcDialogue nearbyNpc;
     private Collider aimedCollider;
@@ -43,6 +46,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private void Awake()
     {
+        interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (movement == null) movement = GetComponent<FirstPersonPlayer>();
         if (documentReader == null) documentReader = GetComponent<DocumentReader>();
@@ -91,6 +95,7 @@ public sealed class DialogueController : MonoBehaviour
             bool canTalk = targetReady && (movement == null || movement.enabled) &&
                 (documentReader == null || !documentReader.IsReading) &&
                 (itemInspector == null || !itemInspector.IsInspecting);
+            if (canTalk) interactionHints?.OfferFocus(phone);
             if (interactionPrompt != null)
             {
                 interactionPrompt.SetActive(canTalk);

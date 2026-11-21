@@ -21,6 +21,9 @@ public sealed class ItemInspector : MonoBehaviour
     private const float CloseInspectionRadius = 1.25f;
     private static readonly Vector3 PreviewPosition = new Vector3(2000f, 2000f, 2000f);
 
+    internal float HintDistance => inspectionDistance;
+
+    private InteractionHints interactionHints;
     private InspectableItem inspectedItem;
     private GameObject previewRoot;
     private Camera previewCamera;
@@ -29,6 +32,7 @@ public sealed class ItemInspector : MonoBehaviour
 
     private void Awake()
     {
+        interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (movement == null) movement = GetComponent<FirstPersonPlayer>();
         if (documentReader == null) documentReader = GetComponent<DocumentReader>();
@@ -74,6 +78,7 @@ public sealed class ItemInspector : MonoBehaviour
         }
 
         InspectableItem target = FindItem();
+        if (target != null) interactionHints?.OfferFocus(target);
         if (interactionPrompt != null) interactionPrompt.SetActive(target != null);
         if (target != null && promptText != null) promptText.text = "[E] Осмотреть — " + target.ItemName;
         if (pressedE && target != null && InteractionInput.TryConsume()) OpenInspection(target);

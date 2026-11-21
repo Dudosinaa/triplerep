@@ -31,6 +31,10 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     [SerializeField, Min(0.1f)] private float walkingStepDistance = 1.8f;
     [SerializeField, Min(0.1f)] private float crouchingStepDistance = 2.3f;
 
+    internal const float KeyInteractionDistance = 3f;
+    internal Camera PlayerCamera => playerCamera;
+
+    private InteractionHints interactionHints;
     private AudioClip generatedStep;
     private CharacterController controller;
     private float verticalSpeed;
@@ -43,6 +47,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (footstepSource == null) footstepSource = GetComponent<AudioSource>();
         if (pistol == null) pistol = GetComponent<PistolController>();
@@ -115,17 +120,19 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     // Reading, inspection and dialogue get first use of E in Update.
     private void LateUpdate()
     {
-        if (Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame ||
-            playerCamera == null || !playerCamera.isActiveAndEnabled) return;
+        var keyboard = Keyboard.current;
+        if (keyboard == null || playerCamera == null || !playerCamera.isActiveAndEnabled) return;
 
-        const float reach = 3f;
+        bool pressedE = keyboard.eKey.wasPressedThisFrame;
+        if (!pressedE && (interactionHints == null || !interactionHints.CanShow)) return;
         if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
-                out var hit, reach, ~0, QueryTriggerInteraction.Ignore)) return;
+                out var hit, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
 
         var key = hit.collider.GetComponentInParent<DoorKey>();
         if (key != null && key.isActiveAndEnabled)
         {
-            if (InteractionInput.TryConsume())
+            interactionHints?.OfferFocus(key);
+            if (pressedE && InteractionInput.TryConsume())
             {
                 collectedKeys.Add(key);
                 key.gameObject.SetActive(false);
@@ -134,8 +141,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         }
 
         var door = hit.collider.GetComponentInParent<KeyDoor>();
-        if (door != null && door.isActiveAndEnabled && InteractionInput.TryConsume())
-            door.TryOpen(this);
+        if (door == null || !door.isActiveAndEnabled) return;
+        if (door.CanOpen(this)) interactionHints?.OfferFocus(door);
+        if (pressedE && InteractionInput.TryConsume()) door.TryOpen(this);
     }
 
     public bool HasKey(DoorKey key) => key != null && collectedKeys.Contains(key);

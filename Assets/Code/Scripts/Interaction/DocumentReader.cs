@@ -16,10 +16,14 @@ public sealed class DocumentReader : MonoBehaviour
     [SerializeField] private ScrollRect bodyScrollRect;
 
     private readonly RaycastHit[] aimHits = new RaycastHit[8];
+    internal float HintDistance => readingDistance;
+
+    private InteractionHints interactionHints;
     private ReadableDocument openDocument;
 
     private void Awake()
     {
+        interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (movement == null) movement = GetComponent<FirstPersonPlayer>();
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
@@ -44,6 +48,7 @@ public sealed class DocumentReader : MonoBehaviour
             return;
         }
         ReadableDocument target = FindDocument();
+        if (target != null) interactionHints?.OfferFocus(target);
         if (interactionPrompt != null) interactionPrompt.SetActive(target != null);
         if (pressedE && target != null && InteractionInput.TryConsume()) OpenDocument(target);
     }

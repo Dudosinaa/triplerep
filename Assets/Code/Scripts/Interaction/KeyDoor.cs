@@ -26,10 +26,12 @@ public sealed class KeyDoor : MonoBehaviour
         SetRotation(1f);
     }
 
+    internal bool CanOpen(FirstPersonPlayer player) =>
+        !openingStarted && player != null && player.HasKey(requiredKey);
+
     public void TryOpen(FirstPersonPlayer player)
     {
-        if (!openingStarted && player != null && player.HasKey(requiredKey))
-            openingStarted = true;
+        if (CanOpen(player)) openingStarted = true;
     }
 
     private void Update()
