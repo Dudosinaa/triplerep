@@ -18,6 +18,7 @@ public sealed class PistolController : MonoBehaviour
     [SerializeField] private float shotCooldown = 0.22f;
     [SerializeField, Min(0f)] private float aimCameraForward = 0.08f;
     [SerializeField, Min(0.1f)] private float aimSpeed = 14f;
+    private readonly RaycastHit[] shotHits = new RaycastHit[16];
     private WeaponMagazine magazine;
     private FirstPersonWeaponView weaponView;
     private bool equipped = false;
@@ -108,15 +109,8 @@ public sealed class PistolController : MonoBehaviour
         BeginAction("Shot");
         weaponView.PlayShotSound();
         var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        var hits = Physics.RaycastAll(ray, shotRange, ~0, QueryTriggerInteraction.Ignore);
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-        foreach (var hit in hits)
-        {
-            if (hit.collider.transform.IsChildOf(transform)) continue;
-            var target = hit.collider.GetComponentInParent<ShootingTarget>();
-            if (target != null) target.Hit();
-            break;
-        }
+        if (ShotRaycast.TryGetFirstHit(ray, shotRange, ~0, transform, shotHits, out RaycastHit hit))
+            hit.collider.GetComponentInParent<IShootingTarget>()?.Hit();
         return true;
     }
     public bool TryReload()

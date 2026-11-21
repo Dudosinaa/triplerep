@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public sealed class ShootingTarget : MonoBehaviour
+public sealed class ShootingTarget : MonoBehaviour, IShootingTarget
 {
     [SerializeField] private Renderer targetRenderer;
     private Color originalColor;

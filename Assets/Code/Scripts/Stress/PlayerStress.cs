@@ -76,6 +76,12 @@ public class PlayerStress : MonoBehaviour
         UpdateStressEffects();
     }
 
+    public void AddStress(float amount)
+    {
+        if (calmingForMind || !isActiveAndEnabled) return;
+        stress = Mathf.Clamp(stress + amount, 0f, 100f);
+    }
+
     public void BeginSmokingRecovery()
     {
         if (!calmingForMind && !IsRecoveringAfterSmoking && stress > 0f)
