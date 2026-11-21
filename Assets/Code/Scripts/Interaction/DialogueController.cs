@@ -111,6 +111,12 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
+        if (activeNpc != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            EndDialogue();
+            return;
+        }
+
         if (showingPlayerReply || phoneLines != null)
         {
             if (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -148,7 +154,8 @@ public sealed class DialogueController : MonoBehaviour
         activeNpc = npc;
         nodeIndex = startIndex;
         OpenDialogue(npc.transform);
-        ShowNpcNode();
+        if (string.IsNullOrEmpty(npc.OpeningLine)) ShowNpcNode();
+        else ShowPlayerReply(npc.OpeningLine, startIndex);
     }
 
     private void OpenDialogue(Transform target)
@@ -242,13 +249,15 @@ public sealed class DialogueController : MonoBehaviour
             EndDialogue(completed: true);
             return;
         }
-        pendingNextNode = activeNpc.GetNextNodeIndex(choice);
+        ShowPlayerReply(choice.text, activeNpc.GetNextNodeIndex(choice));
+    }
+
+    private void ShowPlayerReply(string line, int nextNode)
+    {
+        pendingNextNode = nextNode;
         showingPlayerReply = true;
-        if (speakerText != null) speakerText.text = "Вы";
-        if (dialogueText != null) dialogueText.text = choice.text;
-        foreach (Button button in choiceButtons)
-            if (button != null) button.gameObject.SetActive(false);
-        if (continueButton != null) continueButton.gameObject.SetActive(true);
+        ShowLine(activeNpc.PlayerName, line, true);
+        ShowChoices(null);
     }
 
     private void ContinueDialogue()

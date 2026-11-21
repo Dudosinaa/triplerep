@@ -42,6 +42,7 @@ internal sealed class TrainMindSession : MonoBehaviour
         player != null && player.gameObject.scene == train &&
         camera != null && camera.isActiveAndEnabled &&
         focus != null && focus.isActiveAndEnabled && focus.gameObject.scene == train &&
+        focus.GetComponentInParent<NpcDialogue>() is { isActiveAndEnabled: true, HasCompletedConversation: true } &&
         GetAvailableMindPath(focus.sceneIndex, train) != null;
 
     internal static bool TryBegin(SceneSwitch entry, Scene train, CharacterController player,

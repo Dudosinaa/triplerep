@@ -133,6 +133,23 @@ public static class TrainMindPlayValidation
         var talkTarget = typeof(DialogueController).GetField("nearbyNpc", BindingFlags.Instance | BindingFlags.NonPublic);
         var firstApproach = new Vector3(35.77f, 0.12f, 8.42f);
         var thirdApproach = new Vector3(35.45f, 0.21f, 9.55f);
+        var airport = GameObject.Find("NPC_3").GetComponent<NpcDialogue>();
+        foreach (var frame in CheckDialogues(player, camera, dialogue, entry,
+                     (first, "Петрович", firstApproach),
+                     (third, "Майкл", thirdApproach),
+                     (airport, "Иннокентий", new Vector3(35.45f, 0.21f, 10.32f))))
+            yield return frame;
+
+        QueueKeys(Key.T);
+        yield return null;
+        Check(!player.enabled && GameObject.Find("Train Mind Session") != null,
+            "NPC_3: T starts the mind approach after the conversation");
+        var airportFocus = airport.GetComponentInChildren<FocusPoint>();
+        airportFocus.enabled = false;
+        QueueKeys();
+        while (!player.enabled) yield return null;
+        airportFocus.enabled = true;
+
         var changes = new GameObject("Added during Train play");
         var inactive = new GameObject("Initially inactive Train object");
         inactive.SetActive(false);
@@ -401,6 +418,74 @@ public static class TrainMindPlayValidation
         Check(labMode == LoadSceneMode.Single && player == null && trainUnloads == 1 && mindActivations == 2,
             "Real Train-to-Lab trigger loads in Single mode and unloads Train and its player");
         Check(errors.Count == 0, "No runtime errors");
+    }
+
+    private static IEnumerable CheckDialogues(FirstPersonPlayer player, Camera camera,
+        DialogueController dialogue, SceneSwitch entry, params (NpcDialogue Npc, string Name, Vector3 Approach)[] targets)
+    {
+        var dialogueView = new SerializedObject(dialogue);
+        var speaker = (Text)dialogueView.FindProperty("speakerText").objectReferenceValue;
+        var line = (Text)dialogueView.FindProperty("dialogueText").objectReferenceValue;
+        var hint = entry.hintText.gameObject;
+        foreach (var (npc, name, approach) in targets)
+        {
+            var torso = npc.transform.Find("Interaction - Torso").position;
+            var opening = new SerializedObject(npc).FindProperty("openingLine").stringValue;
+            Check(npc.CharacterName == name && !string.IsNullOrEmpty(opening) &&
+                npc.Nodes.Length == 4 && NpcDialogueEditor.GetWarnings(npc).Count == 0,
+                $"{npc.name}: authored graph belongs to {name}");
+
+            player.Teleport(approach);
+            yield return null;
+            AimAt(player, camera, torso);
+            yield return null;
+            QueueKeys(Key.T);
+            yield return null;
+            Check(!hint.activeSelf && player.enabled && GameObject.Find("Train Mind Session") == null,
+                $"{npc.name}: T is rejected before this NPC's dialogue, regardless of earlier NPCs");
+
+            QueueKeys(Key.E);
+            yield return null;
+            Check(dialogue.IsTalking && speaker.text == "Алексей" && line.text == opening && !hint.activeSelf,
+                $"{npc.name}: E shows Alexey's opening line");
+            QueueKeys(Key.Space);
+            yield return null;
+            Check(dialogue.IsTalking && speaker.text == name && line.text == npc.Nodes[0].npcText,
+                $"{npc.name}: Continue shows the first NPC line");
+
+            QueueKeys(Key.Escape, Key.T);
+            yield return null;
+            Check(!dialogue.IsTalking && !hint.activeSelf && player.enabled && GameObject.Find("Train Mind Session") == null,
+                $"{npc.name}: Escape closes the partial conversation and T stays locked");
+
+            QueueKeys();
+            AimAt(player, camera, torso);
+            yield return null;
+            QueueKeys(Key.E);
+            yield return null;
+            Check(dialogue.IsTalking && speaker.text == "Алексей" && line.text == opening,
+                $"{npc.name}: interrupted dialogue can be replayed from the beginning");
+            foreach (var node in npc.Nodes)
+            {
+                QueueKeys(Key.Space);
+                yield return null;
+                Check(dialogue.IsTalking && speaker.text == name && line.text == node.npcText && !hint.activeSelf,
+                    $"{npc.name}: NPC line {node.Id} is shown with the mind hint hidden");
+
+                var reply = node.choices.Single();
+                QueueKeys(Key.Digit1);
+                yield return null;
+                if (!reply.EndsDialogue)
+                    Check(dialogue.IsTalking && speaker.text == "Алексей" && line.text == reply.text,
+                        $"{npc.name}: player reply after line {node.Id} keeps Alexey's name");
+            }
+
+            QueueKeys();
+            AimAt(player, camera, torso);
+            yield return null;
+            Check(!dialogue.IsTalking && player.enabled && hint.activeInHierarchy,
+                $"{npc.name}: finishing the final line unlocks T for this NPC");
+        }
     }
 
     private static bool HasColor(Color actual, Color expected) =>

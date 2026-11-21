@@ -23,6 +23,8 @@ internal sealed class NpcDialogueEditor : Editor
         using (new EditorGUI.DisabledScope(true))
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("characterName"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("playerName"), new GUIContent("Имя игрока"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("openingLine"), new GUIContent("Вступительная реплика игрока"));
 
         if (nodes.arraySize > 0 && start.intValue == 0)
         {

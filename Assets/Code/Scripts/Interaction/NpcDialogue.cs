@@ -34,16 +34,26 @@ public sealed class NpcDialogue : MonoBehaviour
     }
 
     [SerializeField] private string characterName = "Смотритель";
+    [SerializeField] private string playerName = "Вы";
+    [SerializeField, TextArea(2, 5)] private string openingLine;
     [SerializeField, HideInInspector] private int startNodeId;
     [SerializeField] private Node[] nodes;
+
+    internal bool HasCompletedConversation { get; private set; }
 
     internal event Action ConversationStarted;
     internal event Action<FirstPersonPlayer> ConversationCompleted;
 
     internal void NotifyConversationStarted() => ConversationStarted?.Invoke();
-    internal void NotifyConversationCompleted(FirstPersonPlayer player) => ConversationCompleted?.Invoke(player);
+    internal void NotifyConversationCompleted(FirstPersonPlayer player)
+    {
+        HasCompletedConversation = true;
+        ConversationCompleted?.Invoke(player);
+    }
 
     public string CharacterName => characterName;
+    internal string PlayerName => string.IsNullOrEmpty(playerName) ? "Вы" : playerName;
+    internal string OpeningLine => openingLine;
     public Node[] Nodes => nodes;
     public int StartNodeId => startNodeId;
 
