@@ -94,7 +94,13 @@ namespace FinalLab.Investigation
         public void Progress(int complete, int total, string goal, bool immediate)
         {
             pendingStatus = $"Осмотрено: {complete}/{total}";
-            pendingObjective = complete == total ? "Расследование завершено" : "Цель: " + goal;
+            pendingObjective = complete == total ? "" : "Цель: " + goal;
+            // Clear the last desk objective on the handoff frame, before the cutscene takes the HUD.
+            if (complete == total)
+            {
+                transition = -1;
+                immediate = true;
+            }
             if (!immediate)
             {
                 transition = 0;

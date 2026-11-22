@@ -580,6 +580,8 @@ public static partial class FinalLabInvestigationValidation
             {
                 Require(manager.Completed == 3 && completedEvents == 1 && manager.ActivePoint == null && !player.enabled,
                     "Final ESC closed Ivan's desk at 3/3 and immediately handed control to the cutscene.");
+                Require(ui.StatusText == "Осмотрено: 3/3" && ui.ObjectiveText.Length == 0,
+                    "Final ESC clears the objective immediately without a completion caption.");
                 foreach (var ignored in ExerciseIvanCutscene(cutscene, player, camera, manager, startingCamera)) yield return ignored;
                 if (scope == Scope.FatherEncounter)
                     foreach (var ignored in CheckFatherEncounter(fatherFlow, cutscene, player, camera, controller, manager, interactionPrompt)) yield return ignored;
@@ -594,7 +596,7 @@ public static partial class FinalLabInvestigationValidation
             while (EditorApplication.timeSinceStartup < fade) yield return null;
             Require(ui.StatusText == "Осмотрено: " + expected + "/" + totalPoints &&
                 manager.Points.Count(p => p.IsHighlighted) == (expected < totalPoints ? 1 : 0) &&
-                (expected < totalPoints ? manager.Points[expected].IsHighlighted : ui.ObjectiveText == "Расследование завершено"),
+                (expected < totalPoints ? manager.Points[expected].IsHighlighted : ui.ObjectiveText.Length == 0),
                 "HUD status and objective outline agree at " + expected + "/" + totalPoints + ".");
             if (archive && !repeat && !Application.isBatchMode) Capture(camera, "Archive-next-objective");
             if (ivan && !repeat && !Application.isBatchMode) Capture(camera, "Ivan-next-objective");
@@ -608,7 +610,7 @@ public static partial class FinalLabInvestigationValidation
         else
         {
             Require(manager.Completed == 3 && completedEvents == 1 && manager.ObjectivePoint == null &&
-                ui.ObjectiveText == "Расследование завершено", "The investigation ends once at 3/3 with no K-17 objective.");
+                ui.ObjectiveText.Length == 0, "The investigation ends once at 3/3 with no completion notice or K-17 objective.");
             var resonator = GameObject.Find(FinalLabResonatorBuilder.ModuleName).transform;
             Aim(player, camera, controller, resonator.position + Vector3.left * 1.1f, resonator.position + Vector3.up * 1.16f);
             for (int f = 0; f < 3; f++) yield return null;

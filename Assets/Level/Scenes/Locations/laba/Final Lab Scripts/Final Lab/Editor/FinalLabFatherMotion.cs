@@ -141,7 +141,7 @@ internal static partial class FinalLabFatherSetup
         }
     }
 
-    private static FatherPose[] StageDeath(PoseRig rig, Vector3 feet, float floor, BoxCollider bed, Transform[] scene)
+    private static FatherPose[] StageDeath(PoseRig rig, Vector3 feet, float floor, BoxCollider bed, Transform[] scene, bool relaxLegs = true)
     {
         var source = Transfer(rig, SourceNames[4], feet, floor, false);
         Physics.SyncTransforms();
@@ -183,7 +183,7 @@ internal static partial class FinalLabFatherSetup
                             Ground(rig, mesh, floor + .007f);
                         }
                         float relax = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(1.78f, 2.40f, time));
-                        if (relax > 0)
+                        if (relaxLegs && relax > 0)
                         {
                             RelaxLegsAfterFall(rig, floor, relax);
                             Ground(rig, mesh, floor + .007f);
@@ -200,7 +200,7 @@ internal static partial class FinalLabFatherSetup
                     if (hit) continue;
                     Debug.Log($"Father collapse: {yaw:F0}° rotation with {shift:F2} m forward and {side:F2} m lateral drift, skin clear of bed and {obstacles.Length} nearby solids in all {result.Length} samples.");
                     Debug.Log($"Father's held pose after floor support: head={rig.Head.position.y - floor:F3} m, pelvis={rig.Hips.position.y - floor:F3} m.");
-                    Debug.Log($"Father relaxed legs: knees {rig.BoneOf("L_Calf").position.y - floor:F3}/{rig.BoneOf("R_Calf").position.y - floor:F3} m; foot separation {Vector3.Distance(rig.LeftFoot.position, rig.RightFoot.position):F3} m.");
+                    Debug.Log($"Father final legs: knees {rig.BoneOf("L_Calf").position.y - floor:F3}/{rig.BoneOf("R_Calf").position.y - floor:F3} m; foot separation {Vector3.Distance(rig.LeftFoot.position, rig.RightFoot.position):F3} m.");
                     return result;
                 }
             throw new InvalidOperationException("The father collapse could not be safely placed beside the bed. " + blockage);

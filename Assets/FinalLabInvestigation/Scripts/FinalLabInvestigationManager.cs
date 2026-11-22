@@ -319,7 +319,7 @@ namespace FinalLab.Investigation
             if (readRequired && progress.Complete(Array.IndexOf(points, active)))
             {
                 if (!reactionShown && !(lastIvanDesk && Completed == points.Length))
-                ShowReaction();
+                    ShowReaction();
                 lastAction = Time.unscaledTime;
             }
             active = null;
@@ -328,7 +328,6 @@ namespace FinalLab.Investigation
             if (before != Completed)
             {
                 hinted = false;
-                if (!(lastIvanDesk && Completed == points.Length))
                 UpdateObjective(false);
                 if (Completed == points.Length)
                 {
@@ -340,6 +339,7 @@ namespace FinalLab.Investigation
 
         private void ShowReaction()
         {
+            if (AtIvan) return;
             reactionShown = true;
             ui.React(active.Reaction);
         }

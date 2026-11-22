@@ -34442,6 +34442,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.3039196
       objectReference: {fileID: 0}
+    - target: {fileID: 6152744374132844806, guid: c0d0ca1a5c854234695c266709dc3a81, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 1f6dbc761a99bc44283d334868141bd6, type: 2}
+    - target: {fileID: 6152744374132844806, guid: c0d0ca1a5c854234695c266709dc3a81, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6171225809848233960, guid: c0d0ca1a5c854234695c266709dc3a81, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.99566925
