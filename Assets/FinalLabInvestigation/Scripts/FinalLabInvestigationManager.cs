@@ -318,7 +318,8 @@ namespace FinalLab.Investigation
             if (RequiresAllDocuments) active.SetHighlighted(active == ObjectivePoint);
             if (readRequired && progress.Complete(Array.IndexOf(points, active)))
             {
-                if (!reactionShown) ShowReaction();
+                if (!reactionShown && !(lastIvanDesk && Completed == points.Length))
+                ShowReaction();
                 lastAction = Time.unscaledTime;
             }
             active = null;
@@ -327,6 +328,7 @@ namespace FinalLab.Investigation
             if (before != Completed)
             {
                 hinted = false;
+                if (!(lastIvanDesk && Completed == points.Length))
                 UpdateObjective(false);
                 if (Completed == points.Length)
                 {
