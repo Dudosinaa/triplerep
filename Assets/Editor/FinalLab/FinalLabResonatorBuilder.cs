@@ -93,14 +93,12 @@ internal sealed partial class FinalLabResonatorBuilder
                 part.sharedMaterial = patina;
             }
         Plate(root, "K17_Nameplate", new(-.35f, .875f, .303f), new(.47f, .205f), steel, Ink,
-            ("К-17", 78), ("ПРОЕКТ «НЕЧИСТЬ»", 37), ("РЕЗОНАНСНЫЙ МОДУЛЬ", 32), ("ОПЫТНЫЙ ОБРАЗЕЦ № 01", 29), ("1989", 29));
+            ("К-17", 78), ("ПРОЕКТ «НЕЧИСТЬ»", 37), ("РЕЗОНАНСНЫЙ МОДУЛЬ", 32), ("ОПЫТНЫЙ ОБРАЗЕЦ № 01", 29), ("1982", 29));
         Plate(root, "K17_HighVoltage", new(-.35f, .590f, .302f), new(.368f, .081f), black, new Color(.84f, .65f, .34f),
             ("ОПАСНО — ВЫСОКОЕ", 39), ("НАПРЯЖЕНИЕ", 41));
         Coil(root);
         Controls(root);
-        var light = Group(root, "K17_Lighting", Vector3.zero);
-        Spot(light, "Resonator warm worklight", new(.06f, 2.40f, 1.20f), new(0, 1.00f, .22f), new Color(1f, .86f, .69f), 4.35f, 3.5f, 77);
-        Spot(light, "Copper glint", new(-.31f, 1.97f, .11f), new(-.34f, 1.28f, .02f), new Color(.89f, .94f, 1f), .67f, 1.2f, 62);
+        TuneResonatorLights(root);
         return root;
     }
 
@@ -120,10 +118,6 @@ internal sealed partial class FinalLabResonatorBuilder
         Block(bay, "Open cage rear crossbar", new(0, 1.465f, -.171f), new(.562f, .035f, .035f), steel);
         var close = Fit(bay, "Imported induction coil", "page_induction_coil_from_us_patent_76654.glb", new(0, 1.069f, .037f),
             new(.47f, .36f, .362f), Quaternion.Euler(0, 90, 0));
-        var original = close.GetComponentInChildren<MeshRenderer>().sharedMaterial;
-        var finish = ImportedFinish(original, "Induction_Coil_Patina");
-        finish.SetTexture("baseColorTexture", CoilTexture());
-        foreach (var part in close.GetComponentsInChildren<MeshRenderer>()) part.sharedMaterial = finish;
         var far = Group(bay, "Simplified coil at distance", Vector3.zero);
         var horizontal = Quaternion.Euler(0, 0, 90);
         Cylinder(far, "Wound copper bobbin", new(0, 1.219f, .037f), .14f, .23f, copper, horizontal);
@@ -132,10 +126,7 @@ internal sealed partial class FinalLabResonatorBuilder
             Cylinder(far, "Collector flange", new(x, 1.219f, .037f), .157f, .018f, steel, horizontal);
             Cylinder(far, "Ceramic end disc", new(x, 1.219f, .037f), .12f, .031f, ceramic, horizontal);
         }
-        var lod = bay.gameObject.AddComponent<LODGroup>();
-        lod.SetLODs(new[] { new LOD(.15f, close.GetComponentsInChildren<Renderer>().Where(r => r.enabled).ToArray()),
-            new LOD(.014f, far.GetComponentsInChildren<Renderer>()) });
-        lod.RecalculateBounds();
+        ApplyCoilFinish(close, far, bay.gameObject.AddComponent<LODGroup>());
         var core = Group(bay, "K17_Core", new(0, 1.205f, .228f));
         Cylinder(core, "Ceramic socket", new(0, 0, -.002f), .073f, .028f, ceramic, Quaternion.Euler(90, 0, 0));
         Cylinder(core, "Removable steel core cap", new(0, 0, .020f), .052f, .032f, steel, Quaternion.Euler(90, 0, 0));

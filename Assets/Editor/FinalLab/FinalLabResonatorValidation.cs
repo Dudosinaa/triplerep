@@ -26,8 +26,8 @@ internal static class FinalLabResonatorValidation
         foreach (string path in new[] { "K17_ModeSelector", "K17_AnalogGauge", "K17_IsolationGauge", "K17_OverloadButton",
                      "K17_OverloadCover", "Breaker bay/K17_KnifeSwitch" })
             Check(panel.Find(path) != null, "Independent component: " + path);
-        Check(module.Find("K17_CoilAssembly/K17_Core") != null && module.Find("K17_CoilAssembly").GetComponent<LODGroup>().lodCount == 2,
-            "The coil has a separate core and two render detail levels.");
+        Check(module.Find("K17_CoilAssembly/K17_Core") != null && module.Find("K17_CoilAssembly").GetComponent<LODGroup>().lodCount == 1,
+            "The coil has a separate core and a single stable render level.");
         var caseBox = crate.Find("Case collision").GetComponent<BoxCollider>().bounds;
         var archiveFloor = environment.Find("02_Archive_Corridor/ArchiveFloor").GetComponent<BoxCollider>().bounds;
         var boxes = BoundsOf(props.Find("01_ArchiveCorridor/ArchiveBoxes"));

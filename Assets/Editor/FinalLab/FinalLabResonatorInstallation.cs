@@ -89,8 +89,7 @@ internal sealed partial class FinalLabResonatorBuilder
             ("ПЛОМБА № 04", 62)).localRotation = Quaternion.Euler(0, 90, 0);
         Plate(crate, "Small metal case identifier", new(-.420f, .183f, .484f), new(.084f, .030f), steel, Ink,
             ("К-17", 73)).localRotation = Quaternion.Euler(0, 90, 0);
-        Spot(crate, "Soft cargo label spill", new(-1.10f, 1.68f, -.38f), new(-.39f, .44f, .02f),
-            new Color(1f, .88f, .72f), 2.65f, 2.30f, 51);
+        TuneCargoLight(crate);
         const string credit = Generated + "/Transport Crate Credit.txt";
         if (!File.Exists(credit))
             File.WriteAllText(credit, "Crate by Vinrax (vinrax@gmail.com), 30 July 2015.\nCC BY 3.0 — https://creativecommons.org/licenses/by/3.0/\nAdapted with scaled dimensions, metal bands and shipping labels.\n");
@@ -222,9 +221,10 @@ internal sealed partial class FinalLabResonatorBuilder
 
     private static void Spot(Transform parent, string name, Vector3 source, Vector3 target, Color color, float intensity, float range, float angle)
     {
-        var anchor = Group(parent, name, source);
+        var anchor = parent.Find(name) ?? Group(parent, name, source);
+        anchor.localPosition = source;
         anchor.localRotation = Quaternion.LookRotation(target - source);
-        var light = anchor.gameObject.AddComponent<Light>();
+        if (!anchor.TryGetComponent<Light>(out var light)) light = anchor.gameObject.AddComponent<Light>();
         light.type = LightType.Spot;
         light.intensity = intensity;
         light.color = color;

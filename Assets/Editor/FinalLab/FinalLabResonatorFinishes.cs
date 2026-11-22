@@ -1,11 +1,71 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using TMPro;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 internal sealed partial class FinalLabResonatorBuilder
 {
+    public static void RepairAppearance()
+    {
+        FinalLabInvestigationSurvey.RequireBatch();
+        var scene = EditorSceneManager.OpenScene(FinalLabBuilder.ScenePath);
+        var roots = scene.GetRootGameObjects();
+        var module = roots.Single(root => root.name == ModuleName).transform;
+        var crate = roots.Single(root => root.name == CrateName).transform;
+        var coil = module.Find("K17_CoilAssembly");
+        var lod = coil.GetComponent<LODGroup>();
+        var detail = coil.Find("Imported induction coil");
+        var proxy = coil.Find("Simplified coil at distance");
+        Debug.Log($"K17 coil originally has {lod.lodCount} LOD levels: " + string.Join(", ", lod.GetLODs()
+            .Select(level => $"{level.screenRelativeTransitionHeight:F3} ({level.renderers.Length} renderers)")));
+        ApplyCoilFinish(detail, proxy, lod);
+        TuneResonatorLights(module);
+        TuneCargoLight(crate);
+        var year = module.Find("K17_Nameplate/Print/Inscription 5").GetComponent<TMP_Text>();
+        if (year.text is not ("1989" or "1982")) throw new InvalidOperationException("Unexpected K-17 nameplate year.");
+        year.text = "1982";
+
+        var rendered = lod.GetLODs().Single().renderers;
+        if (proxy.gameObject.activeSelf || rendered.Length == 0 || rendered.Distinct().Count() != rendered.Length ||
+            rendered.Any(r => r == null || !r.TryGetComponent<MeshFilter>(out var filter) || filter.sharedMesh == null ||
+                r.sharedMaterial.shader.name != "Universal Render Pipeline/Lit" || r.sharedMaterial.GetTexture("_BaseMap") == null) ||
+            year.font == null || new[] { module, crate }.SelectMany(root => root.GetComponentsInChildren<Transform>(true))
+                .Any(t => GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject) != 0))
+            throw new InvalidOperationException("K-17 appearance contains a missing asset reference or a duplicate renderer.");
+        AssetDatabase.SaveAssets();
+        EditorSceneManager.MarkSceneDirty(scene);
+        if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save FinalScene.");
+        Debug.Log("FINAL_LAB_K17_APPEARANCE_SAVED: one active coil render level, valid URP references and the 1982 nameplate.");
+    }
+
+    private static void ApplyCoilFinish(Transform detail, Transform proxy, LODGroup lod)
+    {
+        var renderers = detail.GetComponentsInChildren<MeshRenderer>().Where(r => r.enabled).ToArray();
+        var finish = Material("Induction_Coil_Matte_Copper", new Color(.92f, .87f, .81f), .27f, .23f, CoilTexture());
+        finish.SetFloat("_SpecularHighlights", 0);
+        finish.SetFloat("_EnvironmentReflections", 0);
+        finish.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+        finish.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+        foreach (var renderer in renderers) renderer.sharedMaterial = finish;
+        proxy.gameObject.SetActive(false);
+        lod.SetLODs(new[] { new LOD(0, renderers) });
+        lod.RecalculateBounds();
+    }
+
+    private static void TuneResonatorLights(Transform module)
+    {
+        var lighting = module.Find("K17_Lighting") ?? Group(module, "K17_Lighting", Vector3.zero);
+        Spot(lighting, "Resonator warm worklight", new(.12f, 2.46f, 1.41f), new(0, 1.13f, .22f), new Color(1f, .86f, .69f), 4.70f, 3.60f, 82);
+        Spot(lighting, "Copper glint", new(-.37f, 2.10f, .40f), new(-.34f, 1.27f, .02f), new Color(.89f, .94f, 1f), .47f, 1.30f, 67);
+    }
+
+    private static void TuneCargoLight(Transform crate) => Spot(crate, "Soft cargo label spill", new(-.96f, 1.74f, -.43f),
+        new(-.40f, .44f, .02f), new Color(1f, .88f, .72f), 3.10f, 2.50f, 55);
+
     private static Material ImportedFinish(Material source, string name)
     {
         string path = Generated + "/" + name + ".mat";
