@@ -104,7 +104,7 @@ internal static partial class FinalLabScientistAnimationTransfer
         AnimationClip baked;
         try
         {
-            baked = Bake(clip, sourcePose, targetPose);
+            baked = Bake(clip, sourcePose, targetPose, loop: true);
         }
         finally
         {

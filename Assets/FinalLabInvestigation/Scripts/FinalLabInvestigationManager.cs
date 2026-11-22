@@ -48,6 +48,7 @@ namespace FinalLab.Investigation
         public int IvanViewedCount => ivanViewed.Count;
         public InvestigationPoint[] Points => points;
         public event Action InvestigationCompleted;
+        public event Action IvanDeskClosedAfterInvestigation;
         private bool AtArchive => active != null && active.Id == ArchiveId;
         private bool AtFather => active != null && active.Id == FatherId;
         private bool AtIvan => active != null && active.Id == IvanId;
@@ -125,7 +126,7 @@ namespace FinalLab.Investigation
             {
                 var candidate = mouse != null ? DocumentAt(view.ScreenPointToRay(mouse.position.ReadValue())) : null;
                 Highlight(candidate);
-                if (back && InteractionInput.TryConsume()) Close();
+                if (back && InteractionInput.TryConsume()) Close(fromEscape: true);
                 else if (click && candidate != null) TrySelect(candidate);
                 return;
             }
@@ -261,7 +262,9 @@ namespace FinalLab.Investigation
                 zoomTarget = Mathf.Clamp(zoomTarget - Mathf.Clamp(steps, -3f, 3f) * 5.3f, detailFov - 19, detailFov + 17);
         }
 
-        public bool Close()
+        public bool Close() => Close(false);
+
+        private bool Close(bool fromEscape)
         {
             if (state == ViewState.Detail)
             {
@@ -284,7 +287,7 @@ namespace FinalLab.Investigation
             Highlight(null);
             ui.SetControls("");
             if (RequiresAllDocuments) ui.ClearReading();
-            Move(inspection.GameplayPose, inspection.GameplayFov, 0.50f, FinishPoint);
+            Move(inspection.GameplayPose, inspection.GameplayFov, 0.50f, () => FinishPoint(fromEscape));
             return true;
         }
 
@@ -307,9 +310,10 @@ namespace FinalLab.Investigation
                 : "ЛКМ — Выбрать документ\nEsc — Выйти");
         }
 
-        private void FinishPoint()
+        private void FinishPoint(bool fromEscape)
         {
             int before = Completed;
+            bool lastIvanDesk = AtIvan && fromEscape;
             bool readRequired = RequiresAllDocuments ? ViewedCount == RequiredCount : keyOpened;
             if (RequiresAllDocuments) active.SetHighlighted(active == ObjectivePoint);
             if (readRequired && progress.Complete(Array.IndexOf(points, active)))
@@ -324,7 +328,11 @@ namespace FinalLab.Investigation
             {
                 hinted = false;
                 UpdateObjective(false);
-                if (Completed == points.Length) InvestigationCompleted?.Invoke();
+                if (Completed == points.Length)
+                {
+                    InvestigationCompleted?.Invoke();
+                    if (lastIvanDesk) IvanDeskClosedAfterInvestigation?.Invoke();
+                }
             }
         }
 

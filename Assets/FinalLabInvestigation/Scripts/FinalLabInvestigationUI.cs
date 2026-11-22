@@ -10,6 +10,7 @@ namespace FinalLab.Investigation
         private TMP_Text status, objective, controls, routeHint, prompt, subtitle;
         private TMP_Text archiveCount, archiveHelp, archiveWarning, archiveReturn;
         private RectTransform hud;
+        private Canvas researchCanvas;
         private CanvasGroup progressFade, subtitleFade, hintFade;
         private CanvasGroup archiveWarningFade;
         private Image archiveWarningBacking;
@@ -35,7 +36,7 @@ namespace FinalLab.Investigation
         {
             var canvasNode = new GameObject("Investigation HUD", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             canvasNode.transform.SetParent(transform, false);
-            var canvas = canvasNode.GetComponent<Canvas>();
+            var canvas = researchCanvas = canvasNode.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 22;
             var scaler = canvasNode.GetComponent<CanvasScaler>();
@@ -106,6 +107,11 @@ namespace FinalLab.Investigation
 
         public void SetPrompt(string value) => prompt.text = value;
         public void SetControls(string text) => controls.text = text;
+
+        public void SetCinematic(bool active)
+        {
+            if (researchCanvas != null) researchCanvas.enabled = !active;
+        }
 
         public void React(string quote)
         {

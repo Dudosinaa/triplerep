@@ -24,7 +24,7 @@ public static partial class FinalLabInvestigationValidation
     private const string NextGuiPass = "FinalLab.DeskRunCompact";
     private const string RestoreGuiSize = "FinalLab.DeskRestoreGameView";
     private const string ShowResonatorInSceneView = "FinalLab.ShowResonatorInSceneView";
-    private enum Scope { All, Archive, Father, Ivan, Portals }
+    private enum Scope { All, Archive, Father, Ivan, Portals, Cutscene }
     private const string Output = FinalLabInvestigationSurvey.Logs;
     private static IEnumerator checks;
     private static Keyboard keyboard;
@@ -204,6 +204,8 @@ public static partial class FinalLabInvestigationValidation
 
     public static void PlayPortals() => BeginBatchPlay(Scope.Portals);
 
+    public static void PlayCutscene() => BeginBatchPlay(Scope.Cutscene);
+
     private static void BeginBatchPlay(Scope scope)
     {
         Reopen();
@@ -218,6 +220,8 @@ public static partial class FinalLabInvestigationValidation
 
     public static void OpenPortalsInEditor() => OpenInEditor(Scope.Portals);
 
+    public static void OpenCutsceneInEditor() => OpenInEditor(Scope.Cutscene);
+
     public static void OpenResonatorInEditor()
     {
         SessionState.SetBool(ShowResonatorInSceneView, true);
@@ -226,13 +230,15 @@ public static partial class FinalLabInvestigationValidation
 
     private static bool IsDeskScope(Scope scope) => scope is Scope.Father or Scope.Ivan;
 
+    private static bool UsesSizedGameView(Scope scope) => IsDeskScope(scope) || scope is Scope.Portals or Scope.Cutscene;
+
     private static void OpenInEditor(Scope scope)
     {
         if (Application.isBatchMode) throw new InvalidOperationException("The interactive archive check requires the graphical editor.");
         EditorSceneManager.OpenScene(FinalLabBuilder.ScenePath);
         var gameView = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
         if (gameView != null) EditorWindow.GetWindow(gameView).Focus();
-        if (IsDeskScope(scope) || scope == Scope.Portals) SetDeskGameView(1920, 1080);
+        if (UsesSizedGameView(scope)) SetDeskGameView(1920, 1080);
         BeginPlay(scope);
     }
 
@@ -257,7 +263,7 @@ public static partial class FinalLabInvestigationValidation
             RestoreDesktopInput();
             SessionState.EraseBool(BatchKey);
             SessionState.EraseInt(ScopeKey);
-            if (IsDeskScope(activeScope) || activeScope == Scope.Portals) SessionState.SetBool(RestoreGuiSize, true);
+            if (UsesSizedGameView(activeScope)) SessionState.SetBool(RestoreGuiSize, true);
         }
         if (state == PlayModeStateChange.EnteredEditMode)
         {
@@ -292,7 +298,7 @@ public static partial class FinalLabInvestigationValidation
             return;
         }
         if (state != PlayModeStateChange.EnteredPlayMode || !SessionState.GetBool(BatchKey, false)) return;
-        deadline = EditorApplication.timeSinceStartup + 110;
+        deadline = EditorApplication.timeSinceStartup + 150;
         activeScope = (Scope)SessionState.GetInt(ScopeKey, (int)Scope.All);
         checks = RunPlayChecks(activeScope);
     }
@@ -303,7 +309,7 @@ public static partial class FinalLabInvestigationValidation
         frame = Time.frameCount;
         try
         {
-            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Final Lab tests exceeded 110 seconds.");
+            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Final Lab tests exceeded 150 seconds.");
             if (!checks.MoveNext()) Finish(null);
         }
         catch (Exception error)
@@ -330,9 +336,11 @@ public static partial class FinalLabInvestigationValidation
         var controller = player.GetComponent<CharacterController>();
         var manager = Object.FindFirstObjectByType<FinalLabInvestigationManager>();
         var ui = Object.FindFirstObjectByType<FinalLabInvestigationUI>();
+        var cutscene = Object.FindFirstObjectByType<FinalLabIvanCutsceneController>();
+        if (cutscene != null && scope != Scope.Cutscene) cutscene.enabled = false;
         yield return null;
         yield return null;
-        if (!Application.isBatchMode && (IsDeskScope(scope) || scope == Scope.Portals))
+        if (!Application.isBatchMode && UsesSizedGameView(scope))
         {
             int width = SessionState.GetInt(GuiWidthKey, 0);
             int height = width == 1920 ? 1080 : 768;
@@ -355,6 +363,7 @@ public static partial class FinalLabInvestigationValidation
             Scope.Archive => new[] { 0, 0 },
             Scope.Father => new[] { 0, 1, 1 },
             Scope.Ivan => new[] { 0, 1, 2, 2 },
+            Scope.Cutscene => new[] { 0, 1, 2 },
             _ => new[] { 0, 0, 1, 2, 2 }
         };
         var interactionPrompt = ui.GetComponentsInChildren<TMP_Text>().Single(label => label.name == "Interaction");
@@ -372,7 +381,7 @@ public static partial class FinalLabInvestigationValidation
             bool repeat = index < 3 && initial == index + 1;
             bool archive = index == 0, father = index == 1, ivan = index == 2;
             bool desk = father || ivan, controlledReading = archive || desk;
-            if ((scope is Scope.All or Scope.Ivan or Scope.Portals) && !repeat)
+            if ((scope is Scope.All or Scope.Ivan or Scope.Portals or Scope.Cutscene) && !repeat)
             {
                 for (int future = initial + 1; future < manager.Points.Length; future++)
                 {
@@ -548,10 +557,19 @@ public static partial class FinalLabInvestigationValidation
                     if (desk && !repeat && count == 3 && !Application.isBatchMode) Capture(camera, point.Id + "-all-read");
                 }
             }
+            if (scope == Scope.Cutscene && ivan) Require(cutscene.State == FinalLabIvanCutsceneController.Stage.Waiting,
+                "Ivan stays hidden during all documents and before the final ESC.");
             Keys(Key.Escape);
             for (int f = 0; f < 3; f++) yield return null;
             Keys();
             while (manager.State == FinalLabInvestigationManager.ViewState.Moving) yield return null;
+            if (scope == Scope.Cutscene && ivan)
+            {
+                Require(manager.Completed == 3 && completedEvents == 1 && manager.ActivePoint == null && !player.enabled,
+                    "Final ESC closed Ivan's desk at 3/3 and immediately handed control to the cutscene.");
+                foreach (var ignored in ExerciseIvanCutscene(cutscene, player, camera, manager, startingCamera)) yield return ignored;
+                yield break;
+            }
             int expected = repeat ? initial : index + 1;
             Require(player.enabled && manager.State == FinalLabInvestigationManager.ViewState.Walking &&
                 Cursor.lockState == cursor && Vector3.Distance(startingCamera, camera.transform.position) < 0.025f,
@@ -706,9 +724,11 @@ public static partial class FinalLabInvestigationValidation
 
     private static void Capture(Camera camera, string title)
     {
+        if (activeScope == Scope.Cutscene && !title.StartsWith("Cutscene-", StringComparison.Ordinal)) return;
         if (!Application.isBatchMode)
         {
-            string resolution = IsDeskScope(activeScope) || activeScope == Scope.Portals ? $"{Screen.width}x{Screen.height}-" : "";
+            Directory.CreateDirectory(CaptureOutput);
+            string resolution = UsesSizedGameView(activeScope) ? $"{Screen.width}x{Screen.height}-" : "";
             ScreenCapture.CaptureScreenshot(Path.GetFullPath(Path.Combine(CaptureOutput, "GUI-" + resolution + title + ".png")));
             return;
         }
@@ -736,7 +756,7 @@ public static partial class FinalLabInvestigationValidation
     private static string CaptureOutput => activeScope switch
     {
         Scope.Father => FinalLabFatherDeskRevision.Output, Scope.Ivan => FinalLabIvanDeskRevision.Output,
-        Scope.Portals => FinalLabPortalBuilder.Logs, _ => Output
+        Scope.Portals => FinalLabPortalBuilder.Logs, Scope.Cutscene => "Logs/FinalLab/IvanDialogue", _ => Output
     };
 
     private static void Require(bool value, string message)
@@ -755,7 +775,7 @@ public static partial class FinalLabInvestigationValidation
         if (Application.isBatchMode) EditorApplication.Exit(error == null ? 0 : 1);
         else
         {
-            string phase = IsDeskScope(activeScope) || activeScope == Scope.Portals
+            string phase = UsesSizedGameView(activeScope)
                 ? $"{activeScope.ToString().ToUpperInvariant()}_GUI_{Screen.width}x{Screen.height}" : "ARCHIVE_GUI";
             Debug.Log("FINAL_LAB_" + phase + "_" + (error == null ? "PASSED" : "FAILED"));
             RestoreDesktopInput();
@@ -765,7 +785,7 @@ public static partial class FinalLabInvestigationValidation
                 if (verifyCompact) SessionState.SetInt(NextGuiPass, (int)activeScope);
                 else SessionState.SetBool(RestoreGuiSize, true);
             }
-            else if (activeScope == Scope.Portals) SessionState.SetBool(RestoreGuiSize, true);
+            else if (UsesSizedGameView(activeScope)) SessionState.SetBool(RestoreGuiSize, true);
             EditorApplication.ExitPlaymode();
         }
     }
