@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,12 @@ namespace FinalLab.Investigation
     public sealed class FinalLabInvestigationManager : MonoBehaviour
     {
         public enum ViewState { Walking, Moving, Overview, Detail }
+        private const string ArchiveId = "Archive";
+        private const string FatherId = "Father";
+        private const string IvanId = "Ivan";
+        private static readonly string[] RequiredArchiveIds = { "А1", "А2", "А3", "А4" };
+        private static readonly string[] RequiredFatherIds = { "О1", "О2", "О3" };
+        private static readonly string[] RequiredIvanIds = { "И1", "И2", "И3" };
 
         [SerializeField] private FirstPersonPlayer player;
         [SerializeField] private Camera view;
@@ -15,6 +22,9 @@ namespace FinalLab.Investigation
         [SerializeField] private InvestigationPoint[] points;
 
         private readonly RaycastHit[] hits = new RaycastHit[32];
+        private readonly HashSet<string> archiveViewed = new(StringComparer.Ordinal);
+        private readonly HashSet<string> fatherViewed = new(StringComparer.Ordinal);
+        private readonly HashSet<string> ivanViewed = new(StringComparer.Ordinal);
         private DocumentInspectionCamera inspection;
         private InvestigationProgress progress;
         private InvestigationPoint active;
@@ -25,7 +35,7 @@ namespace FinalLab.Investigation
         private float lastAction, zoomTarget, detailFov;
         private CursorLockMode oldCursor;
         private bool oldCursorVisible;
-        private Pose documentHome, paperFrom, paperTo;
+        private Pose documentHome, deskDocumentHome, paperFrom, paperTo;
         private Transform movingPaper;
 
         public ViewState State => state;
@@ -33,7 +43,19 @@ namespace FinalLab.Investigation
         public InvestigationPoint ObjectivePoint => progress != null && progress.Count < points.Length ? points[progress.Count] : null;
         public InvestigationDocument Selected => selected;
         public int Completed => progress?.Count ?? 0;
+        public int ArchiveViewedCount => archiveViewed.Count;
+        public int FatherViewedCount => fatherViewed.Count;
+        public int IvanViewedCount => ivanViewed.Count;
         public InvestigationPoint[] Points => points;
+        private bool AtArchive => active != null && active.Id == ArchiveId;
+        private bool AtFather => active != null && active.Id == FatherId;
+        private bool AtIvan => active != null && active.Id == IvanId;
+        private bool AtDesk => AtFather || AtIvan;
+        private bool RequiresAllDocuments => AtArchive || AtDesk;
+        private HashSet<string> ViewedDocuments => AtFather ? fatherViewed : AtIvan ? ivanViewed : archiveViewed;
+        private string[] RequiredDocuments => AtFather ? RequiredFatherIds : AtIvan ? RequiredIvanIds : RequiredArchiveIds;
+        private int ViewedCount => ViewedDocuments.Count;
+        private int RequiredCount => RequiredDocuments.Length;
 
         public void Configure(FirstPersonPlayer motor, Camera camera, FinalLabInvestigationUI display,
             InvestigationPoint[] orderedPoints)
@@ -77,7 +99,8 @@ namespace FinalLab.Investigation
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
             if (state == ViewState.Walking)
             {
-                var point = player.enabled ? NearbyPoint() : null;
+                var point = NearbyPoint();
+                if (!IsUnlocked(point)) point = null;
                 ui.SetPrompt(point != null ? point.Prompt : "");
                 if (point != null && keyboard != null && keyboard.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
                     TryOpen(point);
@@ -101,6 +124,7 @@ namespace FinalLab.Investigation
                 if (!back || InteractionInput.TryConsume()) Close();
                 return;
             }
+            if (RequiresAllDocuments) return;
             if (mouse != null) Scroll(mouse.scroll.ReadValue().y / 120f);
             inspection.Zoom(zoomTarget, Time.unscaledDeltaTime);
         }
@@ -140,8 +164,8 @@ namespace FinalLab.Investigation
 
         public bool TryOpen(InvestigationPoint point)
         {
-            if (state != ViewState.Walking || inspection == null || point == null || !player.enabled ||
-                Array.IndexOf(points, point) < 0 || NearbyPoint() != point ||
+            if (state != ViewState.Walking || inspection == null || !player.enabled ||
+                !IsUnlocked(point) || NearbyPoint() != point ||
                 !inspection.CanReach(view.transform.position, point.Overview.position)) return false;
             active = point;
             keyOpened = false;
@@ -156,8 +180,15 @@ namespace FinalLab.Investigation
             lastAction = Time.unscaledTime;
             ui.ClearHint();
             ui.SetPrompt("");
-            Move(OverviewPose(), OverviewFov(), 0.53f, ShowOverview);
+            Move(OverviewPose(), OverviewFov(), AtDesk ? 0.66f : 0.53f, ShowOverview);
             return true;
+        }
+
+        private bool IsUnlocked(InvestigationPoint point)
+        {
+            if (point == null || progress == null) return false;
+            int index = Array.IndexOf(points, point);
+            return index >= 0 && index <= progress.Count;
         }
 
         public bool TrySelect(InvestigationDocument item)
@@ -165,6 +196,13 @@ namespace FinalLab.Investigation
             if (state != ViewState.Overview || item == null || !active.Owns(item)) return false;
             Pose from = inspection.Current;
             float dist = Mathf.Max(0.41f, item.Size.y * 1.33f, item.Size.x * 1.33f / Mathf.Max(0.70f, view.aspect));
+            const float focusFov = 48;
+            if (RequiresAllDocuments)
+            {
+                float verticalSpan = 2 * Mathf.Tan(focusFov * 0.5f * Mathf.Deg2Rad);
+                dist = Mathf.Max(0.36f, item.Size.y / (verticalSpan * 0.78f),
+                    item.Size.x / (verticalSpan * Mathf.Max(0.3f, view.aspect) * 0.83f));
+            }
             Pose cameraTarget = from;
             if (!item.Lifts)
             {
@@ -174,20 +212,34 @@ namespace FinalLab.Investigation
                 if (!inspection.CanReach(from.position, cameraTarget.position)) return false;
             }
             Highlight(null);
+            if (RequiresAllDocuments)
+            {
+                active.SetHighlighted(false);
+                if (AtDesk) ui.ShowDeskDetail(item.Kind);
+                else ui.ShowArchiveDetail();
+            }
             selected = item;
             documentHome = new Pose(item.transform.position, item.transform.rotation);
+            if (AtDesk) deskDocumentHome = new Pose(item.transform.localPosition, item.transform.localRotation);
             if (item.Lifts) AnimatePaper(item.transform, new Pose(from.position + from.forward * dist, from.rotation));
-            detailFov = 48;
+            detailFov = focusFov;
             Move(cameraTarget, detailFov, item.Lifts ? 0.49f : 0.52f, () =>
             {
+                if (AtArchive && (inspection.Current.position - cameraTarget.position).sqrMagnitude > 0.0004f)
+                {
+                    RestorePaper();
+                    Move(OverviewPose(), OverviewFov(), 0.46f, ShowOverview);
+                    return;
+                }
                 zoomTarget = detailFov;
                 if (item.Id == active.KeyId) keyOpened = true;
+                if (RequiresAllDocuments && Array.IndexOf(RequiredDocuments, item.Id) >= 0)
+                    ViewedDocuments.Add(item.Id);
                 state = ViewState.Detail;
                 lastAction = Time.unscaledTime;
-                ui.SetControls(item.Lifts
-                    ? "Колёсико — Масштаб\nЛКМ / Esc — Положить документ"
-                    : active.Wall
-                        ? "Колёсико — Масштаб\nЛКМ / Esc — Вернуться к стене"
+                if (!RequiresAllDocuments)
+                    ui.SetControls(item.Lifts
+                        ? "Колёсико — Масштаб\nЛКМ / Esc — Положить документ"
                         : "Колёсико — Масштаб\nЛКМ / Esc — Вернуться к контейнеру");
             });
             return true;
@@ -195,7 +247,7 @@ namespace FinalLab.Investigation
 
         public void Scroll(float steps)
         {
-            if (state == ViewState.Detail)
+            if (state == ViewState.Detail && !RequiresAllDocuments)
                 zoomTarget = Mathf.Clamp(zoomTarget - Mathf.Clamp(steps, -3f, 3f) * 5.3f, detailFov - 19, detailFov + 17);
         }
 
@@ -213,8 +265,15 @@ namespace FinalLab.Investigation
                 return true;
             }
             if (state != ViewState.Overview) return false;
+            if (RequiresAllDocuments && ViewedCount < RequiredCount)
+            {
+                if (AtDesk) ui.WarnDeskExit(AtIvan ? "Ивана" : "отца", ViewedCount, RequiredCount);
+                else ui.WarnArchiveExit(ViewedCount, RequiredCount);
+                return false;
+            }
             Highlight(null);
             ui.SetControls("");
+            if (RequiresAllDocuments) ui.ClearReading();
             Move(inspection.GameplayPose, inspection.GameplayFov, 0.50f, FinishPoint);
             return true;
         }
@@ -222,6 +281,18 @@ namespace FinalLab.Investigation
         private void ShowOverview()
         {
             state = ViewState.Overview;
+            if (AtArchive)
+            {
+                active.SetHighlighted(true);
+                ui.ShowArchiveOverview(ViewedCount, RequiredCount);
+                return;
+            }
+            if (AtDesk)
+            {
+                active.SetHighlighted(true);
+                ui.ShowDeskOverview(ViewedCount, RequiredCount);
+                return;
+            }
             ui.SetControls(active.Container ? "ЛКМ — Выбрать документ или деталь\nEsc — Закрыть осмотр"
                 : "ЛКМ — Выбрать документ\nEsc — Выйти");
         }
@@ -229,7 +300,9 @@ namespace FinalLab.Investigation
         private void FinishPoint()
         {
             int before = Completed;
-            if (keyOpened && progress.Complete(Array.IndexOf(points, active)))
+            bool readRequired = RequiresAllDocuments ? ViewedCount == RequiredCount : keyOpened;
+            if (RequiresAllDocuments) active.SetHighlighted(active == ObjectivePoint);
+            if (readRequired && progress.Complete(Array.IndexOf(points, active)))
             {
                 if (!reactionShown) ShowReaction();
                 lastAction = Time.unscaledTime;
@@ -286,7 +359,11 @@ namespace FinalLab.Investigation
         private void RestorePaper()
         {
             if (selected != null && selected.Lifts)
-                selected.transform.SetPositionAndRotation(documentHome.position, documentHome.rotation);
+            {
+                if (AtDesk)
+                    selected.transform.SetLocalPositionAndRotation(deskDocumentHome.position, deskDocumentHome.rotation);
+                else selected.transform.SetPositionAndRotation(documentHome.position, documentHome.rotation);
+            }
             selected = null;
         }
 
@@ -304,6 +381,11 @@ namespace FinalLab.Investigation
             RestorePaper();
             if (active != null && inspection != null)
             {
+                if (RequiresAllDocuments)
+                {
+                    active.SetHighlighted(active == ObjectivePoint);
+                    if (ui != null) ui.ClearReading();
+                }
                 RestorePlayer();
                 active = null;
                 arrived = null;

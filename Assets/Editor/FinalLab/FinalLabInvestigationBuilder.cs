@@ -12,7 +12,7 @@ public sealed partial class FinalLabInvestigationBuilder
     internal const string RootName = "FinalLab_Investigation";
     internal const string PropPath = "Assets/Art/Models/Environment/FinalLab/";
     internal static readonly Vector3[] Approaches = {
-        new(0.02f, 0, 3.37f), new(-3.00f, 0, 9.60f), new(-2.80f, 0, 11.61f), new(-2.85f, 0, 6.25f)
+        new(0.02f, 0, 3.37f), new(-3.02f, 0, 8.05f), new(-2.80f, 0, 11.61f), new(-2.85f, 0, 6.25f)
     };
     private static readonly Quaternion FloorPage = Quaternion.LookRotation(Vector3.down, Vector3.left);
     private static readonly Quaternion WestWallPage = Quaternion.LookRotation(Vector3.left, Vector3.up);
@@ -79,12 +79,7 @@ public sealed partial class FinalLabInvestigationBuilder
         };
         foreach (var photo in photographs) Tape(photo.transform, photo.Size, false);
         var symbol = Child(point, "Символ из трёх незамкнутых колец", new Vector3(0.02f, -0.015f, 0), Quaternion.Euler(0, 0, 2));
-        Vector2 symbolSize = new(0.277f, 0.278f);
-        assets.Plane(symbol, "Drawing", Vector3.zero, symbolSize, assets.SymbolPaper);
-        Tape(symbol, symbolSize, true);
-        var mark = assets.AttachEvidence(symbol.gameObject,
-            new EvidenceRecord { id = "Archive_Rings", title = "Три незамкнутых кольца", point = 0 },
-            symbolSize, EvidenceKind.Symbol, mounted);
+        var mark = FinalLabArchiveArtwork.Apply(assets, symbol);
         var bracket = assets.CornerOutline(point, "Objective contour", new Vector2(1.78f, 0.87f), 0.006f, false, assets.Goal);
         return Point(point, "Archive", "А1", "Осмотрите архивную стену", "Осмотреть архив",
             "В коридоре слева висят старые архивные документы.",
@@ -117,10 +112,12 @@ public sealed partial class FinalLabInvestigationBuilder
         assets.Plane(dossier, "Blank label", new Vector3(-0.035f, 0.055f, -0.001f), new Vector2(0.12f, 0.044f), assets.Paper);
         var pencil = Block(point, "Pencil", new Vector3(-4.559f, y + 0.003f, 9.59f), new Vector3(0.008f, 0.008f, 0.12f), wood);
         pencil.rotation = Quaternion.Euler(0, 31, 0);
-        return DeskPoint(point, "Father", "О2", "Изучите записи отца", "Поищите старые записи отца в левой части лаборатории.",
+        var investigation = DeskPoint(point, "Father", "О2", "Изучите записи отца", "Поищите старые записи отца в левой части лаборатории.",
             "Он знал, что эта штука опасна... И всё равно не смог остановить Ивана.",
             new Vector3(-3.75f, 1.49f, 9.61f), new Vector3(-4.47f, y, 9.60f),
             new Vector2(1.03f, 0.68f), papers, new Collider[] { top.GetComponent<Collider>() });
+        FinalLabFatherDeskRevision.ConfigureDesk(investigation, assets);
+        return investigation;
     }
 
     private InvestigationPoint Ivan()
@@ -137,10 +134,12 @@ public sealed partial class FinalLabInvestigationBuilder
             Page(point, "И3", new(-4.38f, y, 11.315f), new(0.171f, 0.235f), lifted, FloorPage),
             Photo(point, 3, 2, new(-4.658f, y, 11.112f), 0.218f, lifted, FloorPage * Quaternion.Euler(0, 0, -7))
         };
-        return DeskPoint(point, "Ivan", "И3", "Осмотрите стол Ивана", "Рабочий стол Ивана находится в основном зале.",
+        var investigation = DeskPoint(point, "Ivan", "И3", "Осмотрите стол Ивана", "Рабочий стол Ивана находится в основном зале.",
             "Деньги, слава... Он знал, чем всё закончилось, и всё равно продолжал. И этот голос... Неужели он действительно поверил?",
             new Vector3(-3.63f, 1.61f, 11.20f), new Vector3(-4.53f, y, 11.14f),
             new Vector2(0.67f, 0.53f), papers, colliders);
+        FinalLabIvanDeskRevision.ConfigureDesk(investigation, desk.parent, assets);
+        return investigation;
     }
 
     private InvestigationPoint DeskPoint(Transform point, string id, string key, string goal, string hint, string quote,

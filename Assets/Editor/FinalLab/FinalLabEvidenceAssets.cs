@@ -28,14 +28,25 @@ internal sealed class FinalLabEvidenceAssets
     };
 
     public readonly TMP_FontAsset Font;
-    public readonly Material Goal, Hover, BlueTape, Paper, SymbolPaper;
+    public readonly Material Goal, Hover, BlueTape, Paper;
     public readonly Mesh Quad;
     public readonly EvidenceCatalog Catalog;
 
     [Serializable] private sealed class PhotoPaths { public string[] files; }
 
-    public FinalLabEvidenceAssets()
+    public FinalLabEvidenceAssets(bool existingArchiveResources = false)
     {
+        if (existingArchiveResources)
+        {
+            Catalog = JsonUtility.FromJson<EvidenceCatalog>(AssetDatabase.LoadAssetAtPath<TextAsset>(Data).text);
+            Font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(Root + "/Data/FinalLab_Cyrillic_SDF.asset");
+            Quad = AssetDatabase.LoadAssetAtPath<Mesh>(Geometry + "Evidence_Quad.asset");
+            Goal = AssetDatabase.LoadAssetAtPath<Material>(Materials + "Goal_Yellow.mat");
+            Hover = AssetDatabase.LoadAssetAtPath<Material>(Materials + "Hover_Yellow.mat");
+            BlueTape = AssetDatabase.LoadAssetAtPath<Material>(Materials + "Faded_Blue_Tape.mat");
+            Paper = AssetDatabase.LoadAssetAtPath<Material>(Materials + "Paper_Soviet.mat");
+            return;
+        }
         foreach (string p in new[] { "Data", "Textures", "Materials", "Pages", "Geometry" })
             if (!AssetDatabase.IsValidFolder(Root + "/" + p)) AssetDatabase.CreateFolder(Root, p);
         ImportPhotos();
@@ -46,7 +57,6 @@ internal sealed class FinalLabEvidenceAssets
         Hover = Unlit("Hover_Yellow", Color32Of(255, 228, 77));
         BlueTape = Unlit("Faded_Blue_Tape", new Color(0.16f, 0.29f, 0.41f));
         Paper = Sheet("Soviet");
-        SymbolPaper = Unlit("Black_Conductor_Rings", Color.white, SymbolTexture());
     }
 
     internal static EvidenceCatalog ImportCatalog()
@@ -83,6 +93,8 @@ internal sealed class FinalLabEvidenceAssets
                 id = id, title = title, date = date, body = body, style = style, point = point,
                 stamp = id == "А4" ? "ДЕЛО ЗАКРЫТО" : ""
             });
+            FinalLabFatherDeskRevision.TrimRepeatedDate(records[^1]);
+            if (point == 2) records[^1].body = FinalLabIvanDeskRevision.DocumentBody(id);
         }
         if (records.Count != 13 || records.Select(r => r.id).Distinct().Count() != 13)
             throw new InvalidOperationException("Expected thirteen unique source documents.");
@@ -227,7 +239,7 @@ internal sealed class FinalLabEvidenceAssets
     }
 
     public InvestigationDocument AttachEvidence(GameObject obj, EvidenceRecord record, Vector2 size,
-        EvidenceKind kind, EvidencePresentation presentation, Collider area = null)
+        EvidenceKind kind, EvidencePresentation presentation, Collider area = null, InvestigationDocument item = null)
     {
         if (area == null)
         {
@@ -237,7 +249,7 @@ internal sealed class FinalLabEvidenceAssets
             area = box;
         }
         var highlight = CornerOutline(obj.transform, "Cursor Outline", size + Vector2.one * 0.011f, 0.0035f, true, Hover);
-        var item = obj.AddComponent<InvestigationDocument>();
+        if (item == null) item = obj.AddComponent<InvestigationDocument>();
         item.Configure(record, kind, presentation, size, area, highlight);
         return item;
     }
@@ -275,6 +287,8 @@ internal sealed class FinalLabEvidenceAssets
         string name = PhotoNames[index];
         string path = Pages + name + ".prefab";
         var photo = AssetDatabase.LoadAssetAtPath<Texture2D>(Textures + name + ".png");
+        if (index == 2) photo = AssetDatabase.LoadAssetAtPath<Texture2D>(FinalLabFamilyPhoto.ForestImage) ?? photo;
+        if (index == 3) photo = AssetDatabase.LoadAssetAtPath<Texture2D>(FinalLabIvanDeskRevision.PortraitAsset) ?? photo;
         var asset = new GameObject(name);
         float imageWidth = width * 0.90f;
         float imageHeight = imageWidth * photo.height / photo.width;
@@ -370,39 +384,6 @@ internal sealed class FinalLabEvidenceAssets
             AssetDatabase.CreateAsset(texture, path);
         }
         return Unlit("Paper_" + style, Color.white, texture);
-    }
-
-    private Texture2D SymbolTexture()
-    {
-        string path = Textures + "Black_Conductor_Three_Rings.asset";
-        var image = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-        if (image != null) return image;
-        const int dim = 600;
-        image = new Texture2D(dim, dim, TextureFormat.RGB24, true) { name = "Three Broken Concentric Rings" };
-        var pixels = new Color32[dim * dim];
-        float[] radii = { 0.18f, 0.28f, 0.38f }, gaps = { 30, 166, 280 };
-        for (int y = 0; y < dim; y++)
-        for (int x = 0; x < dim; x++)
-        {
-            float u = (x + 0.5f) / dim - 0.5f, v = (y + 0.5f) / dim - 0.5f;
-            float r = Mathf.Sqrt(u * u + v * v);
-            float angle = Mathf.Atan2(v, u) * Mathf.Rad2Deg;
-            Color paper = new Color(0.73f, 0.62f, 0.44f) * (0.92f + 0.11f * Mathf.PerlinNoise(x / 6f, y / 8f));
-            float ink = 0;
-            for (int ring = 0; ring < radii.Length; ring++)
-            {
-                float arc = Mathf.Abs(Mathf.DeltaAngle(angle, gaps[ring]));
-                if (arc < 17 + ring * 2) continue;
-                float ragged = Mathf.Sin(angle * 0.18f + ring) * 0.0017f;
-                ink = Mathf.Max(ink, 1 - Mathf.SmoothStep(0, 1, (Mathf.Abs(r - radii[ring] - ragged) - 0.0032f) * 465));
-            }
-            pixels[y * dim + x] = Color.Lerp(paper, new Color(0.14f, 0.105f, 0.074f), ink);
-        }
-        image.SetPixels32(pixels);
-        image.wrapMode = TextureWrapMode.Clamp;
-        image.Apply();
-        AssetDatabase.CreateAsset(image, path);
-        return image;
     }
 
     internal static Color Color32Of(byte r, byte g, byte b) => new Color32(r, g, b, 255);

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace FinalLab.Investigation
 {
-    public enum EvidenceKind { Document, Photograph, Detail, Symbol }
+    public enum EvidenceKind { Document, Photograph, Detail, Symbol, Folder }
     public enum EvidencePresentation { Mounted, Lifted }
 
     [Serializable]
