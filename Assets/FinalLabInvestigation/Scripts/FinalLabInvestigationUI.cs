@@ -93,7 +93,7 @@ namespace FinalLab.Investigation
         public void Progress(int complete, int total, string goal, bool immediate)
         {
             pendingStatus = $"Осмотрено: {complete}/{total}";
-            pendingObjective = complete == total ? "Исследование завершено" : "Цель: " + goal;
+            pendingObjective = complete == total ? "Расследование завершено" : "Цель: " + goal;
             if (!immediate)
             {
                 transition = 0;

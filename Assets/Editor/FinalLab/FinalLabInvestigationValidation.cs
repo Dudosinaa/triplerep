@@ -16,14 +16,14 @@ using UnityEngine.Rendering.Universal;
 using Object = UnityEngine.Object;
 
 [InitializeOnLoad]
-public static class FinalLabInvestigationValidation
+public static partial class FinalLabInvestigationValidation
 {
     private const string BatchKey = "FinalLab.InvestigationCheck";
     private const string ScopeKey = "FinalLab.InvestigationScope";
     private const string GuiWidthKey = "FinalLab.DeskGameViewWidth";
     private const string NextGuiPass = "FinalLab.DeskRunCompact";
     private const string RestoreGuiSize = "FinalLab.DeskRestoreGameView";
-    private enum Scope { All, Archive, Father, Ivan }
+    private enum Scope { All, Archive, Father, Ivan, Portals }
     private const string Output = FinalLabInvestigationSurvey.Logs;
     private static IEnumerator checks;
     private static Keyboard keyboard;
@@ -49,8 +49,12 @@ public static class FinalLabInvestigationValidation
         var manager = roots.Single(o => o.name == FinalLabInvestigationBuilder.RootName)
             .GetComponent<FinalLabInvestigationManager>();
         var points = manager.Points;
-        Require(points.Select(p => p.Id).SequenceEqual(new[] { "Archive", "Father", "Ivan", "K17" }), "The four points and their order survived reopening.");
-        var evidence = points.SelectMany(p => p.Evidence).ToArray();
+        Require(points.Select(p => p.Id).SequenceEqual(new[] { "Archive", "Father", "Ivan" }),
+            "The three required points and their order survived reopening.");
+        var container = manager.GetComponentsInChildren<InvestigationPoint>(true).Single(p => p.Container);
+        Require(!container.IsHighlighted && !points.Contains(container), "K-17 and its evidence remain outside the initial investigation.");
+        var owners = points.Append(container).ToArray();
+        var evidence = owners.SelectMany(p => p.Evidence).ToArray();
         var documents = evidence.Where(e => e.Kind == EvidenceKind.Document).ToDictionary(e => e.Id);
         var source = JsonUtility.FromJson<EvidenceCatalog>(AssetDatabase.LoadAssetAtPath<TextAsset>(FinalLabEvidenceAssets.Data).text);
         Require(documents.Count == 13 && source.documents.Length == 13, "All thirteen documents and unique IDs exist.");
@@ -58,7 +62,7 @@ public static class FinalLabInvestigationValidation
         {
             var e = documents[text.id];
             Require(e.Record.title == text.title && e.Record.date == text.date && e.Record.body == text.body &&
-                text.body.Length > 100 && points[text.point].Owns(e.HitArea), text.id + " has the imported title, date, body and hit area.");
+                text.body.Length > 100 && owners[text.point].Owns(e.HitArea), text.id + " has the imported title, date, body and hit area.");
             var body = e.transform.Find("Print/Body").GetComponent<TMP_Text>();
             Require(body.text == text.body && body.font.HasCharacters(text.body.Replace("\n", "")),
                 text.id + " displays all its text with Cyrillic glyph coverage.");
@@ -114,6 +118,7 @@ public static class FinalLabInvestigationValidation
             }
         }
         VerifyWalkway();
+        VerifyPortalScene(roots, architecture);
         Require(all.Count(t => t.GetComponent<Camera>() != null) == 1 && all.Count(t => t.GetComponent<AudioListener>() != null) == 1,
             "The inspection uses the existing camera and AudioListener.");
         Debug.Log("FINAL_LAB_INVESTIGATION_REOPEN passed.");
@@ -216,6 +221,8 @@ public static class FinalLabInvestigationValidation
 
     public static void PlayIvan() => BeginBatchPlay(Scope.Ivan);
 
+    public static void PlayPortals() => BeginBatchPlay(Scope.Portals);
+
     private static void BeginBatchPlay(Scope scope)
     {
         Reopen();
@@ -228,6 +235,8 @@ public static class FinalLabInvestigationValidation
 
     public static void OpenIvanInEditor() => OpenInEditor(Scope.Ivan);
 
+    public static void OpenPortalsInEditor() => OpenInEditor(Scope.Portals);
+
     private static bool IsDeskScope(Scope scope) => scope is Scope.Father or Scope.Ivan;
 
     private static void OpenInEditor(Scope scope)
@@ -236,7 +245,7 @@ public static class FinalLabInvestigationValidation
         EditorSceneManager.OpenScene(FinalLabBuilder.ScenePath);
         var gameView = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
         if (gameView != null) EditorWindow.GetWindow(gameView).Focus();
-        if (IsDeskScope(scope)) SetDeskGameView(1920, 1080);
+        if (IsDeskScope(scope) || scope == Scope.Portals) SetDeskGameView(1920, 1080);
         BeginPlay(scope);
     }
 
@@ -261,7 +270,7 @@ public static class FinalLabInvestigationValidation
             RestoreDesktopInput();
             SessionState.EraseBool(BatchKey);
             SessionState.EraseInt(ScopeKey);
-            if (IsDeskScope(activeScope)) SessionState.SetBool(RestoreGuiSize, true);
+            if (IsDeskScope(activeScope) || activeScope == Scope.Portals) SessionState.SetBool(RestoreGuiSize, true);
         }
         if (state == PlayModeStateChange.EnteredEditMode)
         {
@@ -324,7 +333,7 @@ public static class FinalLabInvestigationValidation
         var ui = Object.FindFirstObjectByType<FinalLabInvestigationUI>();
         yield return null;
         yield return null;
-        if (!Application.isBatchMode && IsDeskScope(scope))
+        if (!Application.isBatchMode && (IsDeskScope(scope) || scope == Scope.Portals))
         {
             int width = SessionState.GetInt(GuiWidthKey, 0);
             int height = width == 1920 ? 1080 : 768;
@@ -333,10 +342,11 @@ public static class FinalLabInvestigationValidation
                 EditorApplication.timeSinceStartup < sizeDeadline) yield return null;
             Require(Screen.width == width && Screen.height == height, $"Graphical Game View is actually {width}x{height}.");
         }
-        Require(manager.State == FinalLabInvestigationManager.ViewState.Walking && manager.Completed == 0 &&
-            ui.StatusText == "Осмотрено: 0/4" && ui.ObjectiveText == "Цель: Осмотрите архивную стену",
-            "The real Play Mode starts in walking and shows the correct 0/4 objective.");
-        var orderedProgress = new InvestigationProgress(4);
+        int totalPoints = manager.Points.Length;
+        Require(totalPoints == 3 && manager.State == FinalLabInvestigationManager.ViewState.Walking && manager.Completed == 0 &&
+            ui.StatusText == "Осмотрено: 0/3" && ui.ObjectiveText == "Цель: Осмотрите архивную стену",
+            "The real Play Mode starts in walking and shows the correct 0/3 objective.");
+        var orderedProgress = new InvestigationProgress(totalPoints);
         Require(!orderedProgress.Complete(2) && orderedProgress.Count == 0 && !orderedProgress.IsStudied(2) &&
             orderedProgress.Complete(0) && !orderedProgress.Complete(0) && !orderedProgress.Complete(2) &&
             orderedProgress.Count == 1 && orderedProgress.Complete(1) && orderedProgress.Count == 2,
@@ -346,20 +356,21 @@ public static class FinalLabInvestigationValidation
             Scope.Archive => new[] { 0, 0 },
             Scope.Father => new[] { 0, 1, 1 },
             Scope.Ivan => new[] { 0, 1, 2, 2 },
-            _ => new[] { 0, 0, 1, 2, 3, 3 }
+            _ => new[] { 0, 0, 1, 2, 2 }
         };
-        bool testedContainerWithoutKey = false;
         var interactionPrompt = ui.GetComponentsInChildren<TMP_Text>().Single(label => label.name == "Interaction");
+        if (scope is Scope.Portals or Scope.All)
+            foreach (var ignored in PlayPortalChecks(player, camera, controller, manager, interactionPrompt)) yield return ignored;
+        int completedEvents = 0;
+        manager.InvestigationCompleted += () => completedEvents++;
         foreach (var index in sequence)
         {
             var point = manager.Points[index];
             int initial = manager.Completed;
-            bool incomplete = index == 3 && !testedContainerWithoutKey;
-            testedContainerWithoutKey |= incomplete;
             bool repeat = index < 3 && initial == index + 1;
             bool archive = index == 0, father = index == 1, ivan = index == 2;
             bool desk = father || ivan, controlledReading = archive || desk;
-            if ((scope == Scope.All || scope == Scope.Ivan) && !repeat && !incomplete)
+            if ((scope is Scope.All or Scope.Ivan or Scope.Portals) && !repeat)
             {
                 for (int future = initial + 1; future < manager.Points.Length; future++)
                 {
@@ -376,7 +387,7 @@ public static class FinalLabInvestigationValidation
                     Require(manager.State == FinalLabInvestigationManager.ViewState.Walking && player.enabled &&
                         manager.ActivePoint == null && manager.Completed == initial && manager.ObjectivePoint == point &&
                         interactionPrompt.text.Length == 0 && Vector3.Distance(eye, camera.transform.position) < 0.025f,
-                        locked.Id + " ignores E at " + initial + "/4 and leaves the current objective, camera and movement intact.");
+                        locked.Id + " ignores E at " + initial + "/" + totalPoints + " and leaves the current objective, camera and movement intact.");
                 }
             }
             if (father && !repeat)
@@ -429,11 +440,9 @@ public static class FinalLabInvestigationValidation
                 if (!repeat)
                     foreach (var ignored in BlockedExit(manager, ui, 0)) yield return ignored;
             }
-            if (!incomplete && !repeat) Capture(camera, point.Id + "-overview");
-            LightAndOcclusion(point, manager, camera, !incomplete && !repeat);
-            var selectedItems = incomplete
-                ? point.Evidence.Where(e => e.Kind == EvidenceKind.Document && e.Id != point.KeyId).Take(1) :
-                repeat ? point.Evidence.Where(e => e.Id == point.KeyId) : point.Evidence;
+            if (!repeat) Capture(camera, point.Id + "-overview");
+            LightAndOcclusion(point, manager, camera, !repeat);
+            var selectedItems = repeat ? point.Evidence.Where(e => e.Id == point.KeyId) : point.Evidence;
             if (controlledReading && !repeat)
             {
                 var first = point.Evidence.First(e => e.Kind == EvidenceKind.Document);
@@ -481,7 +490,7 @@ public static class FinalLabInvestigationValidation
                     Require(ui.ReadingReturnText == expectedHint && ui.ReadingReturnSize >= 24.8f,
                         evidence.Id + " shows the enlarged return hint without a scroll instruction.");
                 }
-                if (!incomplete && !repeat && (evidence.Id == point.KeyId || evidence.Id == "K17_Resonator" ||
+                if (!repeat && (evidence.Id == point.KeyId ||
                     evidence.Kind == EvidenceKind.Photograph || controlledReading))
                     Capture(camera, evidence.Id + "-detail");
                 float fov = camera.fieldOfView;
@@ -541,17 +550,17 @@ public static class FinalLabInvestigationValidation
             for (int f = 0; f < 3; f++) yield return null;
             Keys();
             while (manager.State == FinalLabInvestigationManager.ViewState.Moving) yield return null;
-            int expected = (incomplete || repeat) ? initial : index + 1;
+            int expected = repeat ? initial : index + 1;
             Require(player.enabled && manager.State == FinalLabInvestigationManager.ViewState.Walking &&
                 Cursor.lockState == cursor && Vector3.Distance(startingCamera, camera.transform.position) < 0.025f,
                 point.Id + " restores movement, camera and cursor state on exit.");
-            Require(manager.Completed == expected, point.Id + " exits with " + expected + "/4.");
+            Require(manager.Completed == expected, point.Id + " exits with " + expected + "/" + totalPoints + ".");
             double fade = EditorApplication.timeSinceStartup + 0.51;
             while (EditorApplication.timeSinceStartup < fade) yield return null;
-            Require(ui.StatusText == "Осмотрено: " + expected + "/4" &&
-                manager.Points.Count(p => p.IsHighlighted) == (expected < 4 ? 1 : 0) &&
-                (expected < 4 ? manager.Points[expected].IsHighlighted : ui.ObjectiveText == "Исследование завершено"),
-                "HUD status and objective outline agree at " + expected + "/4.");
+            Require(ui.StatusText == "Осмотрено: " + expected + "/" + totalPoints &&
+                manager.Points.Count(p => p.IsHighlighted) == (expected < totalPoints ? 1 : 0) &&
+                (expected < totalPoints ? manager.Points[expected].IsHighlighted : ui.ObjectiveText == "Расследование завершено"),
+                "HUD status and objective outline agree at " + expected + "/" + totalPoints + ".");
             if (archive && !repeat && !Application.isBatchMode) Capture(camera, "Archive-next-objective");
             if (ivan && !repeat && !Application.isBatchMode) Capture(camera, "Ivan-next-objective");
         }
@@ -560,11 +569,21 @@ public static class FinalLabInvestigationValidation
                 "Play Mode finished the archive and handed off to the father desk.");
         else if (scope == Scope.Father)
             Require(manager.Completed == 2 && ui.ObjectiveText == "Цель: Осмотрите стол Ивана",
-                "Play Mode finished both points and hands off to Ivan's desk at 2/4.");
-        else if (scope == Scope.Ivan)
-            Require(manager.Completed == 3 && manager.ObjectivePoint.Id == "K17" &&
-                ui.ObjectiveText == "Цель: Исследуйте контейнер К-17", "Play Mode finishes Ivan at 3/4 and unlocks K-17.");
-        else Require(manager.Completed == 4, "Play Mode completed the full 0/4 to 4/4 sequence.");
+                "Play Mode finished both points and hands off to Ivan's desk at 2/3.");
+        else
+        {
+            Require(manager.Completed == 3 && completedEvents == 1 && manager.ObjectivePoint == null &&
+                ui.ObjectiveText == "Расследование завершено", "The investigation ends once at 3/3 with no K-17 objective.");
+            var retained = manager.GetComponentsInChildren<InvestigationPoint>(true).Single(p => p.Container);
+            Aim(player, camera, controller, FinalLabInvestigationBuilder.Approaches[3], retained.Focus.position);
+            for (int f = 0; f < 3; f++) yield return null;
+            Keys(Key.E);
+            for (int f = 0; f < 3; f++) yield return null;
+            Keys();
+            Require(!manager.TryOpen(retained) && manager.ActivePoint == null && manager.Completed == 3,
+                "The preserved K-17 cannot reopen or add to the completed investigation.");
+            Capture(camera, "Investigation-complete");
+        }
     }
 
     private static int ReadCount(FinalLabInvestigationManager manager, int index) => index switch
@@ -687,7 +706,7 @@ public static class FinalLabInvestigationValidation
     {
         if (!Application.isBatchMode)
         {
-            string resolution = IsDeskScope(activeScope) ? $"{Screen.width}x{Screen.height}-" : "";
+            string resolution = IsDeskScope(activeScope) || activeScope == Scope.Portals ? $"{Screen.width}x{Screen.height}-" : "";
             ScreenCapture.CaptureScreenshot(Path.GetFullPath(Path.Combine(CaptureOutput, "GUI-" + resolution + title + ".png")));
             return;
         }
@@ -714,7 +733,8 @@ public static class FinalLabInvestigationValidation
 
     private static string CaptureOutput => activeScope switch
     {
-        Scope.Father => FinalLabFatherDeskRevision.Output, Scope.Ivan => FinalLabIvanDeskRevision.Output, _ => Output
+        Scope.Father => FinalLabFatherDeskRevision.Output, Scope.Ivan => FinalLabIvanDeskRevision.Output,
+        Scope.Portals => FinalLabPortalBuilder.Logs, _ => Output
     };
 
     private static void Require(bool value, string message)
@@ -733,7 +753,7 @@ public static class FinalLabInvestigationValidation
         if (Application.isBatchMode) EditorApplication.Exit(error == null ? 0 : 1);
         else
         {
-            string phase = IsDeskScope(activeScope)
+            string phase = IsDeskScope(activeScope) || activeScope == Scope.Portals
                 ? $"{activeScope.ToString().ToUpperInvariant()}_GUI_{Screen.width}x{Screen.height}" : "ARCHIVE_GUI";
             Debug.Log("FINAL_LAB_" + phase + "_" + (error == null ? "PASSED" : "FAILED"));
             RestoreDesktopInput();
@@ -743,6 +763,7 @@ public static class FinalLabInvestigationValidation
                 if (verifyCompact) SessionState.SetInt(NextGuiPass, (int)activeScope);
                 else SessionState.SetBool(RestoreGuiSize, true);
             }
+            else if (activeScope == Scope.Portals) SessionState.SetBool(RestoreGuiSize, true);
             EditorApplication.ExitPlaymode();
         }
     }

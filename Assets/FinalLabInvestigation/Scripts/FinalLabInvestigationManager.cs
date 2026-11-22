@@ -47,6 +47,7 @@ namespace FinalLab.Investigation
         public int FatherViewedCount => fatherViewed.Count;
         public int IvanViewedCount => ivanViewed.Count;
         public InvestigationPoint[] Points => points;
+        public event Action InvestigationCompleted;
         private bool AtArchive => active != null && active.Id == ArchiveId;
         private bool AtFather => active != null && active.Id == FatherId;
         private bool AtIvan => active != null && active.Id == IvanId;
@@ -99,6 +100,15 @@ namespace FinalLab.Investigation
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
             if (state == ViewState.Walking)
             {
+                var eye = inspection.Current;
+                if (player.enabled && NearestHit(new Ray(eye.position, eye.forward), FinalLabMetalDoor.UseDistance, out var doorHit) &&
+                    doorHit.collider.GetComponentInParent<FinalLabMetalDoor>() is { } door)
+                {
+                    ui.SetPrompt(door.Prompt);
+                    if (keyboard != null && keyboard.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
+                        door.Toggle();
+                    return;
+                }
                 var point = NearbyPoint();
                 if (!IsUnlocked(point)) point = null;
                 ui.SetPrompt(point != null ? point.Prompt : "");
@@ -314,6 +324,7 @@ namespace FinalLab.Investigation
             {
                 hinted = false;
                 UpdateObjective(false);
+                if (Completed == points.Length) InvestigationCompleted?.Invoke();
             }
         }
 
@@ -410,7 +421,8 @@ namespace FinalLab.Investigation
             {
                 var hit = results[i];
                 if (hit.distance >= distance || hit.collider.transform.IsChildOf(player.transform)) continue;
-                if (hit.collider.isTrigger && hit.collider.GetComponent<InvestigationDocument>() == null) continue;
+                if (hit.collider.isTrigger && hit.collider.GetComponent<InvestigationDocument>() == null &&
+                    hit.collider.GetComponentInParent<FinalLabMetalDoor>() == null) continue;
                 nearest = hit;
                 distance = hit.distance;
             }
