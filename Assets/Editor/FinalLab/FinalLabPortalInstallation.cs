@@ -53,9 +53,11 @@ public static partial class FinalLabPortalBuilder
         var fatherDoor = ReadOpening(architecture, FatherRoom, "DoorOpening");
         FitControlDoor(installation, controlDoor, metal);
         FitFatherDoor(installation, fatherDoor, metal);
-        var controlWindow = ReadOpening(architecture, ControlRoom, "ObservationWindowOpening");
+        RepairDoorPair(architecture, installation);
+        if (architecture.Find(ControlRoom + "/HallPartition/ObservationWindowOpening") != null)
+            FitWindow(installation, "ControlRoom_Observation", ReadOpening(architecture, ControlRoom, "ObservationWindowOpening"),
+                true, metal, MakeGlass(ControlGlass, true));
         var fatherWindow = ReadOpening(architecture, FatherRoom, "ObservationWindowOpening");
-        FitWindow(installation, "ControlRoom_Observation", controlWindow, true, metal, MakeGlass(ControlGlass, true));
         FitWindow(installation, "FatherRoom_Observation", fatherWindow, false, metal, MakeGlass(FatherGlass, false));
         Physics.SyncTransforms();
         AssetDatabase.SaveAssets();

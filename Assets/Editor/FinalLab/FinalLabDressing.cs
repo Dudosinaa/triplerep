@@ -161,7 +161,7 @@ public static partial class FinalLabProps
             float x = room.Right - 1.65f, z = room.Far - 1.37f;
             bed = FinalLabProps.Place(zone, "BedWithBedding", Hospital + "/Prefab/P_BedBedding.prefab",
                 new Vector3(x, room.Floor, z), new Vector3(0, 52, 0), height: 1.24f);
-            Collider(bed);
+            FitBedCollider(bed.Fit);
             var crate = FinalLabProps.Place(zone, "MedicalBox", Hospital + "/Prefab/P_Med_box_01.prefab",
                 new Vector3(room.Left + 0.99f, room.Floor, room.Far - 0.43f), new Vector3(0, -8, 0), 0.52f);
             Collider(crate);

@@ -112,7 +112,7 @@ public static class FinalLabIvanDeskRevision
         point.Focus.position = papers.center + new Vector3(papers.extents.x * 0.65f, 0.12f, 0);
         var desk = workspace.Find("Desk");
         var surfaces = desk.GetComponentsInChildren<Collider>().Where(c => c.enabled).ToArray();
-        point.Configure(point.Id, point.KeyId, point.Objective, "E — Осмотреть стол", point.Hint, point.Reaction,
+        point.Configure(point.Id, point.KeyId, point.Objective, "E — Изучить стол Ивана", point.Hint, point.Reaction,
             false, false, point.Range, point.Overview, point.Focus, corners, surfaces, point.Evidence);
         EditorUtility.SetDirty(point);
         Debug.Log($"FINAL_LAB_IVAN_TABLETOP papers {papers.min:F3} .. {papers.max:F3}, camera {point.Overview.position:F3}.");

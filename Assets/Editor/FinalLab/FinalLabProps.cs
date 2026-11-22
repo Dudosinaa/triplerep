@@ -176,17 +176,18 @@ public static partial class FinalLabProps
         return prop;
     }
 
-    private static Bounds GeometryBounds(Prop prop)
+    private static Bounds GeometryBounds(Prop prop, Transform space = null)
     {
         Vector3 min = Vector3.one * float.PositiveInfinity;
         Vector3 max = Vector3.one * float.NegativeInfinity;
+        var fromWorld = space == null ? Matrix4x4.identity : space.worldToLocalMatrix;
         foreach (var renderer in prop.Renderers.Where(r => r.enabled))
         {
             var filter = renderer.GetComponent<MeshFilter>();
-            Matrix4x4 world = filter.transform.localToWorldMatrix;
+            Matrix4x4 intoSpace = fromWorld * filter.transform.localToWorldMatrix;
             foreach (Vector3 local in filter.sharedMesh.vertices)
             {
-                Vector3 vertex = world.MultiplyPoint3x4(local);
+                Vector3 vertex = intoSpace.MultiplyPoint3x4(local);
                 min = Vector3.Min(min, vertex);
                 max = Vector3.Max(max, vertex);
             }
@@ -237,6 +238,16 @@ public static partial class FinalLabProps
         }
         anchor.position = bounds.center;
         collider.size = (bounds.size - new Vector3(0.012f, 0, 0.012f)) / prop.Fit.lossyScale.x;
+    }
+
+    internal static void FitBedCollider(Transform bed)
+    {
+        var bounds = GeometryBounds(new Prop(bed, bed.Find("Model")), bed);
+        var anchor = Mark(bed, "Furniture_Collision", Vector3.zero);
+        anchor.localRotation = Quaternion.identity;
+        anchor.localPosition = bounds.center;
+        if (!anchor.TryGetComponent<BoxCollider>(out var collider)) collider = anchor.gameObject.AddComponent<BoxCollider>();
+        collider.size = bounds.size;
     }
 
     private static Material Lit(string name, Color color, float metallic, float smoothness, Material source = null)
