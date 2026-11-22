@@ -7,12 +7,13 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private PistolController pistol;
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField] private TrainHostileEncounter trainEncounter;
 
     [Header("Movement")]
     [SerializeField, Min(0.1f)] private float walkSpeed = 4f;
+    [SerializeField, Min(1f)] private float sprintSpeedMultiplier = 1.5f;
     [SerializeField, Min(0.1f)] private float crouchSpeed = 2f;
     [SerializeField] private float gravity = -20f;
     [SerializeField, Min(0.1f)] private float mouseSensitivity = 0.12f;
@@ -33,6 +34,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
     internal const float KeyInteractionDistance = 3f;
     internal Camera PlayerCamera => playerCamera;
+    internal bool CanDrawPistol => trainEncounter == null || trainEncounter.IsActivated;
 
     private InteractionHints interactionHints;
     private AudioClip generatedStep;
@@ -51,7 +53,6 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (footstepSource == null) footstepSource = GetComponent<AudioSource>();
-        if (pistol == null) pistol = GetComponent<PistolController>();
 
         if (footstepSource != null && (footstepClips == null || footstepClips.Length == 0))
         {
@@ -91,6 +92,36 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         verticalSpeed = 0f;
         distanceSinceStep = 0f;
         controller.enabled = wasEnabled;
+    }
+
+    internal struct CheckpointPose
+    {
+        internal Vector3 Position, CameraPosition, CapsuleCenter;
+        internal Quaternion Rotation, CameraRotation;
+        internal float CapsuleHeight, FieldOfView, Pitch;
+    }
+
+    internal CheckpointPose CaptureCheckpointPose() => new CheckpointPose
+    {
+        Position = transform.position,
+        Rotation = transform.rotation,
+        CameraPosition = playerCamera.transform.localPosition,
+        CameraRotation = playerCamera.transform.localRotation,
+        CapsuleCenter = controller.center,
+        CapsuleHeight = controller.height,
+        FieldOfView = playerCamera.fieldOfView,
+        Pitch = cameraPitch
+    };
+
+    internal void RestoreCheckpointPose(CheckpointPose pose)
+    {
+        controller.height = pose.CapsuleHeight;
+        controller.center = pose.CapsuleCenter;
+        Teleport(pose.Position);
+        transform.rotation = pose.Rotation;
+        cameraPitch = pose.Pitch;
+        playerCamera.transform.SetLocalPositionAndRotation(pose.CameraPosition, pose.CameraRotation);
+        playerCamera.fieldOfView = pose.FieldOfView;
     }
 
     private void Update()
@@ -193,13 +224,16 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
     private void UpdateMovement(bool crouching)
     {
+        var keyboard = Keyboard.current;
         Vector2 input = new Vector2(
-            (Keyboard.current.dKey.isPressed ? 1f : 0f) - (Keyboard.current.aKey.isPressed ? 1f : 0f),
-            (Keyboard.current.wKey.isPressed ? 1f : 0f) - (Keyboard.current.sKey.isPressed ? 1f : 0f));
+            (keyboard.dKey.isPressed ? 1f : 0f) - (keyboard.aKey.isPressed ? 1f : 0f),
+            (keyboard.wKey.isPressed ? 1f : 0f) - (keyboard.sKey.isPressed ? 1f : 0f));
         input = Vector2.ClampMagnitude(input, 1f);
 
-        Vector3 horizontalVelocity = (transform.right * input.x + transform.forward * input.y) *
-                                     (crouching ? crouchSpeed : walkSpeed);
+        bool sprinting = trainEncounter != null && trainEncounter.IsActivated &&
+            (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+        float speed = crouching ? crouchSpeed : walkSpeed * (sprinting ? sprintSpeedMultiplier : 1f);
+        Vector3 horizontalVelocity = (transform.right * input.x + transform.forward * input.y) * speed;
         if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
         verticalSpeed += gravity * Time.deltaTime;
 
@@ -251,7 +285,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
     private void UpdateZoom()
     {
-        bool zoom = Mouse.current.rightButton.isPressed && (pistol == null || !pistol.IsEquipped);
+        bool zoom = Mouse.current.rightButton.isPressed;
         float target = zoom ? zoomFieldOfView : normalFieldOfView;
         playerCamera.fieldOfView = Mathf.MoveTowards(playerCamera.fieldOfView, target, zoomSmoothness * 20f * Time.deltaTime);
     }

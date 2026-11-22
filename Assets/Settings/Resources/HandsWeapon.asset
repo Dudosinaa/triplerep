@@ -21,6 +21,9 @@ MonoBehaviour:
   reloadClip: {fileID: 7400000, guid: efddf5262dce518449e01a87a4570a5a, type: 2}
   emptyReloadClip: {fileID: 7400000, guid: 7da469b57c1b597479a5f236f565a364, type: 2}
   equipClip: {fileID: 3743966214075639284, guid: 351e7a4737a03ef4e97fa0b2c89edfd7, type: 3}
+  shotSound: {fileID: 8300000, guid: f19e3fdb9c8082647a2c32beca28ba84, type: 3}
+  shotVolume: 0.5
+  reloadSound: {fileID: 8300000, guid: d6a92996dad6fc14dae1b6e5e5b3dd5e, type: 3}
   materialBindings:
   - sourceName: MI_gl5000_Asian_Hand_Male_Inst
     material: {fileID: 2100000, guid: 33582676b7733f2076f4a3a7d8b31d87, type: 2}
@@ -37,8 +40,11 @@ MonoBehaviour:
   attachmentsMaterial: {fileID: 0}
   hipOffset: {x: 0, y: 0, z: 0}
   modelScale: {x: 1, y: 1, z: 1}
-  sightBone: Base_end
-  sightOffsetMeters: {x: 0, y: 0.01, z: 0}
-  aimDepthOffset: 0
   reloadInsertNormalizedTime: 0.76865673
   emptyReloadInsertNormalizedTime: 0.575419
+  muzzleFlashPrefab: {fileID: 100006, guid: c888f0c922d622147bbdbe2ca794142b, type: 3}
+  muzzleBonePath: Akito Rig/Base
+  muzzleLocalPosition: {x: 0.00025509, y: -0.00002969, z: 0.00180805}
+  muzzleLocalEulerAngles: {x: -6.4424, y: 12.5338, z: 158.8483}
+  muzzleFlashScale: 0.0014
+  muzzleLightIntensityMultiplier: 0.2

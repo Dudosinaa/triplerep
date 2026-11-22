@@ -27,20 +27,21 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
   - {fileID: 8275556802023347651}
-  m_RendererFeatureMap: ad6b866f10d7b46cc3552bcf10afd872
+  - {fileID: 7254176038293642187}
+  m_RendererFeatureMap: ad6b866f10d7b46cc3552bcf10afd872cb9ba42cac02ac64
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 3
   m_PrepassLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3758096383
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3758096383
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3758096383
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 1
@@ -96,3 +97,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionHintsRendererFeature
   m_Active: 1
   shader: {fileID: 4800000, guid: 0a902744a19949f5ba5c93c8b61d611c, type: 3}
+--- !u!114 &7254176038293642187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 668b7497dd01400c9c89d8142b4f0163, type: 3}
+  m_Name: First Person Hands
+  m_EditorClassIdentifier: Assembly-CSharp::FirstPersonHandsRendererFeature
+  m_Active: 1

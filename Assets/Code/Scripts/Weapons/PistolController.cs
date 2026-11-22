@@ -16,15 +16,13 @@ public sealed class PistolController : MonoBehaviour
     [SerializeField] private int magazineSize = 8;
     [SerializeField] private float shotRange = 60f;
     [SerializeField] private float shotCooldown = 0.22f;
-    [SerializeField, Min(0f)] private float aimCameraForward = 0.08f;
-    [SerializeField, Min(0.1f)] private float aimSpeed = 14f;
     private readonly RaycastHit[] shotHits = new RaycastHit[16];
     private WeaponMagazine magazine;
     private FirstPersonWeaponView weaponView;
     private bool equipped = false;
     private bool ready;
     private float nextShot;
-    private float restingCameraZ;
+    private SmokingController smoking;
     private string actionState;
     private float reloadDropProgress;
     private bool equipOnShow = true;
@@ -35,12 +33,16 @@ public sealed class PistolController : MonoBehaviour
     public bool IsReloading => magazine != null && magazine.IsReloading;
     public FirstPersonWeaponView WeaponView => weaponView;
     public bool CanUseWeapon => ready && isActiveAndEnabled && movement != null && movement.enabled &&
+        CanDrawPistol &&
+        (smoking == null || !smoking.IsSmoking) &&
         playerCamera != null && playerCamera.enabled && Cursor.lockState == CursorLockMode.Locked;
+    private bool CanDrawPistol => movement == null || movement.CanDrawPistol;
 
     private void Awake()
     {
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
         if (movement == null) movement = GetComponent<FirstPersonPlayer>();
+        smoking = GetComponent<SmokingController>();
         if (definition == null) definition = Resources.Load<WeaponDefinition>("HandsWeapon");
         magazine = new WeaponMagazine(Mathf.Max(1, magazineSize), 0, unlimitedReserve: true);
         if (playerCamera == null || definition == null || !definition.IsComplete)
@@ -49,7 +51,6 @@ public sealed class PistolController : MonoBehaviour
             enabled = false;
             return;
         }
-        restingCameraZ = playerCamera.transform.localPosition.z;
         playerCamera.nearClipPlane = 0.01f;
         if (viewModel == null)
         {
@@ -72,13 +73,6 @@ public sealed class PistolController : MonoBehaviour
         if (!canUse && (actionState != null || IsReloading)) CancelAction();
         weaponView.SetVisible(equipped && canUse);
         if (statusText != null) statusText.enabled = canUse;
-        bool aiming = canUse && equipped && !IsReloading && !IsEquipping && Mouse.current != null && Mouse.current.rightButton.isPressed;
-        float blend = 1f - Mathf.Exp(-aimSpeed * Time.deltaTime);
-        viewModel.localPosition = Vector3.Lerp(viewModel.localPosition,
-            aiming ? weaponView.AimOffset : definition.hipOffset, blend);
-        var cameraPosition = playerCamera.transform.localPosition;
-        cameraPosition.z = Mathf.Lerp(cameraPosition.z, restingCameraZ + (aiming ? aimCameraForward : 0f), blend);
-        playerCamera.transform.localPosition = cameraPosition;
         if (!canUse) return;
         if (equipped && equipOnShow)
         {
@@ -108,6 +102,7 @@ public sealed class PistolController : MonoBehaviour
         nextShot = Time.time + shotCooldown;
         BeginAction("Shot");
         weaponView.PlayShotSound();
+        weaponView.PlayMuzzleFlash();
         var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (ShotRaycast.TryGetFirstHit(ray, shotRange, ~0, transform, shotHits, out RaycastHit hit))
             hit.collider.GetComponentInParent<IShootingTarget>()?.Hit();
@@ -172,9 +167,9 @@ public sealed class PistolController : MonoBehaviour
         }
         else if (!raising && reloadDropProgress == 1f)
         {
-            bool empty = Rounds == 0;
-            weaponView.ArmReloadEvent(magazine.ReloadOperationId, empty);
-            BeginAction(empty ? "ReloadEmpty" : "Reload");
+            weaponView.ArmReloadEvent(magazine.ReloadOperationId, empty: true);
+            BeginAction("ReloadEmpty");
+            weaponView.PlayReloadSound();
         }
     }
     private void OnMagazineInserted(int operationId)
@@ -184,6 +179,7 @@ public sealed class PistolController : MonoBehaviour
     }
     public void SetEquipped(bool value)
     {
+        if (value && !CanDrawPistol) return;
         bool changed = equipped != value;
         equipped = value;
         if (changed && equipped) equipOnShow = true;
@@ -203,8 +199,24 @@ public sealed class PistolController : MonoBehaviour
         if (weaponView != null)
         {
             weaponView.InvalidateReloadEvent();
+            weaponView.StopReloadSound();
             weaponView.SetReloadDrop(0f);
             weaponView.PlayIdle();
+        }
+        UpdateHud();
+    }
+
+    internal void RestoreCheckpoint(bool wasEquipped, int rounds, int reserve)
+    {
+        CancelAction();
+        magazine?.RestoreAmmo(rounds, reserve);
+        equipped = wasEquipped && CanDrawPistol;
+        equipOnShow = false;
+        nextShot = 0f;
+        if (weaponView != null)
+        {
+            viewModel.localPosition = definition.hipOffset;
+            weaponView.SetVisible(equipped && CanUseWeapon);
         }
         UpdateHud();
     }
@@ -213,12 +225,6 @@ public sealed class PistolController : MonoBehaviour
         CancelAction();
         if (weaponView != null) weaponView.SetVisible(false);
         if (statusText != null) statusText.enabled = false;
-        if (playerCamera != null)
-        {
-            var position = playerCamera.transform.localPosition;
-            position.z = restingCameraZ;
-            playerCamera.transform.localPosition = position;
-        }
     }
     private void OnDestroy()
     {
@@ -227,6 +233,6 @@ public sealed class PistolController : MonoBehaviour
     private void UpdateHud()
     {
         if (statusText != null) statusText.text = !equipped ? "Q — достать пистолет   ПКМ — приблизить" :
-            IsReloading ? "Перезарядка..." : "ЛКМ — выстрел   ПКМ — прицел   R — перезарядка   Q — убрать";
+            IsReloading ? "Перезарядка..." : "ЛКМ — выстрел   ПКМ — приблизить   R — перезарядка   Q — убрать";
     }
 }

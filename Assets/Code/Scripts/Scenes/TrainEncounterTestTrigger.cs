@@ -12,7 +12,7 @@ public sealed class TrainEncounterTestTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (encounter == null || !zone.PlayerInside || LocationTransition.IsTransitioning) return;
+        if (encounter == null || !zone.PlayerInside || LocationTransition.IsTransitioning || Time.timeScale == 0f) return;
         encounter.EnableHostileNpcs();
         enabled = false;
     }

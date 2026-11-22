@@ -150,6 +150,8 @@ public static class TrainMindPlayValidation
         while (!player.enabled) yield return null;
         airportFocus.enabled = true;
 
+        Object.FindFirstObjectByType<TrainHostileEncounter>().EnableHostileNpcs();
+
         var changes = new GameObject("Added during Train play");
         var inactive = new GameObject("Initially inactive Train object");
         inactive.SetActive(false);

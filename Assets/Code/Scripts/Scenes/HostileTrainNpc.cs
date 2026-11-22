@@ -39,6 +39,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
 
     [Header("Combat")]
     [SerializeField, Min(1)] private int maxHealth = 100;
+    [SerializeField] private HostileNpcRagdoll ragdoll;
     [SerializeField] private Transform eyes;
     [SerializeField] private Transform muzzle;
     [SerializeField, Min(0.1f)] private float sightRange = 19f;
@@ -153,6 +154,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
             {
                 shotPending = false;
                 if (target != Target.Hidden && CanFireAt(aimPoint, target)) Fire(aimPoint, target);
+                if (!isActiveAndEnabled) return;
             }
             if (progress < 1f && (shotPending || shotDelay > 0f || target == Target.Hidden)) return;
             SetState(State.Ready, 0.06f);
@@ -358,11 +360,44 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
         if (voiceSource != null) voiceSource.Stop();
         body.enabled = false;
         seatedHitbox.enabled = false;
-        SetState(State.Defeated);
+        if (ragdoll == null)
+        {
+            SetState(State.Defeated);
+            return;
+        }
+
+        state = State.Defeated;
+        animator.enabled = false;
+        ragdoll.BeginFall();
+    }
+
+    // The encounter checkpoint is taken immediately after activation, before the NPC starts rising.
+    internal void RestoreEncounterStart(Vector3 position, Quaternion rotation, int health)
+    {
+        body.enabled = false;
+        ragdoll?.RestoreAnimatedPose();
+        transform.SetPositionAndRotation(position, rotation);
+        movementHeight = position.y;
+        Health = health;
+        state = State.Seated;
+        playerWasInside = carriage != null && carriage.PlayerInside;
+        onAisle = approaching = tracking = hasFired = shotPending = reactingToHit = false;
+        lookTarget = Vector3.zero;
+        walkFraction = shotDelay = appliedStandOffset = 0f;
+        voiceDelay = voiceInterval;
+        previousLine = null;
+        seatedHitbox.enabled = true;
+        animator.enabled = true;
+        animator.Rebind();
+        animator.Play(Animations[(int)State.Seated], 0, 0f);
+        if (animator.layerCount > 1) animator.SetLayerWeight(1, 0f);
+        if (hitReactionLayer >= 0) animator.SetLayerWeight(hitReactionLayer, 0f);
+        animator.Update(0f);
     }
 
     private void LateUpdate()
     {
+        if (!animator.enabled) return;
         if (animator.isInitialized && animator.layerCount > 1)
         {
             float targetWeight = state == State.Walking ? 1f : 0f;

@@ -7,9 +7,10 @@ using UnityEngine.Rendering;
 // Animator owns only the imported model below this holder. PistolController moves the holder.
 public sealed class FirstPersonWeaponView : MonoBehaviour
 {
+    private const float ReloadSoundDelay = 0.8f;
+    private const float MuzzleLightDuration = 0.05f;
     public Animator Animator { get; private set; }
     public GameObject Model { get; private set; }
-    public Vector3 AimOffset { get; private set; }
     public AnimationClip RuntimeReloadClip => reloadAnimation;
     public AnimationClip RuntimeEmptyReloadClip => emptyReloadAnimation;
     private WeaponDefinition definition;
@@ -22,7 +23,9 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
     public event Action<int> MagazineInserted;
     private Avatar generatedAvatar;
     private AudioSource shotSource;
-    private AudioClip generatedSound;
+    private AudioSource reloadSource;
+    private ParticleSystem[] muzzleFlashParticles;
+    private Light muzzleFlashLight;
     private static readonly int Finished = UnityEngine.Animator.StringToHash("ActionFinished");
     private bool idleOnShow;
     private bool initialized;
@@ -39,6 +42,7 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
         calibration = new GameObject("Weapon Camera Alignment").transform;
         calibration.SetParent(transform, false);
         Model = Instantiate(definition.modelPrefab, calibration, false);
+        if (Application.isPlaying) FirstPersonHandsRendererFeature.SetHandsLayer(Model);
         Model.name = definition.displayName;
         Model.transform.localPosition = Vector3.zero;
         Model.transform.localRotation = Quaternion.identity;
@@ -91,15 +95,6 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
             renderer.receiveShadows = false;
             if (renderer is SkinnedMeshRenderer skin) skin.updateWhenOffscreen = true;
         }
-        var sight = Model.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == definition.sightBone);
-        if (sight == null)
-        {
-            Debug.LogError("Weapon sight bone not found: " + definition.sightBone, this);
-            Model.SetActive(false);
-            return false;
-        }
-        Vector3 sightPosition = transform.InverseTransformPoint(sight.position) + definition.sightOffsetMeters;
-        AimOffset = definition.hipOffset + new Vector3(-sightPosition.x, -sightPosition.y, definition.aimDepthOffset);
         Animator = Model.GetComponent<Animator>();
         if (Animator == null) Animator = Model.AddComponent<Animator>();
         if (Animator.avatar == null)
@@ -133,7 +128,9 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
         Animator.applyRootMotion = false;
         Animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
         Animator.speed = 1f;
-        PrepareShotAudio();
+        shotSource = CreateAudioSource(definition.shotSound);
+        reloadSource = CreateAudioSource(definition.reloadSound);
+        if (Application.isPlaying) InitializeMuzzleFlash();
         PlayIdle();
         initialized = true;
         return true;
@@ -194,23 +191,101 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
     public bool IsInState(string state) => Animator.GetCurrentAnimatorStateInfo(0).shortNameHash ==
         UnityEngine.Animator.StringToHash(state);
     public float NormalizedTime => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-    public void PlayShotSound() { shotSource.PlayOneShot(generatedSound); }
-    private void PrepareShotAudio()
+    public void PlayShotSound()
     {
-        // Preserve the existing firing sound independently of the retired procedural model.
-        shotSource = gameObject.AddComponent<AudioSource>();
-        shotSource.playOnAwake = false;
-        shotSource.spatialBlend = 0f;
-        var samples = new float[4410];
-        var noise = new System.Random(410);
-        for (int i = 0; i < samples.Length; i++)
+        if (shotSource != null && shotSource.clip != null)
+            shotSource.PlayOneShot(shotSource.clip, definition.shotVolume);
+    }
+
+    private void InitializeMuzzleFlash()
+    {
+        if (definition.muzzleFlashPrefab == null) return;
+        var muzzleBone = string.IsNullOrEmpty(definition.muzzleBonePath)
+            ? null
+            : Model.transform.Find(definition.muzzleBonePath);
+        if (muzzleBone == null)
         {
-            float t = i / 44100f;
-            samples[i] = ((float)noise.NextDouble() * 2f - 1f + Mathf.Sin(t * 2f * Mathf.PI * 90f)) *
-                Mathf.Exp(-t * 70f) * 0.3f;
+            Debug.LogWarning("Muzzle flash bone was not found: " + definition.muzzleBonePath, this);
+            return;
         }
-        generatedSound = AudioClip.Create("Pistol shot", samples.Length, 1, 44100, false);
-        generatedSound.SetData(samples, 0);
+
+        var prefab = definition.muzzleFlashPrefab;
+        var flash = Instantiate(prefab, muzzleBone, false);
+        flash.transform.SetLocalPositionAndRotation(definition.muzzleLocalPosition,
+            Quaternion.Euler(definition.muzzleLocalEulerAngles) * prefab.transform.localRotation);
+        flash.transform.localScale = prefab.transform.localScale * definition.muzzleFlashScale;
+        FirstPersonHandsRendererFeature.SetHandsLayer(flash);
+
+        muzzleFlashParticles = flash.GetComponentsInChildren<ParticleSystem>();
+        foreach (var particles in muzzleFlashParticles)
+        {
+            particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = particles.main;
+            main.playOnAwake = false;
+            main.loop = false;
+            var emission = particles.emission;
+            emission.enabled = false;
+        }
+
+        // The WarFX preview flickers continuously. The shot controls this instance's light.
+        var flicker = flash.GetComponentInChildren<WFX_LightFlicker>();
+        if (flicker != null) flicker.enabled = false;
+        muzzleFlashLight = flash.GetComponentInChildren<Light>();
+        if (muzzleFlashLight != null)
+            muzzleFlashLight.intensity *= definition.muzzleLightIntensityMultiplier;
+        TurnOffMuzzleLight();
+    }
+
+    internal void PlayMuzzleFlash()
+    {
+        if (muzzleFlashParticles == null) return;
+        foreach (var particles in muzzleFlashParticles)
+        {
+            particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+            particles.Play(false);
+            particles.Emit(1);
+        }
+
+        if (muzzleFlashLight == null || muzzleFlashLight.intensity <= 0f) return;
+        CancelInvoke(nameof(TurnOffMuzzleLight));
+        muzzleFlashLight.enabled = true;
+        Invoke(nameof(TurnOffMuzzleLight), MuzzleLightDuration);
+    }
+
+    private void TurnOffMuzzleLight()
+    {
+        if (muzzleFlashLight != null) muzzleFlashLight.enabled = false;
+    }
+
+    private void OnDisable()
+    {
+        if (muzzleFlashParticles == null) return;
+        CancelInvoke(nameof(TurnOffMuzzleLight));
+        TurnOffMuzzleLight();
+        foreach (var particles in muzzleFlashParticles)
+            if (particles != null) particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+    }
+
+    public void PlayReloadSound()
+    {
+        CancelInvoke(nameof(PlayReloadClip));
+        if (reloadSource != null && reloadSource.clip != null)
+            Invoke(nameof(PlayReloadClip), ReloadSoundDelay);
+    }
+    private void PlayReloadClip() => reloadSource.Play();
+
+    public void StopReloadSound()
+    {
+        CancelInvoke(nameof(PlayReloadClip));
+        if (reloadSource != null) reloadSource.Stop();
+    }
+    private AudioSource CreateAudioSource(AudioClip clip)
+    {
+        var source = gameObject.AddComponent<AudioSource>();
+        source.playOnAwake = false;
+        source.spatialBlend = 0f;
+        source.clip = clip;
+        return source;
     }
     private static void Release(UnityEngine.Object value)
     {
@@ -223,6 +298,5 @@ public sealed class FirstPersonWeaponView : MonoBehaviour
         if (emptyReloadAnimation != null && emptyReloadAnimation != reloadAnimation) Release(emptyReloadAnimation);
         if (reloadAnimation != null) Release(reloadAnimation);
         if (generatedAvatar != null) Release(generatedAvatar);
-        if (generatedSound != null) Release(generatedSound);
     }
 }

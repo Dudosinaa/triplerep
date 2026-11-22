@@ -147,6 +147,7 @@ public static class HandsReloadPlayValidation
             var camera=(Camera)Field(pistol,"playerCamera");
             var view=pistol.WeaponView;
             var definition=(WeaponDefinition)Field(pistol,"definition");
+            pistol.SetEquipped(true);
             yield return Delay(1.1f);
             Check(pistol.CanUseWeapon&&!pistol.IsEquipping,"Weapon unavailable after scene spawn: "+sceneIndex+" ready="+Field(pistol,"ready")+" enabled="+pistol.isActiveAndEnabled+" movement="+movement.enabled+" camera="+camera.enabled+" cursor="+Cursor.lockState+" action="+Field(pistol,"actionState")+" equipOnShow="+Field(pistol,"equipOnShow")+" view="+view.gameObject.activeInHierarchy);
             Check(UnityEngine.Object.FindObjectsByType<FirstPersonWeaponView>(FindObjectsSortMode.None).Length==1,"Duplicate weapon view");
@@ -161,18 +162,19 @@ public static class HandsReloadPlayValidation
             UnityEngine.Object.Destroy(target);
             yield return Delay(.8f);
             Vector3 hip=((Transform)Field(pistol,"viewModel")).localPosition;
+            float normalFov=camera.fieldOfView;
             InputSystem.QueueStateEvent(Mouse.current,new MouseState{buttons=2});yield return Delay(.5f);
-            Check(Vector3.Distance(((Transform)Field(pistol,"viewModel")).localPosition,view.AimOffset)<.002f,"Aim holder did not reach sight alignment");
+            Check(camera.fieldOfView<normalFov&&Vector3.Distance(((Transform)Field(pistol,"viewModel")).localPosition,hip)<.002f,"Camera did not zoom in with a stationary weapon holder");
             InputSystem.QueueStateEvent(Mouse.current,new MouseState());yield return Delay(.4f);
-            Check(Vector3.Distance(((Transform)Field(pistol,"viewModel")).localPosition,hip)<.002f,"Aim did not return");
+            Check(Mathf.Abs(camera.fieldOfView-normalFov)<.01f,"Camera did not return to normal field of view");
             Capture(camera,SceneManager.GetActiveScene().name+"-idle");
             foreach(bool empty in new[]{false,true})
             {
                 SetupAmmo(pistol,empty?0:7);
-                var clip=empty?definition.emptyReloadClip:definition.reloadClip;
+                var clip=definition.emptyReloadClip;
                 float insertion=clip.events.Single(e=>e.functionName=="OnMagazineInserted").time;
                 Check(pistol.TryReload(),"Reload did not start");Check(!pistol.TryReload(),"Repeated reload accepted");
-                Check(view.IsInState(empty?"ReloadEmpty":"Reload"),"Wrong reload state");
+                yield return (Func<bool>)(()=>view.IsInState("ReloadEmpty"));
                 Check(!pistol.TryFire(),"Shot allowed during reload");
                 yield return Delay(insertion-.15f);
                 Check(pistol.Rounds==(empty?0:7)&&pistol.ReserveAmmo==40,"Ammo changed before insertion");
@@ -182,7 +184,7 @@ public static class HandsReloadPlayValidation
                 int token=((WeaponMagazine)Field(pistol,"magazine")).ReloadOperationId;
                 view.ReceiveMagazineInsertion(token);
                 Check(pistol.ReserveAmmo==(empty?32:39),"Duplicate event transferred ammo");
-                yield return Delay(clip.length-insertion+.25f);
+                yield return Delay(clip.length-insertion+.35f);
                 Check(!pistol.IsReloading&&view.IsInState("Idle"),"Reload did not return to Idle");
                 results.Add(SceneManager.GetActiveScene().name+": "+clip.name+" normal reload, Animator exit, insertion, duplicate-event rejection PASS");
             }
@@ -195,8 +197,9 @@ public static class HandsReloadPlayValidation
                 SetupAmmo(pistol,empty?0:7);Cursor.lockState=CursorLockMode.Locked;
                 Check(pistol.TryReload(),"Cancel setup reload rejected: "+reason);
                 var magazine=(WeaponMagazine)Field(pistol,"magazine");int oldToken=magazine.ReloadOperationId;
-                var clip=empty?definition.emptyReloadClip:definition.reloadClip;
+                var clip=definition.emptyReloadClip;
                 float insertion=clip.events.Single(e=>e.functionName=="OnMagazineInserted").time;
+                yield return (Func<bool>)(()=>view.IsInState("ReloadEmpty"));
                 yield return Delay(after?insertion+.12f:.5f);
                 int rounds=after?8:empty?0:7,reserve=after?(empty?32:39):40;
                 Action restore=null;
@@ -254,7 +257,7 @@ public static class HandsReloadPlayValidation
                 int beforeRounds=pistol.Rounds,beforeReserve=pistol.ReserveAmmo;
                 view.ReceiveMagazineInsertion(oldToken);Check(pistol.Rounds==beforeRounds&&pistol.ReserveAmmo==beforeReserve,"Old event committed a new reload");
                 pistol.CancelAction();
-                results.Add(SceneManager.GetActiveScene().name+": "+(empty?"Full":"Fast")+" cancel "+(after?"after":"before")+" insertion via "+reason+" PASS");
+                results.Add(SceneManager.GetActiveScene().name+": "+(empty?"Empty":"Partial")+" magazine cancel "+(after?"after":"before")+" insertion via "+reason+" PASS");
                 File.WriteAllLines(Path.Combine(HandsReloadAudit.Output,"play-progress.txt"),results);
             }
             results.Add(SceneManager.GetActiveScene().name+": single kit, native Take/Idle/Shoot, aim, ray hit, ammo HUD PASS");

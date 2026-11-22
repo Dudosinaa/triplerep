@@ -1550,7 +1550,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonPlayer
   playerCamera: {fileID: 7796395533773576502}
-  pistol: {fileID: 70754093935645395}
   footstepSource: {fileID: 7783277230023017499}
   footstepClips:
   - {fileID: 8300000, guid: b993df4a93c1d304ab19d8b2eb88c9a5, type: 3}
@@ -1667,8 +1666,6 @@ MonoBehaviour:
   magazineSize: 8
   shotRange: 60
   shotCooldown: 0.22
-  aimCameraForward: 0.08
-  aimSpeed: 14
 --- !u!114 &6964937809332957306
 MonoBehaviour:
   m_ObjectHideFlags: 0

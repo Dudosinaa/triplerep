@@ -195,16 +195,23 @@ public static class PlayerPrefabPlayValidation
         Key(UnityEngine.InputSystem.Key.LeftCtrl, false);
         yield return Delay(0.3f);
         Check(player.GetComponent<CharacterController>().height > 1.7f, "Releasing Ctrl restores height");
+        pistol.SetEquipped(true);
         yield return Delay(1.5f);
         Check(pistol.CanUseWeapon && !pistol.IsEquipping, "Weapon is ready (cursor=" + Cursor.lockState + ", ready=" + Field(pistol, "ready") + ", camera=" + camera.enabled + ", equip=" + pistol.IsEquipping + ", cursorAPI=" + AllowCursor?.DeclaringType.FullName + ")");
         Check(pistol.TryFire() && pistol.Rounds == 7, "Weapon fires and consumes ammunition");
         yield return Delay(0.5f);
         Check(pistol.TryReload(), "Reload starts");
+        yield return (Func<bool>)(() => pistol.WeaponView.IsInState("ReloadEmpty"));
+        Check(pistol.Rounds == 7, "A partial magazine starts the full reload before ammo transfer");
         yield return (Func<bool>)(() => !pistol.IsReloading);
         Check(pistol.Rounds == 8 && pistol.ReserveAmmo == int.MaxValue, "Animation event fills the deficit and preserves unlimited reserve");
+        float normalFov = camera.fieldOfView;
+        Vector3 cameraPosition = camera.transform.localPosition;
+        Vector3 weaponPosition = pistol.WeaponView.transform.localPosition;
         InputSystem.QueueStateEvent(Mouse.current, new MouseState { buttons = 2 });
         yield return Delay(0.5f);
-        Check(Vector3.Distance(((Transform)Field(pistol, "viewModel")).localPosition, pistol.WeaponView.AimOffset) < 0.005f, "Right mouse aims the weapon");
+        Check(camera.fieldOfView < normalFov && camera.transform.localPosition == cameraPosition &&
+            pistol.WeaponView.transform.localPosition == weaponPosition, "Right mouse changes only the camera field of view");
         InputSystem.QueueStateEvent(Mouse.current, new MouseState());
         yield return Delay(0.2f);
 
@@ -266,7 +273,13 @@ public static class PlayerPrefabPlayValidation
         Key(UnityEngine.InputSystem.Key.Y, true);
         yield return Delay(0.1f);
         Key(UnityEngine.InputSystem.Key.Y, false);
-        Check(smoking.IsSmoking && !player.enabled && !pistol.CanUseWeapon, "Y starts smoking and blocks weapon/movement");
+        Check(smoking.IsSmoking && player.enabled && !pistol.CanUseWeapon, "Smoking blocks weapon use and keeps movement active");
+        Vector3 smokingStart = player.transform.position;
+        Key(UnityEngine.InputSystem.Key.W, true);
+        yield return Delay(0.35f);
+        Key(UnityEngine.InputSystem.Key.W, false);
+        Check(smoking.IsSmoking && Vector3.Distance(smokingStart, player.transform.position) > 0.5f,
+            "WASD moves the player while the smoking animation runs");
         yield return (Func<bool>)(() => !smoking.IsSmoking && !stress.IsRecoveringAfterSmoking && stress.stress == 0f);
         yield return Delay(0.8f);
         Check(player.enabled && stress.volume.weight < 0.01f, "Smoking finishes, restores control and removes stress effect");

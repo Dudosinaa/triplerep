@@ -54,4 +54,11 @@ public sealed class WeaponMagazine
     }
     public void EndReload() { IsReloading = false; ReloadOperationId = 0; }
     public void CancelReload() { IsReloading = false; ReloadOperationId = 0; }
+
+    internal void RestoreAmmo(int rounds, int reserve)
+    {
+        CancelReload();
+        Rounds = Math.Max(0, Math.Min(rounds, Capacity));
+        Reserve = HasUnlimitedReserve ? int.MaxValue : Math.Max(0, reserve);
+    }
 }

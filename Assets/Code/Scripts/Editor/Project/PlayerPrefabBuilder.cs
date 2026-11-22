@@ -173,7 +173,7 @@ public static class PlayerPrefabBuilder
                 Require(owner != null && owner.IsChildOf(prefab.transform), component.GetType().Name + "." + field + " belongs to the player");
             }
         }
-        RequireReferences(prefab.GetComponent<FirstPersonPlayer>(), "playerCamera", "pistol", "footstepSource");
+        RequireReferences(prefab.GetComponent<FirstPersonPlayer>(), "playerCamera", "footstepSource");
         RequireReferences(prefab.GetComponent<DocumentReader>(), "playerCamera", "movement", "interactionPrompt", "readingPanel", "titleText", "bodyText", "bodyScrollRect");
         RequireReferences(prefab.GetComponent<ItemInspector>(), "playerCamera", "movement", "documentReader", "interactionPrompt", "promptText", "inspectionPanel", "itemTitle", "previewImage");
         RequireReferences(prefab.GetComponent<DialogueController>(), "playerCamera", "movement", "documentReader", "itemInspector", "crosshair", "interactionPrompt", "dialoguePanel", "speakerText", "dialogueText", "continueButton");

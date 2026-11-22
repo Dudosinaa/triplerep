@@ -31,6 +31,8 @@ public class PlayerStress : MonoBehaviour
     private float vignetteBeforeMind;
     private float vignetteVelocityBeforeMind;
     private float? recoveryDelayBeforeMind;
+    private bool atMaximum;
+    internal event System.Action MaximumReached;
     public bool IsRecoveringAfterSmoking => smokingRecovery != null;
 
     void Awake()
@@ -63,7 +65,7 @@ public class PlayerStress : MonoBehaviour
                 stress -= decreaseSpeed * Time.deltaTime;
         }
 
-        stress = Mathf.Clamp(stress, 0f, 100f);
+        SetStress(stress);
 
         UpdateStressEffects();
     }
@@ -72,14 +74,35 @@ public class PlayerStress : MonoBehaviour
     public void ResetStress()
     {
         StopSmokingRecovery();
-        stress = 0f;
+        SetStress(0f);
         UpdateStressEffects();
     }
 
     public void AddStress(float amount)
     {
         if (calmingForMind || !isActiveAndEnabled) return;
-        stress = Mathf.Clamp(stress + amount, 0f, 100f);
+        SetStress(stress + amount);
+    }
+
+    private void SetStress(float value)
+    {
+        stress = Mathf.Clamp(value, 0f, 100f);
+        bool reachedMaximum = stress >= 100f && !atMaximum;
+        atMaximum = stress >= 100f;
+        if (reachedMaximum) MaximumReached?.Invoke();
+    }
+
+    internal void RestoreCheckpoint(float value)
+    {
+        StopSmokingRecovery();
+        SetStress(value);
+        vignetteVelocity = 0f;
+        if (vignette != null)
+        {
+            if (blendWithSceneProfile) volume.weight = stress / 100f;
+            else vignette.intensity.value = stress / 100f * maxVignetteIntensity;
+        }
+        UpdateStressEffects();
     }
 
     public void BeginSmokingRecovery()
@@ -94,7 +117,7 @@ public class PlayerStress : MonoBehaviour
         {
             nextRecoveryStep = Time.time + delay;
             yield return new WaitForSeconds(delay);
-            stress = Mathf.Max(0f, stress - 10f);
+            SetStress(stress - 10f);
             UpdateStressEffects();
             delay = 0.1f;
         }

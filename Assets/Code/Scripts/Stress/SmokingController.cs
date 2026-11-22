@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using GLTFast;
@@ -13,6 +12,8 @@ public sealed class SmokingController : MonoBehaviour
     [SerializeField, Range(0f, 100f)] private float smokingThreshold = 40f;
     [SerializeField] private TMP_Text hintText;
     private PlayerStress playerStress;
+    private FirstPersonPlayer movement;
+    private PlayerMovement demoMovement;
     private Transform playerCamera;
     private Animation smokingAnimation;
     private AnimationClip smokingClip;
@@ -21,12 +22,14 @@ public sealed class SmokingController : MonoBehaviour
     private GltfImport gltf;
     private bool modelReady;
     private bool destroyed;
-    private readonly List<Behaviour> suspended = new List<Behaviour>();
     public bool IsSmoking { get; private set; }
+    internal bool UsesCamera(Camera camera) => camera.transform == playerCamera;
 
     private async void Start()
     {
         playerStress = GetComponent<PlayerStress>();
+        movement = GetComponent<FirstPersonPlayer>();
+        demoMovement = GetComponent<PlayerMovement>();
         var camera = GetComponentInChildren<Camera>();
         if (playerStress == null || camera == null)
         {
@@ -40,12 +43,14 @@ public sealed class SmokingController : MonoBehaviour
     }
     private bool CanStart()
     {
-        var movement = GetComponent<FirstPersonPlayer>();
-        var demoMovement = GetComponent<PlayerMovement>();
         return modelReady && playerStress != null && !IsSmoking &&
             !playerStress.IsRecoveringAfterSmoking && playerStress.stress >= smokingThreshold &&
-            (movement == null || movement.enabled) && (demoMovement == null || demoMovement.enabled);
+            CanMove();
     }
+    private bool CanMove() =>
+        (movement == null || movement.isActiveAndEnabled) &&
+        (demoMovement == null || demoMovement.isActiveAndEnabled);
+
     private void Update()
     {
         bool canStart = CanStart();
@@ -53,23 +58,17 @@ public sealed class SmokingController : MonoBehaviour
         if (!canStart || Keyboard.current == null || !Keyboard.current.yKey.wasPressedThisFrame) return;
         if (!smokingAnimation.Play(smokingClip.name)) return;
         IsSmoking = true;
-        foreach (var behaviour in GetComponents<Behaviour>())
-        {
-            if (behaviour.enabled && (behaviour is FirstPersonPlayer || behaviour is PlayerMovement ||
-                behaviour is DocumentReader || behaviour is ItemInspector || behaviour is DialogueController))
-            {
-                suspended.Add(behaviour);
-                behaviour.enabled = false;
-            }
-        }
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         SetModelVisible(true);
         if (hintText != null) hintText.gameObject.SetActive(false);
     }
     private void LateUpdate()
     {
         if (!IsSmoking || smokingAnimation == null) return;
+        if (!CanMove())
+        {
+            FinishSmoking();
+            return;
+        }
         var state = smokingAnimation[smokingClip.name];
         if (state != null && state.normalizedTime < 1f && state.time < smokingClip.length &&
             smokingAnimation.IsPlaying(smokingClip.name)) return;
@@ -81,8 +80,6 @@ public sealed class SmokingController : MonoBehaviour
         if (smokingAnimation != null) smokingAnimation.Stop();
         SetModelVisible(false);
         IsSmoking = false;
-        foreach (var behaviour in suspended) if (behaviour != null) behaviour.enabled = true;
-        suspended.Clear();
     }
     private async Task LoadOriginalModel()
     {
@@ -101,6 +98,7 @@ public sealed class SmokingController : MonoBehaviour
             if (!await gltf.InstantiateMainSceneAsync(instantiator))
                 throw new Exception("glTFast could not instantiate the smoking animation.");
             if (destroyed) return;
+            FirstPersonHandsRendererFeature.SetHandsLayer(modelRoot);
             smokingAnimation = instantiator.SceneInstance.LegacyAnimation;
             if (smokingAnimation == null || smokingAnimation.clip == null)
                 throw new Exception("The smoking animation has no Legacy Animation clip.");

@@ -15,7 +15,6 @@ public static class WeaponAssetValidation
         public string model;
         public string[] clips;
         public string[] checks;
-        public Vector3 aimOffset;
         public string[] manualChecks;
     }
     [MenuItem("Tools/Weapon/Validate assets")]
@@ -85,12 +84,12 @@ public static class WeaponAssetValidation
             Require(new SerializedObject(pistol).FindProperty("definition").objectReferenceValue == definition,
                 "Runtime-spawned common player is not configured");
             var report = new Report {
-                unityVersion = Application.unityVersion, model = HandsReloadBaker.Model, aimOffset = view.AimOffset,
+                unityVersion = Application.unityVersion, model = HandsReloadBaker.Model,
                 clips = clips.Select(c => c.name + " | " + c.length.ToString("F3") + " seconds").ToArray(),
                 checks = new[] { "Single Akito Rig and only three visible skinned meshes", "Hands insertion AnimationEvent is operation-scoped", "All clip transform paths resolve", "Skin bones belong to the model",
                     "Materials mapped", "Imported cameras disabled", "Animator states exist", "Common player configured" },
-                manualChecks = new[] { "Metro/Home: hands and pistol visible in hip and aim poses",
-                    "Shoot and hit targets; HUD decrements", "Partial/empty reload and repeated R",
+                manualChecks = new[] { "Right mouse zooms the camera with the weapon in its resting pose",
+                    "Shoot and hit targets with the configured shot sound", "Full reload clip and sound with both partial and empty magazines",
                     "Cancel before and after magazine insertion; no duplicate ammunition",
                     "Dialogue, document, item inspection, smoking and scene transfer hide and block weapon" }
             };
