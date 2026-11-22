@@ -5,15 +5,17 @@ public sealed class KeyDoor : MonoBehaviour
 {
     [SerializeField, InspectorName("Открыта при запуске")]
     private bool startsOpen;
-    [SerializeField, Tooltip("Укажите экземпляр ключа из этой сцены.")]
+    [SerializeField, InspectorName("Требуется ключ")]
+    private bool requiresKey = true;
+    [SerializeField, Tooltip("Если включено «Требуется ключ», укажите экземпляр ключа из этой сцены.")]
     private DoorKey requiredKey;
     [SerializeField, Tooltip("Угол в градусах вокруг вертикальной оси петель. Знак задаёт направление.")]
     private float openAngle = 90f;
-    [SerializeField, Min(0.01f), Tooltip("Длительность открытия в секундах.")]
+    [SerializeField, Min(0.01f), Tooltip("Длительность полного открытия или закрытия в секундах.")]
     private float openDuration = 0.8f;
 
     private Quaternion closedRotation;
-    private bool openingStarted;
+    private bool targetOpen;
     private float progress;
 
     private void Awake()
@@ -21,23 +23,29 @@ public sealed class KeyDoor : MonoBehaviour
         closedRotation = transform.localRotation;
         if (!startsOpen) return;
 
-        openingStarted = true;
+        targetOpen = true;
         progress = 1f;
         SetRotation(1f);
     }
 
-    internal bool CanOpen(FirstPersonPlayer player) =>
-        !openingStarted && player != null && player.HasKey(requiredKey);
+    internal bool CanInteract(FirstPersonPlayer player) =>
+        player != null && (targetOpen || !requiresKey || player.HasKey(requiredKey));
 
     public void TryOpen(FirstPersonPlayer player)
     {
-        if (CanOpen(player)) openingStarted = true;
+        if (!targetOpen) TryToggle(player);
+    }
+
+    internal void TryToggle(FirstPersonPlayer player)
+    {
+        if (CanInteract(player)) targetOpen = !targetOpen;
     }
 
     private void Update()
     {
-        if (!openingStarted || progress >= 1f) return;
-        progress = Mathf.MoveTowards(progress, 1f, Time.deltaTime / Mathf.Max(0.01f, openDuration));
+        float target = targetOpen ? 1f : 0f;
+        if (progress == target) return;
+        progress = Mathf.MoveTowards(progress, target, Time.deltaTime / Mathf.Max(0.01f, openDuration));
         SetRotation(Mathf.SmoothStep(0f, 1f, progress));
     }
 

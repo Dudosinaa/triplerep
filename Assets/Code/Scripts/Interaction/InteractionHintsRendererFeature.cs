@@ -39,7 +39,6 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
         private static readonly int BlitTextureTexelSize = Shader.PropertyToID("_BlitTexture_TexelSize");
         private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
         private static readonly int OutlineWidth = Shader.PropertyToID("_OutlineWidth");
-        private static readonly int PulseColor = Shader.PropertyToID("_PulseColor");
         private static readonly MaterialPropertyBlock Properties = new MaterialPropertyBlock();
 
         private InteractionHints hints;
@@ -63,7 +62,7 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
             var depth = resources.activeDepthTexture;
             if (!depth.IsValid() || !resources.activeColorTexture.IsValid()) return;
 
-            // Match the camera depth attachment so opaque scenery occludes both effects.
+            // Match the camera depth attachment so opaque scenery occludes the outline mask.
             TextureDesc maskDesc = depth.GetDescriptor(renderGraph);
             maskDesc.name = "Interaction Hints Mask";
             maskDesc.format = GraphicsFormat.R8G8B8A8_UNorm;
@@ -84,9 +83,8 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
                 {
                     foreach (var draw in passData.Draws)
                     {
-                        int shaderPass = draw.Outline ? 0 : 1;
                         for (int i = 0; i < draw.SubmeshCount; i++)
-                            context.cmd.DrawRenderer(draw.Renderer, passData.Material, i, shaderPass);
+                            context.cmd.DrawRenderer(draw.Renderer, passData.Material, i, 0);
                     }
                 });
             }
@@ -97,7 +95,6 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
                 data.Material = material;
                 data.OutlineColor = hints.OutlineColor;
                 data.OutlineWidth = hints.OutlineWidth;
-                data.PulseColor = hints.PulseColor;
                 builder.UseTexture(mask, AccessFlags.Read);
                 builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.Write);
                 builder.SetRenderFunc(static (CompositeData passData, RasterGraphContext context) =>
@@ -111,8 +108,7 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
                     Properties.SetVector(BlitScaleBias, new Vector4(1, 1, 0, 0));
                     Properties.SetColor(OutlineColor, passData.OutlineColor);
                     Properties.SetInt(OutlineWidth, passData.OutlineWidth);
-                    Properties.SetColor(PulseColor, passData.PulseColor);
-                    context.cmd.DrawProcedural(Matrix4x4.identity, passData.Material, 2, MeshTopology.Triangles, 3, 1, Properties);
+                    context.cmd.DrawProcedural(Matrix4x4.identity, passData.Material, 1, MeshTopology.Triangles, 3, 1, Properties);
                 });
             }
         }
@@ -129,7 +125,6 @@ public sealed class InteractionHintsRendererFeature : ScriptableRendererFeature
             internal Material Material;
             internal Color OutlineColor;
             internal int OutlineWidth;
-            internal Color PulseColor;
         }
     }
 }

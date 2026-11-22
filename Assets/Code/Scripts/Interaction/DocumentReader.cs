@@ -16,7 +16,6 @@ public sealed class DocumentReader : MonoBehaviour
     [SerializeField] private ScrollRect bodyScrollRect;
 
     private readonly RaycastHit[] aimHits = new RaycastHit[8];
-    internal float HintDistance => readingDistance;
 
     private InteractionHints interactionHints;
     private ReadableDocument openDocument;

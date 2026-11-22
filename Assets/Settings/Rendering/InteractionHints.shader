@@ -34,20 +34,6 @@ Shader "Hidden/InteractionHints"
 
         Pass
         {
-            Name "Highlight Mask"
-            Cull Off
-            ZWrite Off
-            ZTest LEqual
-            ColorMask G
-
-            HLSLPROGRAM
-            #pragma vertex MaskVertex
-            #pragma fragment MaskFragment
-            ENDHLSL
-        }
-
-        Pass
-        {
             Name "Composite"
             Cull Off
             ZWrite Off
@@ -60,7 +46,6 @@ Shader "Hidden/InteractionHints"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
             half4 _OutlineColor;
-            half4 _PulseColor;
             int _OutlineWidth;
 
             half OutlineMask(float2 uv)
@@ -72,8 +57,8 @@ Shader "Hidden/InteractionHints"
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 float2 uv = input.texcoord;
-                half2 center = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, uv).rg;
-                half expanded = center.r;
+                half center = OutlineMask(uv);
+                half expanded = center;
                 float2 texel = _BlitTexture_TexelSize.xy;
 
                 [loop]
@@ -92,9 +77,8 @@ Shader "Hidden/InteractionHints"
                     expanded = max(expanded, OutlineMask(uv + float2(-offset.x, offset.y)));
                 }
 
-                half outline = saturate(expanded - center.r) * _OutlineColor.a;
-                half pulse = center.g * (1 - expanded) * _PulseColor.a;
-                return half4(outline * _OutlineColor.rgb + pulse * _PulseColor.rgb, outline + pulse);
+                half outline = saturate(expanded - center) * _OutlineColor.a;
+                return half4(outline * _OutlineColor.rgb, outline);
             }
             ENDHLSL
         }

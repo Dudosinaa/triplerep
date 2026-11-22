@@ -21,8 +21,6 @@ public sealed class ItemInspector : MonoBehaviour
     private const float CloseInspectionRadius = 1.25f;
     private static readonly Vector3 PreviewPosition = new Vector3(2000f, 2000f, 2000f);
 
-    internal float HintDistance => inspectionDistance;
-
     private InteractionHints interactionHints;
     private InspectableItem inspectedItem;
     private GameObject previewRoot;

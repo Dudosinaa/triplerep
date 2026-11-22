@@ -1751,9 +1751,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionHints
   outlineColor: {r: 1, g: 0.86, b: 0.45, a: 0.95}
   outlineWidth: 2
-  pulseInterval: 5
-  pulseDuration: 0.8
-  pulseColor: {r: 1, g: 0.72, b: 0.28, a: 0.48}
 --- !u!1 &4481001025783628976
 GameObject:
   m_ObjectHideFlags: 0

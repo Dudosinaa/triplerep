@@ -172,9 +172,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         }
 
         var door = hit.collider.GetComponentInParent<KeyDoor>();
-        if (door == null || !door.isActiveAndEnabled) return;
-        if (door.CanOpen(this)) interactionHints?.OfferFocus(door);
-        if (pressedE && InteractionInput.TryConsume()) door.TryOpen(this);
+        if (door == null || !door.isActiveAndEnabled || !door.CanInteract(this)) return;
+        interactionHints?.OfferFocus(door);
+        if (pressedE && InteractionInput.TryConsume()) door.TryToggle(this);
     }
 
     private bool TryGetKeyInteractionHit(out RaycastHit hit)

@@ -24,7 +24,6 @@ public sealed class DialogueController : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField, Min(0.1f)] private float talkDistance = 2.7f;
 
-    internal float HintDistance => talkDistance;
 
     private InteractionHints interactionHints;
     private NpcDialogue activeNpc;
