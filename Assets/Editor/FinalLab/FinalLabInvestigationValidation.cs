@@ -24,7 +24,7 @@ public static partial class FinalLabInvestigationValidation
     private const string NextGuiPass = "FinalLab.DeskRunCompact";
     private const string RestoreGuiSize = "FinalLab.DeskRestoreGameView";
     private const string ShowResonatorInSceneView = "FinalLab.ShowResonatorInSceneView";
-    private enum Scope { All, Archive, Father, Ivan, Portals, Cutscene }
+    private enum Scope { All, Archive, Father, Ivan, Portals, Cutscene, FatherEncounter }
     private const string Output = FinalLabInvestigationSurvey.Logs;
     private static IEnumerator checks;
     private static Keyboard keyboard;
@@ -206,6 +206,8 @@ public static partial class FinalLabInvestigationValidation
 
     public static void PlayCutscene() => BeginBatchPlay(Scope.Cutscene);
 
+    public static void PlayFatherEncounter() => BeginBatchPlay(Scope.FatherEncounter);
+
     private static void BeginBatchPlay(Scope scope)
     {
         Reopen();
@@ -222,6 +224,8 @@ public static partial class FinalLabInvestigationValidation
 
     public static void OpenCutsceneInEditor() => OpenInEditor(Scope.Cutscene);
 
+    public static void OpenFatherEncounterInEditor() => OpenInEditor(Scope.FatherEncounter);
+
     public static void OpenResonatorInEditor()
     {
         SessionState.SetBool(ShowResonatorInSceneView, true);
@@ -230,7 +234,7 @@ public static partial class FinalLabInvestigationValidation
 
     private static bool IsDeskScope(Scope scope) => scope is Scope.Father or Scope.Ivan;
 
-    private static bool UsesSizedGameView(Scope scope) => IsDeskScope(scope) || scope is Scope.Portals or Scope.Cutscene;
+    private static bool UsesSizedGameView(Scope scope) => IsDeskScope(scope) || scope is Scope.Portals or Scope.Cutscene or Scope.FatherEncounter;
 
     private static void OpenInEditor(Scope scope)
     {
@@ -298,8 +302,8 @@ public static partial class FinalLabInvestigationValidation
             return;
         }
         if (state != PlayModeStateChange.EnteredPlayMode || !SessionState.GetBool(BatchKey, false)) return;
-        deadline = EditorApplication.timeSinceStartup + 150;
         activeScope = (Scope)SessionState.GetInt(ScopeKey, (int)Scope.All);
+        deadline = EditorApplication.timeSinceStartup + (activeScope == Scope.FatherEncounter ? 270 : 150);
         checks = RunPlayChecks(activeScope);
     }
 
@@ -309,7 +313,7 @@ public static partial class FinalLabInvestigationValidation
         frame = Time.frameCount;
         try
         {
-            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Final Lab tests exceeded 150 seconds.");
+            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Final Lab tests exceeded their Play Mode time limit.");
             if (!checks.MoveNext()) Finish(null);
         }
         catch (Exception error)
@@ -337,7 +341,14 @@ public static partial class FinalLabInvestigationValidation
         var manager = Object.FindFirstObjectByType<FinalLabInvestigationManager>();
         var ui = Object.FindFirstObjectByType<FinalLabInvestigationUI>();
         var cutscene = Object.FindFirstObjectByType<FinalLabIvanCutsceneController>();
-        if (cutscene != null && scope != Scope.Cutscene) cutscene.enabled = false;
+        var fatherFlow = Object.FindFirstObjectByType<FinalLabFlowController>();
+        if (cutscene != null && scope is not (Scope.Cutscene or Scope.FatherEncounter)) cutscene.enabled = false;
+        if (scope != Scope.FatherEncounter && fatherFlow != null)
+        {
+            fatherFlow.enabled = false;
+            fatherFlow.FatherDoor.SetLocked(false);
+            fatherFlow.FatherDoor.OpenPrompt = "E — Открыть дверь";
+        }
         yield return null;
         yield return null;
         if (!Application.isBatchMode && UsesSizedGameView(scope))
@@ -363,10 +374,12 @@ public static partial class FinalLabInvestigationValidation
             Scope.Archive => new[] { 0, 0 },
             Scope.Father => new[] { 0, 1, 1 },
             Scope.Ivan => new[] { 0, 1, 2, 2 },
-            Scope.Cutscene => new[] { 0, 1, 2 },
+            Scope.Cutscene or Scope.FatherEncounter => new[] { 0, 1, 2 },
             _ => new[] { 0, 0, 1, 2, 2 }
         };
         var interactionPrompt = ui.GetComponentsInChildren<TMP_Text>().Single(label => label.name == "Interaction");
+        if (scope == Scope.FatherEncounter)
+            foreach (var ignored in CheckFatherDoorBeforeIvan(fatherFlow, player, camera, controller, interactionPrompt)) yield return ignored;
         if (scope is Scope.Portals or Scope.All)
         {
             foreach (var ignored in PlayPortalChecks(player, camera, controller, manager, interactionPrompt)) yield return ignored;
@@ -381,7 +394,7 @@ public static partial class FinalLabInvestigationValidation
             bool repeat = index < 3 && initial == index + 1;
             bool archive = index == 0, father = index == 1, ivan = index == 2;
             bool desk = father || ivan, controlledReading = archive || desk;
-            if ((scope is Scope.All or Scope.Ivan or Scope.Portals or Scope.Cutscene) && !repeat)
+            if ((scope is Scope.All or Scope.Ivan or Scope.Portals or Scope.Cutscene or Scope.FatherEncounter) && !repeat)
             {
                 for (int future = initial + 1; future < manager.Points.Length; future++)
                 {
@@ -557,17 +570,19 @@ public static partial class FinalLabInvestigationValidation
                     if (desk && !repeat && count == 3 && !Application.isBatchMode) Capture(camera, point.Id + "-all-read");
                 }
             }
-            if (scope == Scope.Cutscene && ivan) Require(cutscene.State == FinalLabIvanCutsceneController.Stage.Waiting,
+            if (scope is (Scope.Cutscene or Scope.FatherEncounter) && ivan) Require(cutscene.State == FinalLabIvanCutsceneController.Stage.Waiting,
                 "Ivan stays hidden during all documents and before the final ESC.");
             Keys(Key.Escape);
             for (int f = 0; f < 3; f++) yield return null;
             Keys();
             while (manager.State == FinalLabInvestigationManager.ViewState.Moving) yield return null;
-            if (scope == Scope.Cutscene && ivan)
+            if (scope is (Scope.Cutscene or Scope.FatherEncounter) && ivan)
             {
                 Require(manager.Completed == 3 && completedEvents == 1 && manager.ActivePoint == null && !player.enabled,
                     "Final ESC closed Ivan's desk at 3/3 and immediately handed control to the cutscene.");
                 foreach (var ignored in ExerciseIvanCutscene(cutscene, player, camera, manager, startingCamera)) yield return ignored;
+                if (scope == Scope.FatherEncounter)
+                    foreach (var ignored in CheckFatherEncounter(fatherFlow, cutscene, player, camera, controller, manager, interactionPrompt)) yield return ignored;
                 yield break;
             }
             int expected = repeat ? initial : index + 1;
@@ -725,6 +740,8 @@ public static partial class FinalLabInvestigationValidation
     private static void Capture(Camera camera, string title)
     {
         if (activeScope == Scope.Cutscene && !title.StartsWith("Cutscene-", StringComparison.Ordinal)) return;
+        if (activeScope == Scope.FatherEncounter && !title.StartsWith("FatherEncounter-", StringComparison.Ordinal) &&
+            title is not ("Cutscene-dialogue-01-CalmIdle" or "Cutscene-04-turn" or "Cutscene-05-returning")) return;
         if (!Application.isBatchMode)
         {
             Directory.CreateDirectory(CaptureOutput);
@@ -756,7 +773,8 @@ public static partial class FinalLabInvestigationValidation
     private static string CaptureOutput => activeScope switch
     {
         Scope.Father => FinalLabFatherDeskRevision.Output, Scope.Ivan => FinalLabIvanDeskRevision.Output,
-        Scope.Portals => FinalLabPortalBuilder.Logs, Scope.Cutscene => "Logs/FinalLab/IvanDialogue", _ => Output
+        Scope.Portals => FinalLabPortalBuilder.Logs, Scope.Cutscene => "Logs/FinalLab/IvanDialogue",
+        Scope.FatherEncounter => "Logs/FinalLab/FatherSequence", _ => Output
     };
 
     private static void Require(bool value, string message)

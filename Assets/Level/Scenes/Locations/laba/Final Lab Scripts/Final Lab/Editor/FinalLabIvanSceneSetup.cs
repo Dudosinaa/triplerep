@@ -99,7 +99,7 @@ internal static partial class FinalLabIvanSceneSetup
         var doorway = Marker(markers, "Ivan_Doorway", new Vector3(lane, floor, (aperture.Room + aperture.Hall) * .5f));
         var hall = Marker(markers, "Ivan_Hall", new Vector3(lane, floor, aperture.Hall - .47f));
         var talk = Marker(markers, "Ivan_DialoguePoint", new Vector3(-2.18f, floor, 12.59f));
-        var eye = Marker(markers, "Alexei_ConversationEye", new Vector3(-3.60f, floor + 1.24f, 11.10f));
+        var eye = Marker(markers, "Alexei_ConversationEye", new Vector3(-3.60f, floor + FinalLabIvanCutsceneController.DialogueEyeHeight, 11.10f));
         VerifyRoutePair(controlDoor, inside.position, hall.position, talk.position);
 
         var actor = Marker(rootTransform, "Ivan_Karamazov", inside.position);

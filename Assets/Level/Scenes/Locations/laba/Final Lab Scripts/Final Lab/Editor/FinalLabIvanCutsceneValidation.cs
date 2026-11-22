@@ -26,6 +26,8 @@ public static partial class FinalLabInvestigationValidation
         Require(scene.State == Stage.Exiting && door.IsOpen && ivan.Visible, "Ivan waits inside until the existing door is fully open.");
         foreach (var frame in CheckIvanWalk(scene, camera, leaving: true)) yield return frame;
         Require(scene.State == Stage.Talking && !player.enabled && !investigation.enabled, "Gameplay controls stay disabled during the conversation.");
+        Require(camera.transform.position.y > 1.56f && Mathf.Abs(camera.transform.position.y - ivan.HeadPosition.y) < .19f,
+            "Ivan and Alexei hold the conversation near the same eye level.");
         Vector3 feet = player.transform.position;
         var middle = new Vector2(Screen.width * .5f, Screen.height * .5f);
         string expected = "CalmIdle";
@@ -110,6 +112,11 @@ public static partial class FinalLabInvestigationValidation
         for (int f = 0; f < 3; f++) yield return null;
         Keys();
         Require(scene.State == Stage.Finished && !dialogue.Visible, "Escape cannot replay the completed cutscene.");
+        if (activeScope == Scope.FatherEncounter)
+        {
+            Debug.Log("FINAL_LAB_IVAN_CONVERSATION_PLAYED_35_LINES");
+            yield break;
+        }
         Vector3 doorway = door.transform.position;
         Vector3 ivanInside = ivan.transform.position;
         Aim(player, camera, player.GetComponent<CharacterController>(), doorway + Vector3.back * 1.17f, doorway + Vector3.up * 1.13f);

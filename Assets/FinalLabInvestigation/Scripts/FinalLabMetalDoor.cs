@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace FinalLab.Investigation
@@ -18,8 +19,12 @@ namespace FinalLab.Investigation
         private bool opening;
 
         public bool IsOpen => travel >= 1f;
+        public bool IsLocked => locked;
+        public float Openness => travel;
         public bool IsMoving => travel != (opening ? 1f : 0f);
-        public string Prompt => locked ? "Дверь заперта" : IsOpen ? "E — Закрыть дверь" : "E — Открыть дверь";
+        public string Prompt => locked ? "Дверь заперта" : IsOpen ? "E — Закрыть дверь" : OpenPrompt;
+        public string OpenPrompt { get; set; } = "E — Открыть дверь";
+        public event Action OpeningRequestedByPlayer;
         public float TravelTime => travelTime;
         public float SwingAngle => swingAngle;
         public Transform Hinge => hinge;
@@ -49,7 +54,7 @@ namespace FinalLab.Investigation
         {
             if (locked || IsMoving) return;
             if (IsOpen) CloseDoor();
-            else OpenDoor();
+            else if (OpenDoor()) OpeningRequestedByPlayer?.Invoke();
         }
 
         private void Update()

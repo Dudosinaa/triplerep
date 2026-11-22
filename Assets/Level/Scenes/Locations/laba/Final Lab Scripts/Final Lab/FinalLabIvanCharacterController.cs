@@ -8,6 +8,7 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
     public const string WalkRate = "WalkRate";
     private static readonly int WalkRateHash = Animator.StringToHash(WalkRate);
     private const float MinimumWalkRate = .30f;
+    public const float ReturnStartRate = .41f;
     [SerializeField] private Animator animator;
     [SerializeField] private CharacterController motor;
     [SerializeField] private Transform head;
@@ -16,7 +17,7 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
     private Renderer[] skin;
     private Vector3 glanceTarget;
     private float glanceWeight, glanceGoal;
-    public const float ReturnWalkBlend = .42f;
+    public const float ReturnWalkBlend = .36f;
     public Animator Animator => animator;
     public CharacterController Motor => motor;
     public Vector3 HeadPosition => head.position;
@@ -36,8 +37,14 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
     public float ReturnTurnAngle(float desiredYaw, float fraction)
     {
         float clipYaw = returnTurnYaw.Evaluate(1);
-        return returnTurnYaw.Evaluate(fraction) + Mathf.DeltaAngle(clipYaw, desiredYaw) * Mathf.SmoothStep(0, 1, fraction);
+        // Let the motor finish aligning during the last part of the pose, ready for the first step.
+        float tail = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(.52f, .87f, fraction));
+        float headingTime = Mathf.Clamp01(fraction + .13f * tail);
+        return returnTurnYaw.Evaluate(headingTime) + Mathf.DeltaAngle(clipYaw, desiredYaw) * Mathf.SmoothStep(0, 1, headingTime);
     }
+
+    public bool ReadyToWalk(float desiredYaw, float fraction) => fraction >= .82f &&
+        Mathf.Abs(Mathf.DeltaAngle(ReturnTurnAngle(desiredYaw, fraction), desiredYaw)) < 3f;
 
     private void Awake()
     {
@@ -100,14 +107,15 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
         return route;
     }
 
-    public static float AdvanceWalkingDistance(float walked, float routeLength, float speed, float deltaTime)
+    public static float AdvanceWalkingDistance(float walked, float routeLength, float speed, float deltaTime, float startingRate = MinimumWalkRate)
     {
         const float sampleInterval = 1f / 120f;
         while (deltaTime > 0 && walked < routeLength)
         {
             float sample = Mathf.Min(deltaTime, sampleInterval);
-            float ramp = Mathf.Min(walked / .29f, (routeLength - walked) / .32f);
-            float rate = Mathf.SmoothStep(MinimumWalkRate, 1, ramp);
+            float acceleration = Mathf.SmoothStep(startingRate, 1, walked / .29f);
+            float braking = Mathf.SmoothStep(MinimumWalkRate, 1, (routeLength - walked) / .32f);
+            float rate = Mathf.Min(acceleration, braking);
             walked = Mathf.Min(routeLength, walked + speed * rate * sample);
             deltaTime -= sample;
         }
@@ -126,7 +134,8 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
         float walked = 0;
         float turnVelocity = 0;
         float blocked = 0;
-        animator.SetFloat(WalkRateHash, MinimumWalkRate);
+        float startingRate = returning ? ReturnStartRate : MinimumWalkRate;
+        animator.SetFloat(WalkRateHash, startingRate);
         if (RequestedAnimation != Walking) Play(Walking, .38f);
         while (true)
         {
@@ -136,7 +145,7 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
                 yield return null;
                 continue;
             }
-            float nextDistance = AdvanceWalkingDistance(walked, routeLength, speed, dt);
+            float nextDistance = AdvanceWalkingDistance(walked, routeLength, speed, dt, startingRate);
             float stride = nextDistance - walked;
             float rate = Mathf.Clamp(stride / (speed * dt), MinimumWalkRate, 1);
             animator.SetFloat(WalkRateHash, rate);
@@ -188,18 +197,21 @@ public sealed class FinalLabIvanCharacterController : MonoBehaviour
         float desiredYaw = Vector3.SignedAngle(before * Vector3.forward, after * Vector3.forward, Vector3.up);
         Play(TurnAround, .22f);
         float normalized = 0;
-        for (float elapsed = 0; normalized < 1f && elapsed < 2.5f; elapsed += Time.deltaTime)
+        for (float elapsed = 0; elapsed < 2.5f; elapsed += Time.deltaTime)
         {
             var state = animator.IsInTransition(0) ? animator.GetNextAnimatorStateInfo(0) : animator.GetCurrentAnimatorStateInfo(0);
             if (state.IsName("Base Layer." + TurnAround)) normalized = Mathf.Clamp01(state.normalizedTime);
             transform.rotation = Quaternion.AngleAxis(ReturnTurnAngle(desiredYaw, normalized), Vector3.up) * before;
+            if (ReadyToWalk(desiredYaw, normalized))
+            {
+                animator.SetFloat(WalkRateHash, ReturnStartRate);
+                Play(Walking, ReturnWalkBlend);
+                yield break;
+            }
             follow();
             yield return null;
         }
-        if (normalized < 1f) throw new InvalidOperationException("Ivan's turn clip did not reach its final pose.");
-
-        animator.SetFloat(WalkRateHash, MinimumWalkRate);
-        Play(Walking, ReturnWalkBlend);
+        throw new InvalidOperationException("Ivan's turn clip did not reach the walking handoff.");
     }
 
     public void GlanceAt(Vector3 target)

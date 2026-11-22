@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public sealed class FinalLabIvanCutsceneController : MonoBehaviour
 {
+    public const float DialogueEyeHeight = 1.65f;
     public enum Stage { Waiting, FramingDoor, Opening, Exiting, Talking, Turning, Returning, Closing, Finished }
     [SerializeField] private FinalLabInvestigationManager investigation;
     [SerializeField] private FinalLabInvestigationUI investigationUI;
@@ -24,6 +25,7 @@ public sealed class FinalLabIvanCutsceneController : MonoBehaviour
     public FinalLabIvanCharacterController Ivan => ivan;
     public FinalLabIvanDialogue Dialogue => dialogue;
     public FinalLabMetalDoor Door => door;
+    public event Action Finished;
 
     public void Configure(FinalLabInvestigationManager research, FinalLabInvestigationUI hud, FirstPersonPlayer motor, Camera camera,
         FinalLabMetalDoor controlDoor, FinalLabIvanCharacterController character, FinalLabIvanDialogue subtitles,
@@ -81,14 +83,14 @@ public sealed class FinalLabIvanCutsceneController : MonoBehaviour
                 Follow(Vector3.Lerp(arrivalEye, eye.position, Mathf.SmoothStep(0, 1, throughDoor)));
             });
             yield return FaceConversation();
-            yield return cameraRig.FrameConversation(eye.position, ivan.HeadPosition - Vector3.up * .31f);
+            yield return cameraRig.FrameConversation(eye.position, ivan.HeadPosition - Vector3.up * .065f);
             State = Stage.Talking;
             yield return PresentDialogue();
 
             State = Stage.Turning;
             dialogue.Hide();
             ivan.ClearGlance();
-            yield return new WaitForSeconds(.54f);
+            yield return new WaitForSeconds(.43f);
             yield return ivan.TurnTo(hall.position, () => Follow(eye.position));
             State = Stage.Returning;
             yield return ivan.WalkAround(hall.position, inside.position, () => Follow(eye.position), returning: true);
@@ -107,6 +109,7 @@ public sealed class FinalLabIvanCutsceneController : MonoBehaviour
             RestoreControl();
             State = Stage.Finished;
         }
+        Finished?.Invoke();
     }
 
     private IEnumerator FaceConversation()
