@@ -23,6 +23,7 @@ public static partial class FinalLabInvestigationValidation
     private const string GuiWidthKey = "FinalLab.DeskGameViewWidth";
     private const string NextGuiPass = "FinalLab.DeskRunCompact";
     private const string RestoreGuiSize = "FinalLab.DeskRestoreGameView";
+    private const string ShowResonatorInSceneView = "FinalLab.ShowResonatorInSceneView";
     private enum Scope { All, Archive, Father, Ivan, Portals }
     private const string Output = FinalLabInvestigationSurvey.Logs;
     private static IEnumerator checks;
@@ -51,14 +52,13 @@ public static partial class FinalLabInvestigationValidation
         var points = manager.Points;
         Require(points.Select(p => p.Id).SequenceEqual(new[] { "Archive", "Father", "Ivan" }),
             "The three required points and their order survived reopening.");
-        var container = manager.GetComponentsInChildren<InvestigationPoint>(true).Single(p => p.Container);
-        Require(!container.IsHighlighted && !points.Contains(container), "K-17 and its evidence remain outside the initial investigation.");
-        var owners = points.Append(container).ToArray();
+        Require(!manager.GetComponentsInChildren<InvestigationPoint>(true).Any(p => p.Container), "K-17 has no investigation point.");
+        var owners = points;
         var evidence = owners.SelectMany(p => p.Evidence).ToArray();
         var documents = evidence.Where(e => e.Kind == EvidenceKind.Document).ToDictionary(e => e.Id);
         var source = JsonUtility.FromJson<EvidenceCatalog>(AssetDatabase.LoadAssetAtPath<TextAsset>(FinalLabEvidenceAssets.Data).text);
-        Require(documents.Count == 13 && source.documents.Length == 13, "All thirteen documents and unique IDs exist.");
-        foreach (var text in source.documents)
+        Require(documents.Count == 10 && source.documents.Length == 13, "Ten active documents and thirteen catalog entries are preserved.");
+        foreach (var text in source.documents.Where(text => text.point < points.Length))
         {
             var e = documents[text.id];
             Require(e.Record.title == text.title && e.Record.date == text.date && e.Record.body == text.body &&
@@ -66,6 +66,12 @@ public static partial class FinalLabInvestigationValidation
             var body = e.transform.Find("Print/Body").GetComponent<TMP_Text>();
             Require(body.text == text.body && body.font.HasCharacters(text.body.Replace("\n", "")),
                 text.id + " displays all its text with Cyrillic glyph coverage.");
+        }
+        foreach (var text in source.documents.Where(text => text.point == 3))
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{FinalLabEvidenceAssets.Root}/Pages/{text.id}.prefab");
+            var saved = prefab.GetComponent<InvestigationDocument>().Record;
+            Require(saved.id == text.id && saved.body == text.body, text.id + " remains available as an unmodified source document.");
         }
         var photos = evidence.Where(e => e.Kind == EvidenceKind.Photograph).ToArray();
         Require(photos.Length == 4 && photos.Select(e => e.Id).SequenceEqual(FinalLabEvidenceAssets.PhotoNames), "All four photographs are serialized.");
@@ -89,34 +95,9 @@ public static partial class FinalLabInvestigationValidation
         VerifyFatherDesk(points[1], roots);
         VerifyIvanDesk(points[2], roots);
         var all = roots.SelectMany(o => o.GetComponentsInChildren<Transform>(true)).ToArray();
-        Require(all.Count(o => o.name == "К-17" || o.name == "K-17") == 1, "There is exactly one K-17 crate.");
-        var crate = all.Single(o => o.name is "К-17" or "K-17");
-        var shelf = all.Single(o => o.name == "MetalShelf");
-        var shelfBounds = FinalLabPropsSurvey.Bounds(shelf.GetComponentsInChildren<MeshRenderer>().Where(r => r.enabled));
-        var crateBounds = FinalLabPropsSurvey.Bounds(crate.GetComponentsInChildren<MeshRenderer>().Where(r => r.enabled));
-        Require(shelfBounds.min.z - crateBounds.max.z is > 0.022f and < 0.3f && crateBounds.min.x > -4.96f,
-            "The crate is beside the metal shelf with clearance from the shelf and west wall.");
-        var leads = all.Single(o => o.name == "K-17 wall-mounted cable paths");
         var architecture = roots.Single(o => o.name == "FinalLab_Environment").transform;
         Physics.SyncTransforms();
-        for (int i = 0; i < 2; i++)
-        {
-            var run = leads.GetChild(i);
-            var bounds = run.GetComponent<MeshRenderer>().bounds;
-            Require(run.GetComponent<Collider>() == null && bounds.max.x < -4.70f && bounds.min.x > -5.002f &&
-                run.Find("Port") != null && run.Find("Distribution terminal") != null,
-                run.name + " is a static, anchored lead against the wall.");
-            var vertices = run.GetComponent<MeshFilter>().sharedMesh.vertices;
-            for (int ring = 0; ring < vertices.Length / 10; ring++)
-            {
-                Vector3 center = Vector3.zero;
-                for (int side = 0; side < 10; side++) center += vertices[ring * 10 + side];
-                Vector3 p = run.TransformPoint(center / 10);
-                if (Physics.OverlapSphere(p, 0.008f, ~0, QueryTriggerInteraction.Ignore)
-                    .Any(c => c.transform.IsChildOf(architecture)))
-                    throw new InvalidOperationException($"{run.name} intersects a concrete surface at {p:F3}.");
-            }
-        }
+        FinalLabResonatorValidation.Verify(roots);
         VerifyWalkway();
         VerifyPortalScene(roots, architecture);
         Require(all.Count(t => t.GetComponent<Camera>() != null) == 1 && all.Count(t => t.GetComponent<AudioListener>() != null) == 1,
@@ -237,6 +218,12 @@ public static partial class FinalLabInvestigationValidation
 
     public static void OpenPortalsInEditor() => OpenInEditor(Scope.Portals);
 
+    public static void OpenResonatorInEditor()
+    {
+        SessionState.SetBool(ShowResonatorInSceneView, true);
+        OpenInEditor(Scope.Portals);
+    }
+
     private static bool IsDeskScope(Scope scope) => scope is Scope.Father or Scope.Ivan;
 
     private static void OpenInEditor(Scope scope)
@@ -289,6 +276,18 @@ public static partial class FinalLabInvestigationValidation
                 SessionState.EraseBool(RestoreGuiSize);
                 FinalLabGameViewSize.Restore();
                 SessionState.EraseInt(GuiWidthKey);
+            }
+            if (SessionState.GetBool(ShowResonatorInSceneView, false))
+            {
+                SessionState.EraseBool(ShowResonatorInSceneView);
+                EditorApplication.delayCall += () =>
+                {
+                    var view = SceneView.lastActiveSceneView;
+                    if (view == null) return;
+                    view.in2DMode = false;
+                    view.LookAt(new Vector3(4.37f, 1.28f, 10.94f), Quaternion.LookRotation(new Vector3(1f, -.12f, .21f)), 2.45f, false, true);
+                    view.Focus();
+                };
             }
             return;
         }
@@ -360,7 +359,10 @@ public static partial class FinalLabInvestigationValidation
         };
         var interactionPrompt = ui.GetComponentsInChildren<TMP_Text>().Single(label => label.name == "Interaction");
         if (scope is Scope.Portals or Scope.All)
+        {
             foreach (var ignored in PlayPortalChecks(player, camera, controller, manager, interactionPrompt)) yield return ignored;
+            foreach (var ignored in PlayResonatorChecks(player, camera, controller)) yield return ignored;
+        }
         int completedEvents = 0;
         manager.InvestigationCompleted += () => completedEvents++;
         foreach (var index in sequence)
@@ -574,14 +576,14 @@ public static partial class FinalLabInvestigationValidation
         {
             Require(manager.Completed == 3 && completedEvents == 1 && manager.ObjectivePoint == null &&
                 ui.ObjectiveText == "Расследование завершено", "The investigation ends once at 3/3 with no K-17 objective.");
-            var retained = manager.GetComponentsInChildren<InvestigationPoint>(true).Single(p => p.Container);
-            Aim(player, camera, controller, FinalLabInvestigationBuilder.Approaches[3], retained.Focus.position);
+            var resonator = GameObject.Find(FinalLabResonatorBuilder.ModuleName).transform;
+            Aim(player, camera, controller, resonator.position + Vector3.left * 1.1f, resonator.position + Vector3.up * 1.16f);
             for (int f = 0; f < 3; f++) yield return null;
             Keys(Key.E);
             for (int f = 0; f < 3; f++) yield return null;
             Keys();
-            Require(!manager.TryOpen(retained) && manager.ActivePoint == null && manager.Completed == 3,
-                "The preserved K-17 cannot reopen or add to the completed investigation.");
+            Require(manager.ActivePoint == null && manager.Completed == 3 && interactionPrompt.text.Length == 0,
+                "K-17 offers no E prompt and cannot enter the completed investigation.");
             Capture(camera, "Investigation-complete");
         }
     }

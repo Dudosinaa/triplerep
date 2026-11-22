@@ -50,7 +50,6 @@ public sealed partial class FinalLabInvestigationBuilder
         if (generated != null) Object.DestroyImmediate(generated);
         var build = new FinalLabInvestigationBuilder(new GameObject(RootName).transform, existing);
         var points = new[] { build.Archive(), build.Father(), build.Ivan() };
-        build.Container();
         var display = Child(build.root, "Investigation HUD").gameObject.AddComponent<FinalLabInvestigationUI>();
         display.Configure(build.assets.Font);
         build.root.gameObject.AddComponent<FinalLabInvestigationManager>()
