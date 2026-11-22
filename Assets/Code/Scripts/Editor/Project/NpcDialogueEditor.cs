@@ -24,6 +24,13 @@ internal sealed class NpcDialogueEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("characterName"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("playerName"), new GUIContent("Имя игрока"));
+        var sequence = serializedObject.FindProperty("scriptedLines");
+        EditorGUILayout.PropertyField(sequence, new GUIContent("Последовательные реплики"), true);
+        if (sequence.arraySize > 0)
+        {
+            serializedObject.ApplyModifiedProperties();
+            return;
+        }
         EditorGUILayout.PropertyField(serializedObject.FindProperty("openingLine"), new GUIContent("Вступительная реплика игрока"));
 
         if (nodes.arraySize > 0 && start.intValue == 0)

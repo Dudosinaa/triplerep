@@ -17,6 +17,9 @@ public sealed class TrainInterCarDoor : MonoBehaviour
     private bool wantsOpen;
     private float closeDelayRemaining;
     private float openProgress;
+    private TrainIvanEncounter npcApproach;
+
+    internal void SetNpcApproach(TrainIvanEncounter npc) => npcApproach = npc;
 
     private void Awake()
     {
@@ -29,7 +32,8 @@ public sealed class TrainInterCarDoor : MonoBehaviour
 
     private void Update()
     {
-        if (IsPlayerNearby())
+        if (IsActorNearby(player != null ? player.transform : null) ||
+            (npcApproach != null && npcApproach.CanOpenDoors && IsActorNearby(npcApproach.transform)))
         {
             wantsOpen = true;
             closeDelayRemaining = closeDelay;
@@ -51,12 +55,12 @@ public sealed class TrainInterCarDoor : MonoBehaviour
             doorDetails[i].localPosition = closedDetailPositions[i] + movement;
     }
 
-    private bool IsPlayerNearby()
+    private bool IsActorNearby(Transform actor)
     {
-        if (player == null || !player.gameObject.activeInHierarchy) return false;
+        if (actor == null || !actor.gameObject.activeInHierarchy) return false;
 
         // Measure horizontally so approaching from either carriage uses the same radius.
-        Vector3 offset = player.transform.position - closedCenter;
+        Vector3 offset = actor.position - closedCenter;
         offset.y = 0f;
         return offset.sqrMagnitude <= activationRadius * activationRadius;
     }

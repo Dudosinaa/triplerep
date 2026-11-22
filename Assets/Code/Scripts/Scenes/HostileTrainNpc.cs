@@ -42,6 +42,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
     [SerializeField] private HostileNpcRagdoll ragdoll;
     [SerializeField] private Transform eyes;
     [SerializeField] private Transform muzzle;
+    [SerializeField] private NpcMuzzleFlash muzzleFlash;
     [SerializeField, Min(0.1f)] private float sightRange = 19f;
     [SerializeField, Range(1f, 360f)] private float fieldOfView = 150f;
     [SerializeField, Min(0.1f)] private float shotRange = 16f;
@@ -76,6 +77,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
     private float voiceDelay;
     private float appliedStandOffset;
     private AudioClip previousLine;
+    private AudioClip previousShotSound;
 
     public int Health { get; private set; }
 
@@ -102,6 +104,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
 
     private void OnDisable()
     {
+        muzzleFlash?.Stop();
         if (voiceSource != null) voiceSource.Stop();
         if (shotSource != null) shotSource.Stop();
     }
@@ -230,10 +233,15 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
     {
         shotDelay = Random.Range(MinShotInterval, MaxShotInterval);
         hasFired = true;
+        muzzleFlash?.Play();
         if (shotSource != null && shotSounds.Length > 0)
         {
-            AudioClip clip = shotSounds[Random.Range(0, shotSounds.Length)];
-            if (clip != null) shotSource.PlayOneShot(clip);
+            AudioClip clip = ChooseClip(shotSounds, previousShotSound);
+            if (clip != null)
+            {
+                previousShotSound = clip;
+                shotSource.PlayOneShot(clip);
+            }
         }
         var ray = new Ray(muzzle.position, point - muzzle.position);
         if (ShotRaycast.TryGetFirstHit(ray, shotRange, solidLayers, transform, hits, out RaycastHit hit) &&
@@ -418,23 +426,28 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
         if (voiceDelay > 0f) return;
         voiceDelay = voiceInterval;
 
+        AudioClip selected = ChooseClip(voiceClips, previousLine);
+        if (selected == null) return;
+        previousLine = selected;
+        voiceSource.clip = selected;
+        voiceSource.Play();
+    }
+
+    private static AudioClip ChooseClip(AudioClip[] clips, AudioClip previous)
+    {
         AudioClip selected = null;
         AudioClip repeat = null;
         int candidates = 0;
-        foreach (AudioClip clip in voiceClips)
+        foreach (AudioClip clip in clips)
         {
             if (clip == null) continue;
-            if (clip == previousLine)
+            if (clip == previous)
             {
                 repeat = clip;
                 continue;
             }
             if (Random.Range(0, ++candidates) == 0) selected = clip;
         }
-        if (selected == null) selected = repeat;
-        if (selected == null) return;
-        previousLine = selected;
-        voiceSource.clip = selected;
-        voiceSource.Play();
+        return selected != null ? selected : repeat;
     }
 }

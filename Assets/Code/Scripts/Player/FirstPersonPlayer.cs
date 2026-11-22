@@ -34,7 +34,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
     internal const float KeyInteractionDistance = 3f;
     internal Camera PlayerCamera => playerCamera;
-    internal bool CanDrawPistol => trainEncounter == null || trainEncounter.IsActivated;
+    internal bool CanDrawPistol => trainEncounter == null || trainEncounter.CanDrawPistol;
 
     private InteractionHints interactionHints;
     private AudioClip generatedStep;

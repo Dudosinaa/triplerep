@@ -33,18 +33,32 @@ public sealed class NpcDialogue : MonoBehaviour
         public int Id => id;
     }
 
+    [Serializable]
+    public sealed class ScriptedLine
+    {
+        public bool playerSpeaks;
+        [TextArea(2, 5)] public string text;
+        [Min(0f)] public float pauseBefore;
+        public string cue;
+    }
+
     [SerializeField] private string characterName = "Смотритель";
     [SerializeField] private string playerName = "Вы";
     [SerializeField, TextArea(2, 5)] private string openingLine;
     [SerializeField, HideInInspector] private int startNodeId;
     [SerializeField] private Node[] nodes;
+    [SerializeField] private ScriptedLine[] scriptedLines;
 
     internal bool HasCompletedConversation { get; private set; }
 
     internal event Action ConversationStarted;
     internal event Action<FirstPersonPlayer> ConversationCompleted;
+    internal event Action ConversationCancelled;
+    internal event Action<FirstPersonPlayer, string> ScriptedCue;
 
     internal void NotifyConversationStarted() => ConversationStarted?.Invoke();
+    internal void NotifyConversationCancelled() => ConversationCancelled?.Invoke();
+    internal void NotifyScriptedCue(FirstPersonPlayer player, string cue) => ScriptedCue?.Invoke(player, cue);
     internal void NotifyConversationCompleted(FirstPersonPlayer player)
     {
         HasCompletedConversation = true;
@@ -54,6 +68,8 @@ public sealed class NpcDialogue : MonoBehaviour
     public string CharacterName => characterName;
     internal string PlayerName => string.IsNullOrEmpty(playerName) ? "Вы" : playerName;
     internal string OpeningLine => openingLine;
+    internal ScriptedLine[] ScriptedLines => scriptedLines;
+    internal bool HasScriptedLines => scriptedLines != null && scriptedLines.Length > 0;
     public Node[] Nodes => nodes;
     public int StartNodeId => startNodeId;
 

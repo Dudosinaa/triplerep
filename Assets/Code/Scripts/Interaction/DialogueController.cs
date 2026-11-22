@@ -35,6 +35,8 @@ public sealed class DialogueController : MonoBehaviour
     private int nodeIndex;
     private int pendingNextNode;
     private bool showingPlayerReply;
+    private bool waitingForScriptedLine;
+    private float scriptedLineReadyAt;
     private bool movementWasEnabled;
     private bool readerWasEnabled;
     private bool inspectorWasEnabled;
@@ -117,7 +119,13 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (showingPlayerReply || phoneLines != null)
+        if (waitingForScriptedLine)
+        {
+            if (Time.time >= scriptedLineReadyAt) ShowScriptedLine();
+            return;
+        }
+
+        if (showingPlayerReply || phoneLines != null || (activeNpc != null && activeNpc.HasScriptedLines))
         {
             if (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame)
                 ContinueDialogue();
@@ -134,7 +142,8 @@ public sealed class DialogueController : MonoBehaviour
     {
         // Use the same unobstructed aim target for NPC dialogue and calls.
         aimedCollider = NpcDialogue.FindAimedCollider(playerCamera, transform, talkDistance, aimHits, out var target);
-        return target != null && target.isActiveAndEnabled && target.GetStartNodeIndex() >= 0 ? target : null;
+        return target != null && target.isActiveAndEnabled &&
+            (target.HasScriptedLines || target.GetStartNodeIndex() >= 0) ? target : null;
     }
 
     private void AnswerPhone(PhoneCall phone)
@@ -149,12 +158,13 @@ public sealed class DialogueController : MonoBehaviour
     private void BeginDialogue(NpcDialogue npc)
     {
         int startIndex = npc.GetStartNodeIndex();
-        if (startIndex < 0 || playerCamera == null) return;
+        if ((!npc.HasScriptedLines && startIndex < 0) || playerCamera == null) return;
         npc.NotifyConversationStarted();
         activeNpc = npc;
-        nodeIndex = startIndex;
+        nodeIndex = npc.HasScriptedLines ? 0 : startIndex;
         OpenDialogue(npc.transform);
-        if (string.IsNullOrEmpty(npc.OpeningLine)) ShowNpcNode();
+        if (npc.HasScriptedLines) PrepareScriptedLine();
+        else if (string.IsNullOrEmpty(npc.OpeningLine)) ShowNpcNode();
         else ShowPlayerReply(npc.OpeningLine, startIndex);
     }
 
@@ -194,6 +204,28 @@ public sealed class DialogueController : MonoBehaviour
     {
         var line = phoneLines[nodeIndex];
         ShowLine(line.speaker, line.text, true);
+    }
+
+    private void PrepareScriptedLine()
+    {
+        var line = activeNpc.ScriptedLines[nodeIndex];
+        if (!string.IsNullOrEmpty(line.cue)) activeNpc.NotifyScriptedCue(movement, line.cue);
+        ShowChoices(null);
+        if (line.pauseBefore <= 0f)
+        {
+            ShowScriptedLine();
+            return;
+        }
+        waitingForScriptedLine = true;
+        scriptedLineReadyAt = Time.time + line.pauseBefore;
+        ShowLine(activeNpc.CharacterName, string.Empty, false);
+    }
+
+    private void ShowScriptedLine()
+    {
+        waitingForScriptedLine = false;
+        var line = activeNpc.ScriptedLines[nodeIndex];
+        ShowLine(line.playerSpeaks ? activeNpc.PlayerName : activeNpc.CharacterName, line.text, true);
     }
 
     private void ShowNpcNode()
@@ -239,7 +271,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private void SelectChoice(int index)
     {
-        if (activeNpc == null || showingPlayerReply) return;
+        if (activeNpc == null || activeNpc.HasScriptedLines || showingPlayerReply) return;
         NpcDialogue.Choice[] choices = activeNpc.Nodes[nodeIndex].choices;
         if (choices == null || index < 0 || index >= choices.Length) return;
         NpcDialogue.Choice choice = choices[index];
@@ -270,7 +302,15 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (activeNpc == null || !showingPlayerReply) return;
+        if (activeNpc == null || waitingForScriptedLine) return;
+        if (activeNpc.HasScriptedLines)
+        {
+            nodeIndex++;
+            if (nodeIndex < activeNpc.ScriptedLines.Length) PrepareScriptedLine();
+            else EndDialogue(completed: true);
+            return;
+        }
+        if (!showingPlayerReply) return;
         if (pendingNextNode < 0 || pendingNextNode >= activeNpc.Nodes.Length)
         {
             EndDialogue(completed: true);
@@ -286,6 +326,7 @@ public sealed class DialogueController : MonoBehaviour
         activeNpc = null;
         phoneLines = null;
         showingPlayerReply = false;
+        waitingForScriptedLine = false;
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         if (playerCamera != null) playerCamera.enabled = true;
@@ -304,7 +345,11 @@ public sealed class DialogueController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-        if (completed && npc != null) npc.NotifyConversationCompleted(movement);
+        if (npc != null)
+        {
+            if (completed) npc.NotifyConversationCompleted(movement);
+            else npc.NotifyConversationCancelled();
+        }
     }
 
     private void OnDisable()

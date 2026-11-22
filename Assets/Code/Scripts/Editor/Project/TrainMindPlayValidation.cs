@@ -151,6 +151,11 @@ public static class TrainMindPlayValidation
         airportFocus.enabled = true;
 
         Object.FindFirstObjectByType<TrainHostileEncounter>().EnableHostileNpcs();
+        var positionBeforeUnlock = player.transform.position;
+        var carriage = GameObject.Find("Ivan Pursuit Carriage").transform.position;
+        player.Teleport(new Vector3(carriage.x, positionBeforeUnlock.y, carriage.z));
+        yield return null;
+        player.Teleport(positionBeforeUnlock);
 
         var changes = new GameObject("Added during Train play");
         var inactive = new GameObject("Initially inactive Train object");
