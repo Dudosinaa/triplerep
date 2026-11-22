@@ -1024,7 +1024,9 @@ public static class ThirdMindSceneBuilder
         var seq = sequenceObject.AddComponent<ThirdMindSequence>();
         seq.dialogueData = dialogue; seq.memoryCamera = camera; seq.tableViewAnchor = anchor;
         seq.michaelHead = FindBone(head, "head"); seq.michaelSpine = FindBone(spine, "spine"); seq.playerController = playerRoot.GetComponent<FirstPersonPlayer>();
-        seq.documents = docs; seq.returnSceneIndex = 2; seq.cameraMoveDuration = 1.35f;
+        seq.documents = docs;
+        seq.returnSceneIndex = SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath);
+        seq.cameraMoveDuration = 1.35f;
         camera.fieldOfView = 55f;
         var audioListeners = UnityEngine.Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
         foreach (var listener in audioListeners) listener.enabled = listener.gameObject == camera.gameObject;

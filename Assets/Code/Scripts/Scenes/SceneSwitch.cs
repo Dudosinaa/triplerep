@@ -12,7 +12,7 @@ public sealed class SceneSwitch : MonoBehaviour
     private Color mindVignetteColor = Color.black;
     public TMP_Text hintText;
     public bool returnOnly;
-    [Min(0)] public int returnSceneIndex;
+    [Min(0)] public int returnSceneIndex = 1;
     private static int entrySceneIndex = -1;
     private bool isMoving;
     private FocusPoint currentPoint;

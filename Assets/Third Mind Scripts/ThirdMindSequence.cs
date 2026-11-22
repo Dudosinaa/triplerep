@@ -23,7 +23,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
     public ThirdMindDocumentSurface[] documents;
     public Sprite cctvEntryPhoto;
     public Sprite cctvExitPhoto;
-    public int returnSceneIndex = 2;
+    public int returnSceneIndex = 3;
     [Header("Camera")]
     [Min(0.1f)] public float cameraMoveDuration = 1.3f;
     [SerializeField, Range(0f, 180f)] private float openingLookLeft = 70f;

@@ -10,11 +10,14 @@ using UnityEngine.InputSystem.UI;
 public static class MergeValidation
 {
     private static readonly string[] Scenes = {
-        "Assets/Level/Scenes/Locations/Metro.unity",
+        "Assets/Level/Scenes/MainMenu.unity",
         "Assets/Level/Scenes/Locations/Home.unity",
-        "Assets/Level/Scenes/Gameplay/ConsciousnessScene.unity",
-        "Assets/Level/Scenes/Gameplay/CarxDemo.unity",
-        "Assets/Level/Scenes/Gameplay/StressDemo.unity"
+        "Assets/Level/Scenes/Locations/Metro.unity",
+        "Assets/Level/Scenes/Locations/Train.unity",
+        "Assets/Level/Scenes/Locations/MindsScenes/FirstMind.unity",
+        "Assets/Level/Scenes/Locations/MindsScenes/AirportCargoMemory.unity",
+        "Assets/Level/Scenes/Locations/MindsScenes/ThirdMind-interogation_room.unity",
+        "Assets/Level/Scenes/Locations/Lab.unity"
     };
     [Serializable] private sealed class ValidationReport
     {
@@ -28,7 +31,8 @@ public static class MergeValidation
         var checks = new List<string>();
         var buildScenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
         Require(buildScenes.SequenceEqual(Scenes), "Build scene indices have changed; update FocusPoint and location exits.");
-        checks.Add("Build scene order: Metro=0, Home=1, Consciousness=2, CarxDemo=3, StressDemo=4");
+        checks.Add("Build scene order: " + string.Join(", ", buildScenes
+            .Select((path, index) => Path.GetFileNameWithoutExtension(path) + "=" + index)));
         var guids = new HashSet<string>();
         foreach (var scene in Scenes)
         {

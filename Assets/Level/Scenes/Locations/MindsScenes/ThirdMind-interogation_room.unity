@@ -1911,7 +1911,7 @@ MonoBehaviour:
   - {fileID: 2055006665}
   cctvEntryPhoto: {fileID: 21300000, guid: aff340abc3fc4c840b0f2205dd92a9eb, type: 3}
   cctvExitPhoto: {fileID: 21300000, guid: 5bb222a1b57ea0b46976b0f38bfe1909, type: 3}
-  returnSceneIndex: 2
+  returnSceneIndex: 3
   cameraMoveDuration: 2
   openingLookLeft: 30
   openingLookRight: 30

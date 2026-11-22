@@ -293,9 +293,9 @@ public static class PlayerPrefabPlayValidation
         Check(!player.GetComponentsInChildren<MeshCollider>(true).Any(), "Scene collision setup does not add colliders to player visuals");
         NoTestContent();
 
-        foreach (int index in new[] { 0, 1 })
+        foreach (string location in new[] { "Home", "Metro" })
         {
-            SceneSwitch.LoadSceneIndex(index);
+            SceneManager.LoadScene(location);
             yield return Delay(2f);
             Check(Object.FindObjectsByType<FirstPersonPlayer>(FindObjectsSortMode.None).Length == 0,
                 "Empty location does not create a player: " + SceneManager.GetActiveScene().name);
@@ -306,7 +306,9 @@ public static class PlayerPrefabPlayValidation
         }
         // Authored-player location loading and the mind round trip are covered by
         // LocationTransitionValidation, using temporary scenes saved only for that test.
-        SceneSwitch.LoadSceneIndex(4);
+        var stressDemoLoad = EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Level/Scenes/Gameplay/StressDemo.unity",
+            new LoadSceneParameters(LoadSceneMode.Single));
+        yield return (Func<bool>)(() => stressDemoLoad.isDone);
         yield return Delay(2f);
         var legacySmoking = Object.FindFirstObjectByType<SmokingController>();
         Check(legacySmoking != null && Field(legacySmoking, "hintText") != null, "Preserved StressDemo still receives its smoking hint");

@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwitch
   returnOnly: 1
-  returnSceneIndex: 0
+  returnSceneIndex: 1
 --- !u!4 &1798298278
 Transform:
   m_ObjectHideFlags: 0

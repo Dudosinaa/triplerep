@@ -942,7 +942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c062f02023aca834887c19f0dc980bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FocusPoint
-  sceneIndex: 2
+  sceneIndex: 3
 --- !u!1001 &1421063231
 PrefabInstance:
   m_ObjectHideFlags: 0

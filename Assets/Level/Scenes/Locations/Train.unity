@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c062f02023aca834887c19f0dc980bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FocusPoint
-  sceneIndex: 5
+  sceneIndex: 6
   returnOnU: 0
 --- !u!4 &250503466 stripped
 Transform:
@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c062f02023aca834887c19f0dc980bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FocusPoint
-  sceneIndex: 3
+  sceneIndex: 4
   returnOnU: 1
 --- !u!1001 &511310551
 PrefabInstance:
@@ -1786,7 +1786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c062f02023aca834887c19f0dc980bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FocusPoint
-  sceneIndex: 4
+  sceneIndex: 5
   returnOnU: 0
 --- !u!4 &525553697 stripped
 Transform:

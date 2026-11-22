@@ -1682,7 +1682,7 @@ MonoBehaviour:
   moveDuration: 2
   hintText: {fileID: 5150568573778180011}
   returnOnly: 0
-  returnSceneIndex: 0
+  returnSceneIndex: 1
 --- !u!114 &9018715995945556438
 MonoBehaviour:
   m_ObjectHideFlags: 0

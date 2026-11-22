@@ -120,8 +120,10 @@ public static class HandsReloadPlayValidation
         Time.timeScale=2f;
         if(Mouse.current==null)InputSystem.AddDevice<Mouse>();
         if(Keyboard.current==null)InputSystem.AddDevice<Keyboard>();
-        foreach(int sceneIndex in new[]{3,0,1})
+        foreach (string sceneName in new[] { "FirstMind", "Home", "Metro" })
         {
+            int sceneIndex = SceneUtility.GetBuildIndexByScenePath(
+                EditorBuildSettings.scenes.Single(s => s.enabled && Path.GetFileNameWithoutExtension(s.path) == sceneName).path);
             if(SceneManager.GetActiveScene().buildIndex!=sceneIndex)SceneSwitch.LoadSceneIndex(sceneIndex);
             yield return Delay(2f);
             // Explicit test fixture only: production locations never create players.

@@ -22,6 +22,7 @@ public static class LocationTransitionValidation
     private const string B = Folder + "/AuthoredB.unity";
     private const string Empty = Folder + "/Empty.unity";
     private const string Disabled = Folder + "/Disabled.unity";
+    private const string Mind = "Assets/Level/Scenes/Gameplay/ConsciousnessScene.unity";
     private const string Output = "Logs/LocationTransition";
     private static readonly List<string> results = new List<string>();
     private static readonly List<string> errors = new List<string>();
@@ -59,7 +60,8 @@ public static class LocationTransitionValidation
             MakeScene(B, true, new Vector3(5f, 0.05f, 0f), 90f, null);
             MakeScene(Empty, false, Vector3.zero, 0f, null);
             MakeScene(Disabled, false, Vector3.zero, 0f, null);
-            EditorBuildSettings.scenes = original.Concat(new[] { new EditorBuildSettingsScene(A, true),
+            EditorBuildSettings.scenes = original.Select(s => s.path == Mind ? new EditorBuildSettingsScene(Mind, true) : s)
+                .Concat(new[] { new EditorBuildSettingsScene(A, true),
                 new EditorBuildSettingsScene(B, true), new EditorBuildSettingsScene(Empty, true),
                 new EditorBuildSettingsScene(Disabled, false) }).ToArray();
             EditorSceneManager.OpenScene(A);
@@ -231,9 +233,9 @@ public static class LocationTransitionValidation
         Check(SceneManager.GetActiveScene().path == Empty && Players() == 0, "An empty destination does not create a player");
         yield return Delay(0.2f);
         Check(Players() == 0, "No delayed fallback creates a player");
-        foreach (int index in new[] { 0, 1 })
+        foreach (string location in new[] { "Home", "Metro" })
         {
-            SceneManager.LoadScene(index);
+            SceneManager.LoadScene(location);
             yield return Delay(0.3f);
             Check(Players() == 0 && !LocationTransition.IsTransitioning, "Production location remains empty: " + SceneManager.GetActiveScene().name);
         }
@@ -245,7 +247,7 @@ public static class LocationTransitionValidation
         var focus = GameObject.CreatePrimitive(PrimitiveType.Cube);
         focus.transform.position = camera.transform.position + camera.transform.forward;
         focus.transform.localScale = Vector3.one * 0.2f;
-        focus.AddComponent<FocusPoint>().sceneIndex = 2;
+        focus.AddComponent<FocusPoint>().sceneIndex = SceneUtility.GetBuildIndexByScenePath(Mind);
         var mind = player.GetComponent<SceneSwitch>();
         Set(mind, "moveDuration", 0.4f);
         Physics.SyncTransforms();
@@ -257,7 +259,7 @@ public static class LocationTransitionValidation
         Check(!player.enabled && !player.GetComponent<DocumentReader>().enabled, "Mind entry retains its original control locks");
         Call(Object.FindFirstObjectByType<LocationTransitionZone>(), "OnTriggerEnter", player.GetComponent<Collider>());
         Check(!LocationTransition.IsTransitioning, "Location trigger cannot interrupt mind entry");
-        yield return (Func<bool>)(() => SceneManager.GetActiveScene().buildIndex == 2);
+        yield return (Func<bool>)(() => SceneManager.GetActiveScene().path == Mind);
         Check(Object.FindFirstObjectByType<SceneSwitch>().returnOnly, "Original mind scene and return component load");
         InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.U));
         yield return Delay(0.03f);
