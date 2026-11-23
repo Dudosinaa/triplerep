@@ -75,7 +75,7 @@ public sealed class InteractionHints : MonoBehaviour
 
     private bool IsFocusAvailable(Behaviour target) => target switch
     {
-        DoorKey key => key.isActiveAndEnabled,
+        DoorKey key => key.CanPickUp,
         KeyDoor door => door.isActiveAndEnabled && door.CanInteract(player),
         PhoneCall phone => phone.CanAnswer,
         _ => true

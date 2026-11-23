@@ -176,7 +176,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         if (!TryGetInteractionHit(out var hit)) return;
 
         var key = hit.collider.GetComponentInParent<DoorKey>();
-        if (key != null && key.isActiveAndEnabled)
+        if (key != null && key.CanPickUp)
         {
             interactionHints?.OfferFocus(key);
             if (pressedE && InteractionInput.TryConsume())

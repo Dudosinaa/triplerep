@@ -9238,6 +9238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4123cf0cd14762a67f4957ac35967b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorKey
+  requiredCall: {fileID: 1793207051}
 --- !u!65 &1665218400
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9845,6 +9846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3fa4a8d294190e478217235f3ef757a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhoneCall
+  completionHint: Надо взять ключ и зажигалку со стола
   taskList: {fileID: 1719091403}
   ringDelay: 5
   dialogue:

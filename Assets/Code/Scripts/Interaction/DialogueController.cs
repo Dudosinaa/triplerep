@@ -6,6 +6,7 @@ public sealed class DialogueController : MonoBehaviour
 {
     private const float ExitIconSize = 22f;
     private const float ExitIconGap = 8f;
+    private const float CompletionHintDuration = 4f;
 
     [SerializeField] private Camera playerCamera;
     // Legacy demo references. Conversations now use the first-person camera.
@@ -29,7 +30,10 @@ public sealed class DialogueController : MonoBehaviour
     private NpcDialogue activeNpc;
     private NpcDialogue nearbyNpc;
     private Collider aimedCollider;
+    private PhoneCall activePhone;
     private PhoneCall.Line[] phoneLines;
+    private string completionHint;
+    private float completionHintUntil;
     private readonly RaycastHit[] aimHits = new RaycastHit[16];
     private int nodeIndex;
     private int pendingNextNode;
@@ -97,13 +101,7 @@ public sealed class DialogueController : MonoBehaviour
                 (documentReader == null || !documentReader.IsReading) &&
                 (itemInspector == null || !itemInspector.IsInspecting);
             if (canTalk) interactionHints?.OfferFocus(phone);
-            if (interactionPrompt != null)
-            {
-                interactionPrompt.SetActive(canTalk);
-                var label = interactionPrompt.GetComponent<Text>();
-                if (canTalk && label != null)
-                    label.text = phone != null ? "[E] Ответить на звонок" : "[E] Поговорить — " + nearbyNpc.CharacterName;
-            }
+            UpdateInteractionPrompt(canTalk, phone);
             if (canTalk && Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
             {
                 if (phone != null) AnswerPhone(phone);
@@ -112,7 +110,7 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (activeNpc != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             EndDialogue();
             return;
@@ -137,6 +135,21 @@ public sealed class DialogueController : MonoBehaviour
         }
     }
 
+    private void UpdateInteractionPrompt(bool canTalk, PhoneCall phone)
+    {
+        if (interactionPrompt == null) return;
+
+        bool showCompletionHint = !string.IsNullOrEmpty(completionHint) &&
+            Time.unscaledTime < completionHintUntil;
+        interactionPrompt.SetActive(showCompletionHint || canTalk);
+        var label = interactionPrompt.GetComponent<Text>();
+        if (label == null) return;
+
+        if (showCompletionHint) label.text = completionHint;
+        else if (canTalk)
+            label.text = phone != null ? "[E] Ответить на звонок" : "[E] Поговорить — " + nearbyNpc.CharacterName;
+    }
+
     private NpcDialogue FindNearbyNpc()
     {
         // Use the same unobstructed aim target for NPC dialogue and calls.
@@ -148,6 +161,7 @@ public sealed class DialogueController : MonoBehaviour
     private void AnswerPhone(PhoneCall phone)
     {
         if (!phone.TryAnswer(out phoneLines)) return;
+        activePhone = phone;
         nodeIndex = 0;
         OpenDialogue(phone.transform);
         ShowChoices(null);
@@ -297,7 +311,7 @@ public sealed class DialogueController : MonoBehaviour
         {
             nodeIndex++;
             if (nodeIndex < phoneLines.Length) ShowPhoneLine();
-            else EndDialogue();
+            else EndDialogue(completed: true);
             return;
         }
 
@@ -322,7 +336,9 @@ public sealed class DialogueController : MonoBehaviour
     private void EndDialogue(bool completed = false)
     {
         var npc = activeNpc;
+        var phone = activePhone;
         activeNpc = null;
+        activePhone = null;
         phoneLines = null;
         showingPlayerReply = false;
         waitingForScriptedLine = false;
@@ -343,6 +359,16 @@ public sealed class DialogueController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+        if (phone != null)
+        {
+            phone.EndCall(completed);
+            if (completed && !string.IsNullOrEmpty(phone.CompletionHint))
+            {
+                completionHint = phone.CompletionHint;
+                completionHintUntil = Time.unscaledTime + CompletionHintDuration;
+                UpdateInteractionPrompt(false, null);
+            }
         }
         if (npc != null)
         {

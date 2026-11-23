@@ -1970,6 +1970,10 @@ PrefabInstance:
       value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4614250603263719525, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
+      propertyPath: startDelay
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4614250603263719525, guid: 2848aee6dcf235d4c889771ffd52595d, type: 3}
       propertyPath: moveDuration
       value: 18
       objectReference: {fileID: 0}
