@@ -117,9 +117,9 @@ public sealed class FinalLabFlowController : MonoBehaviour
 
     private void SetDoorReady()
     {
+        father.PrepareOnBed();
         State = Stage.FatherDoorReady;
         fatherDoor.SetLocked(false);
         doorMarker.SetActive(true);
-        hud.Hint("Найдите отца");
     }
 }

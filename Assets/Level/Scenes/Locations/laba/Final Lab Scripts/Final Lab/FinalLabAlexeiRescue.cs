@@ -50,7 +50,8 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
         Vector3 target = head.position;
         while ((view.transform.position - target).sqrMagnitude > 2.3f * 2.3f ||
                Vector3.Dot(view.transform.position - roomThreshold.position, roomThreshold.forward) < .15f ||
-               Physics.Linecast(view.transform.position, target, ~0, QueryTriggerInteraction.Ignore))
+               father.Interactions.NearestHit(new Ray(view.transform.position, target - view.transform.position),
+                   Vector3.Distance(view.transform.position, target), out _, QueryTriggerInteraction.Ignore))
             yield return null;
 
         player.enabled = false;

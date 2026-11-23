@@ -16,7 +16,7 @@ public static class FinalLabGameplaySetup
     private const string LabPath = "Assets/Level/Scenes/Locations/laba/FinalScene.unity";
     private const string AssetsPath = "Assets/Code/Scripts/Scenes/FinalLabGameplay/";
     private static readonly Vector3 Back = Vector3.back;
-    private const float BaseTrainOffsetZ = .87725437f;
+    private const float TrainStartZ = 7.900999f;
 
     public static void Install()
     {
@@ -45,8 +45,15 @@ public static class FinalLabGameplaySetup
 
         var cabinet = Asset("Switch housing", new Color(.14f, .19f, .17f), unlit: false);
         var lens = Asset("Local switch lamp", new Color(.20f, .13f, .07f), unlit: true);
-        var blueArc = Asset("K17 discharge", new Color(.34f, .66f, 1f), unlit: true);
-        var fragmentArc = Asset("Contained fragment", new Color(.40f, .17f, .66f), unlit: true);
+        var blueArc = Asset("K17 discharge", Color.white, unlit: true);
+        var fragmentArc = Asset("Contained fragment", Color.white, unlit: true);
+        var arcShader = Shader.Find("FinalLab/K17 Arc");
+        Require(arcShader != null && !ShaderUtil.ShaderHasError(arcShader), "The K-17 shader did not compile.");
+        foreach (var material in new[] { blueArc, fragmentArc })
+        {
+            material.shader = arcShader;
+            EditorUtility.SetDirty(material);
+        }
         var font = father.Subtitles.Body.font;
         var west = Named("West_Distribution");
         var generator = Named("Generator_Input");
@@ -60,7 +67,7 @@ public static class FinalLabGameplaySetup
         {
             Mount(root, knife, new Vector3(westWall.max.x, 1.36f, west.position.z - .7f), Vector3.right,
                 "РЕЗЕРВ 1 · ЗАПАД", Function.Reserve, cabinet, lens, font),
-            Mount(root, knife, new Vector3(generatorBounds.min.x - .08f, generator.position.y + .13f, generator.position.z), Vector3.left,
+            Mount(root, knife, new Vector3(generatorBounds.min.x, generator.position.y + .13f, generator.position.z), Vector3.left,
                 "РЕЗЕРВ 2 · ГЕНЕРАТОР", Function.Reserve, cabinet, lens, font),
             Mount(root, knife, new Vector3(2.28f, 1.40f, eastWall.max.z), Vector3.forward,
                 "РЕЗЕРВ 3 · ВОСТОК", Function.Reserve, cabinet, lens, font),
@@ -72,7 +79,8 @@ public static class FinalLabGameplaySetup
                 "ТЯГОВАЯ ЛИНИЯ", Function.Traction, cabinet, lens, font),
             Mark(root, mode, Function.Mode, "Выбрать режим Б", new Vector3(0, 0, 80), mode.TransformPoint(new Vector3(0, .012f, .059f))),
             Mark(root, knife, Function.Contour, "Включить рубильник контура", new Vector3(-47, 0, 0),
-                knife.TransformPoint(new Vector3(0, .09f, .052f))),
+                knife.TransformPoint(new Vector3(0, .072f, .116f)), null,
+                knife.parent.Find("Breaker back plate").GetComponent<Collider>()),
             Mark(root, cover, Function.Cover, "Открыть защитную крышку", new Vector3(-88, 0, 0),
                 cover.TransformPoint(new Vector3(0, .02f, .056f))),
             Mark(root, overload, Function.Overload, "Подтвердить аварийную перегрузку", new Vector3(18, 0, 0),
@@ -80,12 +88,22 @@ public static class FinalLabGameplaySetup
         };
 
         var marker = (GameObject)new SerializedObject(flow).FindProperty("doorMarker").objectReferenceValue;
-        DoorFrame(flow.FatherDoor, marker, Asset("Door amber", new Color(.94f, .68f, .21f), unlit: true));
+        var yellow = Asset("Door amber", Color.yellow, unlit: true);
+        yellow.SetColor("_BaseColor", new Color32(255, 213, 0, 255));
+        EditorUtility.SetDirty(yellow);
+        DoorFrame(flow.FatherDoor, marker, yellow);
         var hud = Hud(root, font);
         var start = Node(root, "Ivan POV · control room", new Vector3(-2.48f, .035f, 15.52f));
         var pointsAt = Node(root, "Ivan initial view · traction control", controls[5].Point);
-        var corePoint = Node(root, "K17 discharge focus", core.position + k17.forward * .20f);
-        var discharges = new[] { Arc(root, fragmentArc), Arc(root, blueArc), Arc(root, blueArc) };
+        var socket = Node(root, "Arc contact · core cap", core.TransformPoint(new Vector3(0, .018f, .036f)));
+        var collector = Node(root, "Arc contact · coil flange", core.parent.TransformPoint(new Vector3(.232f, 1.315f, .066f)));
+        var spark = Node(root, "Arc contact · extraction key", core.TransformPoint(new Vector3(.026f, .01f, .055f)));
+        var discharges = new[]
+        {
+            Arc(root, blueArc, "K17 arc core", 17), Arc(root, blueArc, "K17 arc halo", 17),
+            Arc(root, blueArc, "K17 fork", 7), Arc(root, blueArc, "K17 contact spark", 5),
+            Arc(root, fragmentArc, "K17 overload fragment", 7)
+        };
         var controller = root.gameObject.AddComponent<FinalLabMechanisms>();
         var so = new SerializedObject(controller);
         Set(so, "flow", flow);
@@ -95,16 +113,18 @@ public static class FinalLabGameplaySetup
         Set(so, "investigationHud", Find<FinalLabInvestigationUI>());
         Set(so, "controlDoor", ivan.Door);
         Set(so, "ivanActor", ivan.Ivan.gameObject);
-        Set(so, "rescue", rescue);
         Set(so, "ivanSpawn", start);
         Set(so, "ivanView", pointsAt);
         Set(so, "outlineShader", Shader.Find("FinalLab/Rescue Outline"));
         Set(so, "objective", hud.goal);
         Set(so, "telemetry", hud.telemetry);
         Set(so, "feedback", hud.feedback);
+        Set(so, "crouchHint", hud.crouch);
         Set(so, "continueHint", father.Subtitles.GetComponentsInChildren<TMP_Text>(true).Single(t => t.name == "Continue prompt"));
         Set(so, "needle", needle);
-        Set(so, "resonatorCore", corePoint);
+        Set(so, "contactA", socket);
+        Set(so, "contactB", collector);
+        Set(so, "sparkContact", spark);
         Set(so, "powerLens", powerLens);
         Set(so, "contourLens", contourLens);
         Set(so, "segments", segments);
@@ -112,7 +132,7 @@ public static class FinalLabGameplaySetup
         Set(so, "reserveLights", new[] { Named("Coil_WorkLight").GetComponent<Light>(),
             Named("Containment_EntryAccent").GetComponent<Light>(), Named("Containment_White").GetComponent<Light>() });
         Set(so, "pulseLights", new[] { Named("Resonator warm worklight").GetComponent<Light>(),
-            Named("Copper glint").GetComponent<Light>(), Named("Coil_WorkLight").GetComponent<Light>() });
+            Named("Copper glint").GetComponent<Light>() });
         Set(so, "arcs", discharges);
         so.ApplyModifiedPropertiesWithoutUndo();
 
@@ -165,6 +185,8 @@ public static class FinalLabGameplaySetup
                 leaf.center = door.Leaf.center;
                 leaf.size = door.Leaf.size;
                 Physics.SyncTransforms();
+                var doorClearance = leaf.bounds;
+                doorClearance.Expand(new Vector3(.56f, 0f, .56f));
 
                 float best = float.PositiveInfinity;
                 Vector3 place = Vector3.zero;
@@ -193,11 +215,13 @@ public static class FinalLabGameplaySetup
                         posed.center += center;
                         if (posed.min.x < safe.min.x || posed.max.x > safe.max.x ||
                             posed.min.z < safe.min.z || posed.max.z > safe.max.z) continue;
+                        if (posed.Intersects(doorClearance) || DistanceXZ(posed, door.Leaf.bounds) < .26f) continue;
                         float separation = DistanceXZ(posed, dead);
                         if (separation < .045f) continue;
                         checkedPositions++;
                         var head = center + pose.head;
-                        float cost = separation * 2.5f + Vector3.Distance(head, threshold) * .29f + Mathf.Abs(tilt) * .013f;
+                        float cost = separation * 1.2f + Vector3.Distance(head, threshold) * .15f + Mathf.Abs(tilt) * .013f -
+                            Mathf.Min(.8f, DistanceXZ(posed, leaf.bounds)) * .65f;
                         if (cost >= best) continue;
                         if (slices.Values.Any(b => Physics.OverlapBox(center + rotation * b.center,
                                 b.extents + new Vector3(.018f, 0, .026f), rotation, ~0, QueryTriggerInteraction.Ignore)
@@ -214,7 +238,9 @@ public static class FinalLabGameplaySetup
                 actor.transform.SetPositionAndRotation(place, orientation);
                 actor.applyRootMotion = false;
                 EditorUtility.SetDirty(actor);
-                Debug.Log($"LABA_FLOOR_SAMPLE_OK Alexei root {place:F3}, minimum skin height 0.015 m above floor.");
+                actorProbe.transform.SetPositionAndRotation(place, orientation);
+                var result = FinalLabEndingSetup.Sample(actorProbe, clip, clip.length).bounds;
+                Debug.Log($"LABA_FLOOR_SAMPLE_OK Alexei root {place:F3}, open-door gap {DistanceXZ(result, leaf.bounds):F2} m.");
             }
             finally { Object.DestroyImmediate(openLeaf); }
         }
@@ -240,18 +266,18 @@ public static class FinalLabGameplaySetup
         var actor = (Animator)properties.FindProperty("alexei").objectReferenceValue;
         var eye = (Transform)properties.FindProperty("standingEye").objectReferenceValue;
         var offsetField = properties.FindProperty("standingOffset");
-        var original = offsetField.vector3Value;
-        float direction = Mathf.Sign(actor.transform.position.z + BaseTrainOffsetZ - eye.position.z);
-        var move = Vector3.forward * direction * .58f;
-        // Use the longitudinal aisle and leave the initial floor pose and camera marks intact.
-        offsetField.vector3Value = new Vector3(original.x, original.y, .58f * direction + BaseTrainOffsetZ);
+        var start = actor.transform.position;
+        start.z = TrainStartZ;
+        actor.transform.position = start;
+        PrefabUtility.RecordPrefabInstancePropertyModifications(actor.transform);
+        properties.FindProperty("standDuration").floatValue = 3f;
         properties.ApplyModifiedPropertiesWithoutUndo();
         Require(actor.avatar != null && actor.avatar.isValid && actor.runtimeAnimatorController != null &&
             actor.runtimeAnimatorController.animationClips.Length >= 5 && eye != null, "Train ending lost its rig or camera markers.");
         VerifyTrainFraming(actor, eye, offsetField.vector3Value);
         EditorSceneManager.MarkSceneDirty(scene);
         Require(EditorSceneManager.SaveScene(scene), "Train could not be saved.");
-        Debug.Log($"LABA_TRAIN_COMPOSITION_OK shifted along the aisle by {move.magnitude:0.00} m.");
+        Debug.Log("LABA_TRAIN_COMPOSITION_OK both poses shifted 0.60 m along the aisle.");
     }
 
     private static void VerifyTrainFraming(Animator actor, Transform eye, Vector3 offset)
@@ -265,8 +291,9 @@ public static class FinalLabGameplaySetup
             var seats = Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .Where(r => r.name.StartsWith("CojinBajoAsiento", StringComparison.Ordinal) &&
                     Mathf.Abs(r.bounds.center.z - copy.transform.position.z) < 2.5f).Select(r => r.bounds).ToArray();
-            foreach (string name in new[] { TrainFinale.Angry, TrainFinale.Point, TrainFinale.Dismiss })
+            foreach (string name in new[] { TrainFinale.Rise, TrainFinale.Angry, TrainFinale.Point, TrainFinale.Dismiss, TrainFinale.Turn })
             {
+                copy.transform.position = actor.transform.position + (name == TrainFinale.Rise ? Vector3.zero : offset);
                 var state = graph.layers[0].stateMachine.states.Single(s => s.state.name == name).state;
                 var clip = (AnimationClip)state.motion;
                 foreach (float fraction in new[] { .15f, .50f, .85f })
@@ -303,6 +330,13 @@ public static class FinalLabGameplaySetup
 
         foreach (var target in targets)
         {
+            if (target.Kind is Function.Reserve or Function.Isolation or Function.Traction)
+            {
+                var mount = target.transform.parent;
+                var supported = Physics.RaycastAll(mount.position + mount.forward * .1f, -mount.forward, .156f,
+                    ~0, QueryTriggerInteraction.Ignore).Any(hit => !target.Owns(hit.collider));
+                Require(supported, $"Mounting plate '{mount.name}' has no backing at {mount.position:F3}.");
+            }
             var origin = target.Point;
             bool reachable = false;
             for (int n = 0; n < 16; n++)
@@ -314,7 +348,8 @@ public static class FinalLabGameplaySetup
                 if (Physics.CheckCapsule(floor.point + Vector3.up * .29f, floor.point + Vector3.up * 1.45f,
                         .22f, ~0, QueryTriggerInteraction.Ignore)) continue;
                 var toward = origin - eye;
-                if (!Physics.Raycast(eye, toward.normalized, toward.magnitude - .025f, ~0, QueryTriggerInteraction.Ignore))
+                if (!Physics.Raycast(eye, toward.normalized, out var hit, toward.magnitude - .025f, ~0,
+                        QueryTriggerInteraction.Ignore) || target.Owns(hit.collider))
                 {
                     reachable = true;
                     break;
@@ -328,9 +363,19 @@ public static class FinalLabGameplaySetup
     private static FinalLabSwitch Mount(Transform root, Transform model, Vector3 anchor, Vector3 outward, string text,
         Function role, Material casing, Material lampMaterial, TMP_FontAsset font)
     {
-        var basePlate = Node(root, text, anchor + outward * .051f);
+        var basePlate = Node(root, text, anchor + outward * .031f);
         basePlate.rotation = Quaternion.LookRotation(outward);
-        Block(basePlate, "Enamel switch mounting", Vector3.zero, new Vector3(.24f, .28f, .064f), casing);
+        var mounting = Block(basePlate, "Enamel switch mounting", Vector3.zero, new Vector3(.24f, .28f, .064f), casing);
+        var mountCollider = mounting.gameObject.AddComponent<BoxCollider>();
+        var axle = model.Find("Knife pivot axle").GetComponent<Renderer>();
+        var metal = axle.sharedMaterial;
+        foreach (float x in new[] { -.095f, .095f })
+        {
+            foreach (float y in new[] { -.112f, .112f })
+                Block(basePlate, "Mounting screw", new Vector3(x, y, .033f), new Vector3(.018f, .017f, .013f), metal);
+            Block(basePlate, "Fixed knife support", new Vector3(x * .55f, -.062f, .035f),
+                new Vector3(.02f, .056f, .036f), metal);
+        }
         var grip = Object.Instantiate(model.gameObject, basePlate).transform;
         grip.name = "Knife actuator";
         grip.localPosition = new Vector3(0, -.062f, .043f);
@@ -344,22 +389,31 @@ public static class FinalLabGameplaySetup
         label.transform.localScale = Vector3.one * .095f;
         label.rectTransform.sizeDelta = new Vector2(2.3f, .38f);
         label.alignment = TextAlignmentOptions.Center;
-        label.fontSize = 1.95f;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.enableAutoSizing = true;
+        label.fontSizeMin = 1.1f;
+        label.fontSizeMax = 1.78f;
+        label.fontSize = 1.78f;
         label.font = font;
         label.color = new Color(.88f, .82f, .66f);
         label.text = text;
-        return Mark(basePlate, grip, role, role is Function.Reserve or Function.Isolation ? "Взаимодействовать" : "Отключить тяговую линию",
-            new Vector3(-53, 0, 0), basePlate.TransformPoint(new Vector3(0, .036f, .112f)), lamp);
+        return Mark(basePlate, grip, role, role switch
+            {
+                Function.Reserve => "Включить резервное питание",
+                Function.Isolation => "Включить контур изоляции",
+                _ => "Отключить тяговую линию"
+            },
+            new Vector3(-53, 0, 0), basePlate.TransformPoint(new Vector3(0, .036f, .112f)), lamp, mountCollider);
     }
 
     private static FinalLabSwitch Mark(Transform parent, Transform visual, Function kind, string caption,
-        Vector3 angle, Vector3 point, Renderer lamp = null)
+        Vector3 angle, Vector3 point, Renderer lamp = null, Collider mount = null)
     {
         var meshes = visual.GetComponentsInChildren<MeshRenderer>().Where(r =>
             r.TryGetComponent<MeshFilter>(out var f) && f.sharedMesh != null).ToArray();
         Require(meshes.Length > 0, "No visible part on " + visual.name);
         var item = Node(parent, kind + " target", point).gameObject.AddComponent<FinalLabSwitch>();
-        item.Configure(kind, caption, visual, angle, lamp, meshes);
+        item.Configure(kind, caption, visual, angle, lamp, meshes, mount);
         return item;
     }
 
@@ -374,13 +428,13 @@ public static class FinalLabGameplaySetup
         float width = face.size.x * .9f, height = face.size.y * .91f;
         foreach (int sign in new[] { -1, 1 })
         {
-            Block(marker.transform, "Door contour", Vector3.right * sign * width / 2, new Vector3(.011f, height, .011f), material);
-            Block(marker.transform, "Door contour", Vector3.up * sign * height / 2, new Vector3(width + .011f, .011f, .011f), material);
+            Block(marker.transform, "Door contour", Vector3.right * sign * width / 2, new Vector3(.023f, height, .014f), material);
+            Block(marker.transform, "Door contour", Vector3.up * sign * height / 2, new Vector3(width + .023f, .023f, .014f), material);
         }
         marker.SetActive(false);
     }
 
-    private static (TMP_Text goal, TMP_Text telemetry, TMP_Text feedback) Hud(Transform root, TMP_FontAsset font)
+    private static (TMP_Text goal, TMP_Text telemetry, TMP_Text feedback, TMP_Text crouch) Hud(Transform root, TMP_FontAsset font)
     {
         var canvas = new GameObject("Mechanisms HUD", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
         canvas.transform.SetParent(root, false);
@@ -390,9 +444,14 @@ public static class FinalLabGameplaySetup
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = .5f;
+        var crouch = Label(canvas.transform, font, "Crouch hint", 30f, 235f, 43f, 21f, Color.white);
+        var corner = (RectTransform)crouch.transform.parent;
+        corner.anchorMin = corner.anchorMax = Vector2.zero;
+        corner.pivot = Vector2.zero;
+        corner.anchoredPosition = new Vector2(27, 24);
         return (Label(canvas.transform, font, "Objective", -59f, 724f, 64f, 30f, new Color(.99f, .86f, .59f)),
             Label(canvas.transform, font, "Measurements", -120f, 486f, 45f, 24f, Color.white),
-            Label(canvas.transform, font, "Feedback", -174f, 675f, 44f, 23f, new Color(.91f, .84f, .71f)));
+            Label(canvas.transform, font, "Feedback", -174f, 675f, 44f, 23f, new Color(.91f, .84f, .71f)), crouch);
     }
 
     private static TMP_Text Label(Transform parent, TMP_FontAsset font, string name, float y, float width,
@@ -421,11 +480,13 @@ public static class FinalLabGameplaySetup
         return text;
     }
 
-    private static LineRenderer Arc(Transform parent, Material material)
+    private static LineRenderer Arc(Transform parent, Material material, string name, int vertices)
     {
-        var line = Node(parent, material.name, parent.position).gameObject.AddComponent<LineRenderer>();
+        var line = Node(parent, name, parent.position).gameObject.AddComponent<LineRenderer>();
         line.sharedMaterial = material;
-        line.positionCount = 15;
+        line.positionCount = vertices;
+        line.widthCurve = new AnimationCurve(new Keyframe(0, .72f), new Keyframe(.3f, 1f),
+            new Keyframe(.61f, .76f), new Keyframe(1f, .35f));
         line.alignment = LineAlignment.View;
         line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         line.receiveShadows = false;

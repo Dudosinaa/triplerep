@@ -416,13 +416,14 @@ namespace FinalLab.Investigation
             }
         }
 
-        private bool NearestHit(Ray ray, float range, out RaycastHit nearest)
+        internal bool NearestHit(Ray ray, float range, out RaycastHit nearest,
+            QueryTriggerInteraction triggers = QueryTriggerInteraction.Collide)
         {
             var results = hits;
-            int count = Physics.RaycastNonAlloc(ray, results, range, ~0, QueryTriggerInteraction.Collide);
+            int count = Physics.RaycastNonAlloc(ray, results, range, ~0, triggers);
             if (count == results.Length)
             {
-                results = Physics.RaycastAll(ray, range, ~0, QueryTriggerInteraction.Collide);
+                results = Physics.RaycastAll(ray, range, ~0, triggers);
                 count = results.Length;
             }
             nearest = default;

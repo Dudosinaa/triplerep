@@ -497,7 +497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fe4cd3fe216f47845aa7f55b731ff9c6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.500999
+      value: 7.900999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fe4cd3fe216f47845aa7f55b731ff9c6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -919,6 +919,7 @@ MonoBehaviour:
   seatedEye: {fileID: 844012871}
   standingEye: {fileID: 651206835}
   standingOffset: {x: 0.3498302, y: 0, z: 0.29725438}
+  standDuration: 3
   subtitles: {fileID: 1484472676}
   curtain: {fileID: 43043999}
   vignette: {fileID: 47373088}
