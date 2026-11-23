@@ -6,13 +6,13 @@ public sealed class FinalLabFlowController : MonoBehaviour
 {
     public enum Stage { IvanDialogue, GameplayPhase, FatherDoorReady, FatherDoorOpening, FatherIntroduction, FatherDialogue, FatherDeath, FatherSceneFinished, IvanGameplayPhase, AlexeiRescue }
 
-    [SerializeField] private bool skipGameplayForTesting = true;
+    [SerializeField] private bool skipGameplayForTesting;
     [SerializeField] private FinalLabIvanCutsceneController ivanDialogue;
     [SerializeField] private FinalLabMetalDoor fatherDoor;
     [SerializeField] private FatherCutsceneController father;
     [SerializeField] private FinalLabInvestigationUI hud;
     [SerializeField] private GameObject doorMarker;
-    [SerializeField] private bool skipIvanGameplayForTesting = true;
+    [SerializeField] private bool skipIvanGameplayForTesting;
     [SerializeField] private FinalLabAlexeiRescue rescue;
 
     public Stage State { get; private set; }
@@ -21,6 +21,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
     public FatherCutsceneController Father => father;
     public bool DoorMarkerVisible => doorMarker.activeSelf;
     public event Action GameplayPhaseStarted;
+    public event Action FatherSequenceStarted;
     public event Action FatherSequenceFinished;
     public event Action IvanGameplayPhaseStarted;
     public bool SkipIvanGameplayForTesting { get => skipIvanGameplayForTesting; set => skipIvanGameplayForTesting = value; }
@@ -38,7 +39,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
     private void Awake()
     {
         fatherDoor.SetLocked(true);
-        fatherDoor.OpenPrompt = "Открыть дверь в комнату отца — E";
+        fatherDoor.OpenPrompt = "Открыть дверь — E";
         doorMarker.SetActive(false);
     }
 
@@ -79,6 +80,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
         doorMarker.SetActive(false);
         hud.ClearHint();
         hud.SetPrompt("");
+        FatherSequenceStarted?.Invoke();
         father.Begin(this);
     }
 

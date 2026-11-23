@@ -918,7 +918,7 @@ MonoBehaviour:
   alexei: {fileID: 165082588}
   seatedEye: {fileID: 844012871}
   standingEye: {fileID: 651206835}
-  standingOffset: {x: 0.3498302, y: 0, z: 0.87725437}
+  standingOffset: {x: 0.3498302, y: 0, z: 0.29725438}
   subtitles: {fileID: 1484472676}
   curtain: {fileID: 43043999}
   vignette: {fileID: 47373088}

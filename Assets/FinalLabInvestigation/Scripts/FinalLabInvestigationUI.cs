@@ -111,6 +111,18 @@ namespace FinalLab.Investigation
             progressFade.alpha = 1;
         }
 
+        public void SetLaboratoryGameplay(bool active)
+        {
+            SetCinematic(false);
+            hud.gameObject.SetActive(!active);
+            if (!active) return;
+            SetControls("");
+            SetPrompt("");
+            ClearHint();
+            subtitleUntil = 0;
+            subtitleFade.alpha = 0;
+        }
+
         public void SetPrompt(string value) => prompt.text = value;
         public void SetControls(string text) => controls.text = text;
 

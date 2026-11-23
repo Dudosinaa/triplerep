@@ -11,11 +11,13 @@ public static partial class FinalLabInvestigationValidation
     private static IEnumerable CheckFatherDoorBeforeIvan(FinalLabFlowController flow, FirstPersonPlayer player, Camera camera,
         CharacterController controller, TMP_Text prompt)
     {
-        Require(flow != null && flow.SkipGameplayForTesting && flow.State == Stage.IvanDialogue && flow.FatherDoor.IsLocked &&
+        Require(flow != null && flow.State == Stage.IvanDialogue && flow.FatherDoor.IsLocked &&
             !flow.DoorMarkerVisible && !flow.Father.Actor.gameObject.activeSelf, "The saved encounter is hidden and locked while the investigation and Ivan dialogue are pending.");
         flow.OnGameplayCompleted();
         Require(flow.State == Stage.IvanDialogue && flow.FatherDoor.IsLocked, "An early gameplay callback cannot unlock the father door.");
-        if (Application.isBatchMode) flow.SkipGameplayForTesting = false;
+        var gameplay = Object.FindFirstObjectByType<FinalLabMechanisms>();
+        if (gameplay != null) gameplay.enabled = false;
+        flow.SkipGameplayForTesting = !Application.isBatchMode;
         flow.SkipIvanGameplayForTesting = false;
         var center = flow.FatherDoor.transform.position;
         Aim(player, camera, controller, center + Vector3.back * 1.31f, center + Vector3.up * 1.15f);
@@ -57,7 +59,7 @@ public static partial class FinalLabInvestigationValidation
         for (float t = 0; t < 2f && player.transform.position.z < plane.z - 1.15f; t += Time.deltaTime) yield return null;
         Keys();
         for (int f = 0; f < 4; f++) yield return null;
-        Require(player.transform.position.z > plane.z - 1.42f && prompt.text == "Открыть дверь в комнату отца — E", "The FPS player walks to the marker and sees the exact E prompt.");
+        Require(player.transform.position.z > plane.z - 1.42f && prompt.text == "Открыть дверь — E", "The FPS player walks to the marker and sees the exact E prompt.");
         int completed = 0;
         flow.FatherSequenceFinished += () => completed++;
         foreach (var frame in DoorKeyPress()) yield return frame;

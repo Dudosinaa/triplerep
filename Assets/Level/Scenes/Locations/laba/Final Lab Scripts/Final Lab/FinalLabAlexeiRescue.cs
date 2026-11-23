@@ -17,20 +17,33 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
 
     internal void Begin(FatherCutsceneController father) => StartCoroutine(Rescue(father));
 
+    private Transform restingHead;
+
+    internal Transform PrepareAlexei()
+    {
+        if (restingHead != null) return restingHead;
+        alexei.gameObject.SetActive(true);
+        alexei.applyRootMotion = false;
+        alexei.Play("Base Layer.Unconscious", 0, 1f);
+        alexei.Update(0);
+        alexei.speed = 0;
+        foreach (var edge in outline) edge.enabled = false;
+        restingHead = alexei.GetBoneTransform(HumanBodyBones.Head);
+        return restingHead;
+    }
+
     private IEnumerator Rescue(FatherCutsceneController father)
     {
         var curtain = father.ReleaseViewForRescue();
         var subtitles = father.Subtitles;
-        alexei.gameObject.SetActive(true);
-        alexei.Play("Base Layer.Unconscious", 0, 1f);
-        alexei.Update(0);
-        alexei.speed = 0;
-        Transform head = alexei.GetBoneTransform(HumanBodyBones.Head);
+        Transform head = PrepareAlexei();
+        foreach (var edge in outline) edge.enabled = true;
 
         player.Teleport(spawn.position);
         view.transform.localPosition = new Vector3(0f, 1.65f, 0f);
         player.SetViewDirection(resonator.position - view.transform.position);
         player.enabled = true;
+        objective.text = "Спасти Алексея";
         objective.gameObject.SetActive(true);
         yield return Fade(curtain, 0f, 1.25f);
 
