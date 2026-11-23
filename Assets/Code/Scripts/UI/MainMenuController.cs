@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public sealed class MainMenuController : MonoBehaviour
 {
-    private const string HomeScene = "Assets/Level/Scenes/Locations/Home.unity";
-
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private Button playButton;
@@ -96,9 +94,9 @@ public sealed class MainMenuController : MonoBehaviour
 
     private void Play()
     {
-        if (!LocationTransition.TryGetBuildIndex(HomeScene, out int index))
+        if (!SceneEntryCheckpoint.TryGetStartIndex(out int index))
         {
-            Debug.LogError($"Main menu cannot load {HomeScene}. Enable it in the build scene list.");
+            Debug.LogError("Main menu cannot load the starting scene. Enable Home in the build scene list.");
             return;
         }
 

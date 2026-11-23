@@ -107,7 +107,7 @@ public sealed class ThirdMindDocumentSurface : MonoBehaviour
         if (selectionOutline != null) selectionOutline.enabled = selected && !reading;
     }
 
-    private void LateUpdate() => AdvanceHighlight(Time.unscaledDeltaTime);
+    private void LateUpdate() => AdvanceHighlight(Time.deltaTime);
 
     internal void AdvanceHighlight(float deltaTime)
     {

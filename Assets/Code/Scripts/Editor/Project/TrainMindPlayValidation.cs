@@ -196,8 +196,14 @@ public static class TrainMindPlayValidation
             {
                 QueueKeys(Key.Escape);
                 yield return null;
-                Check(Cursor.visible && Cursor.lockState == CursorLockMode.None,
-                    $"Visit {visit}: Train Escape releases the cursor before entering the mind");
+                Check(Time.timeScale == 0f && Cursor.visible && Cursor.lockState == CursorLockMode.None,
+                    $"Visit {visit}: Train Escape pauses before entering the mind");
+                QueueKeys();
+                yield return null;
+                GameObject.Find("Продолжить").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+                yield return null;
+                yield return null;
+                Check(Time.timeScale > 0f, $"Visit {visit}: Continue resumes Train");
                 QueueKeys();
             }
             var npc = visit == 1 ? first : third;
@@ -327,8 +333,14 @@ public static class TrainMindPlayValidation
             QueueKeys(Key.Escape);
             yield return null;
             yield return null;
-            Check(SceneManager.GetActiveScene() == mind && !player.enabled,
-                $"Visit {visit}: Escape does not exit the mind");
+            Check(SceneManager.GetActiveScene() == mind && !player.enabled && Time.timeScale == 0f,
+                $"Visit {visit}: Escape pauses inside the mind");
+            QueueKeys();
+            yield return null;
+            GameObject.Find("Продолжить").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+            yield return null;
+            yield return null;
+            Check(Time.timeScale > 0f, $"Visit {visit}: Continue resumes the mind");
             QueueKeys();
             yield return null;
             if (visit == 1)

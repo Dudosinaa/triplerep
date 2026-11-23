@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
@@ -16,9 +15,8 @@ public static class AirportMemorySceneBuilder
     private const string PlayerPath = "Assets/Level/Prefabs/Resources/Player.prefab";
     private const string WarehousePath = "Assets/Art/Models/AirportMemory/warehouse6.fbx";
     private const string BoxesFolder = "Assets/PolyOne/Boxes/Prefabs";
-    private const string TikhonModelPath = "Assets/Art/Models/Characters/MainHeroes/gavin-reed-detroit-become-human/source/Gavin.fbx";
-    private const string TikhonAvatarPath = "Assets/Art/Models/Characters/MainHeroes/gavin-reed-detroit-become-human/source/Gavin@Standing Up.fbx";
-    private const string TikhonMotionPath = "Assets/Art/Models/AirportMemory/Tikhon/Standing Arguing.fbx";
+    private const string TikhonModelPath = "Assets/Bubba_The_Handyman/URP/Prefabs/Handyman_ver_1.prefab";
+    private const string TikhonControllerPath = "Assets/Art/Models/Characters/Handyman Dialogue.controller";
 
     public static void BuildAndCapture()
     {
@@ -520,23 +518,16 @@ public static class AirportMemorySceneBuilder
         npc.transform.rotation = Quaternion.Euler(0, 195, 0);
         var model = AssetDatabase.LoadAssetAtPath<GameObject>(TikhonModelPath);
         if (model == null) throw new Exception("Tikhon character model is missing");
-        var body = (GameObject)PrefabUtility.InstantiatePrefab(model);
-        body.name = "Textured middle-aged man";
-        body.transform.SetParent(npc.transform, false);
-        var bounds = body.GetComponentsInChildren<Renderer>().Select(r => r.bounds).ToArray();
-        if (bounds.Length == 0) throw new Exception("Tikhon model has no renderers");
-        var combined = bounds[0];
-        foreach (var b in bounds.Skip(1)) combined.Encapsulate(b);
-        body.transform.localScale = Vector3.one * (1.78f / combined.size.y);
-        body.transform.localPosition = Vector3.up * (-combined.min.y * body.transform.localScale.y);
+        var controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(TikhonControllerPath);
+        if (controller == null) throw new Exception("Handyman dialogue controller is missing");
+        var body = (GameObject)PrefabUtility.InstantiatePrefab(model, npc.transform);
         var animator = body.GetComponent<Animator>();
-        if (animator == null) animator = body.AddComponent<Animator>();
-        var avatar = AssetDatabase.LoadAllAssetsAtPath(TikhonAvatarPath)
-            .OfType<Avatar>().FirstOrDefault(a => a.isValid && a.isHuman);
-        if (avatar == null) throw new Exception("Tikhon model has no valid Humanoid avatar");
-        animator.avatar = avatar;
-        animator.runtimeAnimatorController = TikhonController();
+        var modelCollider = body.GetComponent<CapsuleCollider>();
+        modelCollider.enabled = false;
+        animator.runtimeAnimatorController = controller;
         animator.applyRootMotion = false;
+        PrefabUtility.RecordPrefabInstancePropertyModifications(modelCollider);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(animator);
         npc.AddComponent<NpcTalkAnimation>().Configure(animator);
         var collider = npc.AddComponent<CapsuleCollider>();
         collider.center = Vector3.up * .95f;
@@ -572,37 +563,6 @@ public static class AirportMemorySceneBuilder
             choice.FindPropertyRelative("text").stringValue = choices[i];
             choice.FindPropertyRelative("nextNode").intValue = next[i];
         }
-    }
-
-    private static AnimatorController TikhonController()
-    {
-        const string path = "Assets/Art/Models/AirportMemory/Tikhon/Tikhon Dialogue.controller";
-        var clip = AssetDatabase.LoadAllAssetsAtPath(TikhonMotionPath)
-            .OfType<AnimationClip>().FirstOrDefault(c => !c.name.StartsWith("__preview__"));
-        if (clip == null) throw new Exception("Standing Arguing animation has not imported");
-        var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
-        if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(path);
-        foreach (var parameter in controller.parameters)
-            controller.RemoveParameter(parameter);
-        controller.AddParameter("Talking", AnimatorControllerParameterType.Bool);
-        var machine = controller.layers[0].stateMachine;
-        foreach (var state in machine.states) machine.RemoveState(state.state);
-        var idle = machine.AddState("Idle");
-        var arguing = machine.AddState("Standing Arguing");
-        idle.motion = clip;
-        idle.speed = 0f;
-        arguing.motion = clip;
-        machine.defaultState = idle;
-        var start = idle.AddTransition(arguing);
-        start.hasExitTime = false;
-        start.duration = .15f;
-        start.AddCondition(AnimatorConditionMode.If, 0, "Talking");
-        var stop = arguing.AddTransition(idle);
-        stop.hasExitTime = false;
-        stop.duration = .15f;
-        stop.AddCondition(AnimatorConditionMode.IfNot, 0, "Talking");
-        EditorUtility.SetDirty(controller);
-        return controller;
     }
 
     private static void Document(string name, Vector3 position, string title, string body,

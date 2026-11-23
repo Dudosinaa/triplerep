@@ -62,7 +62,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
 
         prompt.gameObject.SetActive(true);
         yield return null;
-        while (Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame) yield return null;
+        while (GameplayPause.BlocksGameplayInput || Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame) yield return null;
         prompt.gameObject.SetActive(false);
         objective.gameObject.SetActive(false);
         Vector3 forward = (target - low).normalized;
@@ -79,7 +79,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
         var cameraTransform = view.transform;
         Vector3 start = cameraTransform.position;
         Quaternion rotation = cameraTransform.rotation;
-        for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
+        for (float t = 0; t < duration; t += Time.deltaTime)
         {
             float progress = Mathf.SmoothStep(0f, 1f, t / duration);
             Vector3 eye = Vector3.Lerp(start, targetEye, progress);
@@ -93,7 +93,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
     internal static IEnumerator Fade(CanvasGroup curtain, float end, float duration)
     {
         float start = curtain.alpha;
-        for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
+        for (float t = 0; t < duration; t += Time.deltaTime)
         {
             curtain.alpha = Mathf.SmoothStep(start, end, t / duration);
             yield return null;

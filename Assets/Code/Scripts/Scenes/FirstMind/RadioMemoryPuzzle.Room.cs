@@ -25,7 +25,7 @@ public sealed partial class RadioMemoryPuzzle
     private AudioSource effects;
     private AudioClip contactClick, discharge, tapeNoise, clockLoop, draftLoop;
 
-    private float TimingPhase => Mathf.Repeat(Time.unscaledTime - timingStartedAt, CycleSeconds) / CycleSeconds;
+    private float TimingPhase => Mathf.Repeat(Time.time - timingStartedAt, CycleSeconds) / CycleSeconds;
     private static bool IsSafePhase(float phase) => phase >= SafeStart && phase <= SafeEnd;
 
     private void CreateFusePickup()
@@ -85,7 +85,7 @@ public sealed partial class RadioMemoryPuzzle
         dragging = DragPart.None;
         PlayEffect(discharge);
         PlaceFuse();
-        faultUntil = Time.unscaledTime + .7f;
+        faultUntil = Time.time + .7f;
         feedback = reason + " Предохранитель перегорел. Нажми Esc и найди запасной.";
     }
 

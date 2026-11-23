@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 {
@@ -48,7 +49,8 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 
     private void Update()
     {
-        if (line >= 0 && Time.unscaledTime >= lineEndsAt)
+        if (GameplayPause.BlocksGameplayInput) return;
+        if (line >= 0 && Time.time >= lineEndsAt)
         {
             if (line + 1 < Subtitles.Length) ShowLine(line + 1);
             else
@@ -56,16 +58,23 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
                 line = -1;
                 solved = true;
                 PlayerPrefs.SetInt(ClueKey, 1);
+                SceneEntryCheckpoint.CompleteTrainMemory(SceneEntryCheckpoint.TrainMemory.Petrovich, gameObject.scene);
                 PlayerPrefs.Save();
             }
         }
 
         var keyboard = Keyboard.current;
         if (solved && !panelOpen && line < 0 && keyboard != null &&
-            keyboard.uKey.wasPressedThisFrame && TrainMindSession.TryReturn(gameObject.scene)) return;
+            keyboard.uKey.wasPressedThisFrame)
+        {
+            if (!TrainMindSession.TryReturn(gameObject.scene))
+                SceneSwitch.LoadSceneIndex(SceneEntryCheckpoint.GetReturnIndex(
+                    SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath)));
+            return;
+        }
         if (panelOpen)
         {
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (InteractionInput.TryConsumeCancel()) { Close(); return; }
             if (photoCloseup != null) UpdatePhoto();
             else UpdateRadio();
             return;
@@ -80,7 +89,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             fusePickup.gameObject.SetActive(false);
             PlayEffect(contactClick);
             notice = "Предохранитель 0,5 А найден. Вернись к радио.";
-            noticeUntil = Time.unscaledTime + 3f;
+            noticeUntil = Time.time + 3f;
             aimedTarget = Target.None;
             return;
         }
@@ -151,7 +160,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
     {
         if (!hasFuse) return;
         fuseInstalled = true;
-        timingStartedAt = Time.unscaledTime;
+        timingStartedAt = Time.time;
         PlayEffect(contactClick);
         feedback = "Удерживай штекер над разъёмом 2. Отпусти, когда метка попадёт в зелёную зону.";
     }
@@ -184,11 +193,12 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             recordingSource.Stop();
             if (clip != null) recordingSource.PlayOneShot(clip);
         }
-        lineEndsAt = Time.unscaledTime + Mathf.Max(LineSeconds[index], clip != null ? clip.length : 0f);
+        lineEndsAt = Time.time + Mathf.Max(LineSeconds[index], clip != null ? clip.length : 0f);
     }
 
     private void OnGUI()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (titleStyle == null)
         {
             titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 23, fontStyle = FontStyle.Bold };
@@ -216,7 +226,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             Backdrop(rect);
             GUI.Label(new Rect(rect.x + 18, rect.y + 4, rect.width - 36, 68), Subtitles[line], subtitleStyle);
         }
-        else if (aimedTarget != Target.None || Time.unscaledTime < noticeUntil)
+        else if (aimedTarget != Target.None || Time.time < noticeUntil)
         {
             string hint = aimedTarget switch
             {

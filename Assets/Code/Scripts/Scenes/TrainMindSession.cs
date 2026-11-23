@@ -65,6 +65,7 @@ internal sealed class TrainMindSession : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (canReturn && returnOnU && Keyboard.current?.uKey.wasPressedThisFrame == true)
             TryReturn(mind);
     }
@@ -79,6 +80,8 @@ internal sealed class TrainMindSession : MonoBehaviour
         }
         return true;
     }
+
+    internal static bool IsTransitioning => current != null && !current.canReturn;
 
     internal static bool OwnsMindScene(Scene scene) => current != null && current.mind == scene;
 
@@ -230,8 +233,15 @@ internal sealed class TrainMindSession : MonoBehaviour
     {
         if (mode != LoadSceneMode.Additive || scene.path != mindPath) return;
         mind = scene;
-        if (!SceneManager.SetActiveScene(scene))
+        if (SceneManager.SetActiveScene(scene))
+        {
+            SceneEntryCheckpoint.ReturnPath = train.path;
+            SceneEntryCheckpoint.Enter(scene);
+        }
+        else
+        {
             foreach (var root in scene.GetRootGameObjects()) root.SetActive(false);
+        }
     }
 
     private IEnumerator Return()
@@ -308,6 +318,8 @@ internal sealed class TrainMindSession : MonoBehaviour
         if (entry != null) entry.FinishTrainMindVisit();
         if (completed)
         {
+            SceneEntryCheckpoint.ReturnPath = null;
+            SceneEntryCheckpoint.Record(train);
             LockCursor();
         }
         else

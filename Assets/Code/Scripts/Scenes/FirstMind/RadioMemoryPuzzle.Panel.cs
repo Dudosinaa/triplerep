@@ -169,7 +169,7 @@ public sealed partial class RadioMemoryPuzzle
         needle.gameObject.SetActive(fuseInstalled && !speakerConnected);
         needle.localPosition = new Vector3(-1.58f + 2.46f * TimingPhase, 1.143f, -.51f);
         selectorLever.localPosition = new Vector3(externalInput ? -.95f : -1.39f, .28f, -.62f);
-        powerLamp.sharedMaterial = fuseInstalled ? green : Time.unscaledTime < faultUntil ? signal : dead;
+        powerLamp.sharedMaterial = fuseInstalled ? green : Time.time < faultUntil ? signal : dead;
     }
 
     private static void ShapeCable(LineRenderer cable, Vector3 from, Vector3 to)

@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null || Mouse.current == null || playerCamera == null) return;
         Move();
         LookAround();

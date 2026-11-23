@@ -75,27 +75,28 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
         Lamp(power, 0, Red);
         Lamp(isolation, 0, Red);
         if (chamberLight != null) chamberLight.intensity *= .32f;
-        subtitleUntil = Time.unscaledTime + .65f;
+        subtitleUntil = Time.time + .65f;
         Speak("Алёша, слышишь меня? Я добрался до управления. Отсек отца всё ещё обесточен.",
               "Найди распределительный щит. Без питания мы даже дверь не откроем.");
     }
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (phase == Stage.Waiting) return;
-        if (Time.unscaledTime >= subtitleUntil)
+        if (Time.time >= subtitleUntil)
         {
             Show(subtitle, lines.Count == 0 ? "" : "ИВАН   " + lines.Dequeue());
-            subtitleUntil = Time.unscaledTime + 4.5f;
+            subtitleUntil = Time.time + 4.5f;
         }
-        if (Time.unscaledTime >= feedbackUntil) Show(feedback, "");
+        if (Time.time >= feedbackUntil) Show(feedback, "");
         if (phase == Stage.FatherDoor || moving) return;
 
         var keys = Keyboard.current;
         var mouse = Mouse.current;
         if (activePanel != null)
         {
-            if (phase == Stage.Power && !hinted && Time.unscaledTime >= hintAt)
+            if (phase == Stage.Power && !hinted && Time.time >= hintAt)
             {
                 hinted = true;
                 Speak("Посмотри, куда уходит повреждённая линия. Резервный источник не должен быть связан с ней.");
@@ -104,7 +105,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
             if (mouse != null && Hit(player.PlayerCamera.ScreenPointToRay(mouse.position.ReadValue()), 3, out var area))
                 next = Array.IndexOf(activePanel.targets, area);
             Hover(next);
-            if (keys != null && keys.escapeKey.wasPressedThisFrame && InteractionInput.TryConsume())
+            if (InteractionInput.TryConsumeCancel())
                 StartCoroutine(Return());
             else if (hovered >= 0 && mouse.leftButton.wasPressedThisFrame) Operate(hovered);
             return;
@@ -153,7 +154,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
         if (phase == Stage.Power && !powerIntro)
         {
             powerIntro = true;
-            hintAt = Time.unscaledTime + 28f;
+            hintAt = Time.time + 28f;
             Speak("Основной контур повреждён. Похоже, система пытается запитаться через неисправную линию.");
         }
         if (phase == Stage.Isolation && !isolationIntro)
@@ -168,7 +169,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
     {
         moving = true;
         cameraMove.Move(pose, fov, .8f);
-        while (!cameraMove.Advance(Time.unscaledDeltaTime, out _)) yield return null;
+        while (!cameraMove.Advance(Time.deltaTime, out _)) yield return null;
         moving = false;
     }
 
@@ -219,7 +220,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
         moving = true;
         var rest = handle.localRotation;
         handle.localRotation = rest * Quaternion.Euler(13, 0, 0);
-        yield return new WaitForSecondsRealtime(.16f);
+        yield return new WaitForSeconds(.16f);
         handle.localRotation = rest;
         moving = false;
     }
@@ -244,7 +245,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
 
         Show(objective, first ? "ЗАДАЧА ВЫПОЛНЕНА\nРезервное питание восстановлено" : "ЗАДАЧА ВЫПОЛНЕНА\nОтсек отца изолирован");
         activePanel.outline.SetActive(false);
-        yield return new WaitForSecondsRealtime(1.15f);
+        yield return new WaitForSeconds(1.15f);
         yield return Return();
         step = 0;
         phase = first ? Stage.Isolation : Stage.FatherDoor;
@@ -283,7 +284,7 @@ public sealed class AlexeiLabGameplay : MonoBehaviour
     private void Report(string message)
     {
         Show(feedback, message);
-        feedbackUntil = Time.unscaledTime + 3;
+        feedbackUntil = Time.time + 3;
     }
 
     private void Speak(params string[] messages)

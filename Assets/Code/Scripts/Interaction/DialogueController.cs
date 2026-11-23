@@ -91,6 +91,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null) return;
         if (!IsTalking)
         {
@@ -110,7 +111,7 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (InteractionInput.TryConsumeCancel())
         {
             EndDialogue();
             return;
@@ -140,7 +141,7 @@ public sealed class DialogueController : MonoBehaviour
         if (interactionPrompt == null) return;
 
         bool showCompletionHint = !string.IsNullOrEmpty(completionHint) &&
-            Time.unscaledTime < completionHintUntil;
+            Time.time < completionHintUntil;
         interactionPrompt.SetActive(showCompletionHint || canTalk);
         var label = interactionPrompt.GetComponent<Text>();
         if (label == null) return;
@@ -366,7 +367,7 @@ public sealed class DialogueController : MonoBehaviour
             if (completed && !string.IsNullOrEmpty(phone.CompletionHint))
             {
                 completionHint = phone.CompletionHint;
-                completionHintUntil = Time.unscaledTime + CompletionHintDuration;
+                completionHintUntil = Time.time + CompletionHintDuration;
                 UpdateInteractionPrompt(false, null);
             }
         }

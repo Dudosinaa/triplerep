@@ -61,7 +61,7 @@ public sealed class OpeningCameraSequence : MonoBehaviour
             SetCameraEnabled(lastCamera, true);
 
             if (shot.holdSeconds > 0f)
-                yield return new WaitForSecondsRealtime(shot.holdSeconds);
+                yield return new WaitForSeconds(shot.holdSeconds);
         }
 
         if (lastCamera != null)
@@ -95,7 +95,7 @@ public sealed class OpeningCameraSequence : MonoBehaviour
         {
             yield return null;
 
-            elapsed += Time.unscaledDeltaTime;
+            elapsed += Time.deltaTime;
             float progress = Mathf.SmoothStep(0f, 1f, elapsed / moveSeconds);
             cameraTransform.SetPositionAndRotation(
                 Vector3.Lerp(startPosition, endPosition, progress),

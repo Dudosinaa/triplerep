@@ -72,16 +72,17 @@ namespace FinalLab.Investigation
         {
             inspection = new DocumentInspectionCamera(view, player.transform);
             progress = new InvestigationProgress(points.Length);
-            lastAction = Time.unscaledTime;
+            lastAction = Time.time;
             UpdateObjective(true);
         }
 
         private void Update()
         {
+            if (GameplayPause.BlocksGameplayInput) return;
             if (progress == null) return;
             if (state == ViewState.Moving)
             {
-                bool ended = inspection.Advance(Time.unscaledDeltaTime, out float amount);
+                bool ended = inspection.Advance(Time.deltaTime, out float amount);
                 if (movingPaper != null)
                     movingPaper.SetPositionAndRotation(Vector3.LerpUnclamped(paperFrom.position, paperTo.position, amount),
                         Quaternion.SlerpUnclamped(paperFrom.rotation, paperTo.rotation, amount));
@@ -97,7 +98,6 @@ namespace FinalLab.Investigation
 
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
-            bool back = keyboard != null && keyboard.escapeKey.wasPressedThisFrame;
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
             if (state == ViewState.Walking)
             {
@@ -115,29 +115,30 @@ namespace FinalLab.Investigation
                 ui.SetPrompt(point != null ? point.Prompt : "");
                 if (point != null && keyboard != null && keyboard.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
                     TryOpen(point);
-                if (active == null && !hinted && ObjectivePoint != null && Time.unscaledTime - lastAction >= 20f)
+                if (active == null && !hinted && ObjectivePoint != null && Time.time - lastAction >= 20f)
                 {
                     ui.Hint(ObjectivePoint.Hint);
                     hinted = true;
                 }
                 return;
             }
+            bool back = InteractionInput.TryConsumeCancel();
             if (state == ViewState.Overview)
             {
                 var candidate = mouse != null ? DocumentAt(view.ScreenPointToRay(mouse.position.ReadValue())) : null;
                 Highlight(candidate);
-                if (back && InteractionInput.TryConsume()) Close(fromEscape: true);
+                if (back) Close(fromEscape: true);
                 else if (click && candidate != null) TrySelect(candidate);
                 return;
             }
             if (back || click)
             {
-                if (!back || InteractionInput.TryConsume()) Close();
+                Close();
                 return;
             }
             if (RequiresAllDocuments) return;
             if (mouse != null) Scroll(mouse.scroll.ReadValue().y / 120f);
-            inspection.Zoom(zoomTarget, Time.unscaledDeltaTime);
+            inspection.Zoom(zoomTarget, Time.deltaTime);
         }
 
         public InvestigationPoint NearbyPoint()
@@ -188,7 +189,7 @@ namespace FinalLab.Investigation
             player.enabled = false;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            lastAction = Time.unscaledTime;
+            lastAction = Time.time;
             ui.ClearHint();
             ui.SetPrompt("");
             Move(OverviewPose(), OverviewFov(), AtDesk ? 0.66f : 0.53f, ShowOverview);
@@ -247,7 +248,7 @@ namespace FinalLab.Investigation
                 if (RequiresAllDocuments && Array.IndexOf(RequiredDocuments, item.Id) >= 0)
                     ViewedDocuments.Add(item.Id);
                 state = ViewState.Detail;
-                lastAction = Time.unscaledTime;
+                lastAction = Time.time;
                 if (!RequiresAllDocuments)
                     ui.SetControls(item.Lifts
                         ? "Колёсико — Масштаб\nЛКМ / Esc — Положить документ"
@@ -320,7 +321,7 @@ namespace FinalLab.Investigation
             {
                 if (!reactionShown && !(lastIvanDesk && Completed == points.Length))
                     ShowReaction();
-                lastAction = Time.unscaledTime;
+                lastAction = Time.time;
             }
             active = null;
             state = ViewState.Walking;

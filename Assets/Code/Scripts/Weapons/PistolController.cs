@@ -69,6 +69,7 @@ public sealed class PistolController : MonoBehaviour
     }
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         bool canUse = CanUseWeapon;
         if (!canUse && (actionState != null || IsReloading)) CancelAction();
         weaponView.SetVisible(equipped && canUse);
@@ -87,6 +88,7 @@ public sealed class PistolController : MonoBehaviour
     }
     private void LateUpdate()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         // Observe completion after Animator evaluation. Only the insertion AnimationEvent transfers ammunition.
         bool canUse = CanUseWeapon;
         if (!canUse && (actionState != null || IsReloading)) CancelAction();

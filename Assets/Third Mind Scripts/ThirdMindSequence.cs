@@ -113,6 +113,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (michaelHead != null && phase != Phase.Done)
         {
             float t = Time.time;
@@ -134,7 +135,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
         var keyboard = Keyboard.current;
         if (readingDocument != null)
         {
-            if (leftPressed || (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)) CloseDocument();
+            if (InteractionInput.TryConsumeCancel() || leftPressed) CloseDocument();
             else
             {
                 var pose = GetActiveReadingPose();
@@ -309,7 +310,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
         var document = readingDocument;
         var paperRoot = document.transform;
         var start = new Pose(paperRoot.position, paperRoot.rotation);
-        for (float elapsed = 0f; elapsed < PaperMoveDuration; elapsed += Time.unscaledDeltaTime)
+        for (float elapsed = 0f; elapsed < PaperMoveDuration; elapsed += Time.deltaTime)
         {
             float t = Mathf.SmoothStep(0f, 1f, elapsed / PaperMoveDuration);
             paperRoot.SetPositionAndRotation(Vector3.Lerp(start.position, target.position, t),
@@ -354,7 +355,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
         float clearance = (first.GetComponent<BoxCollider>().bounds.size.z + second.GetComponent<BoxCollider>().bounds.size.z) * 0.5f + 2f;
         SwapLanes(laneAxis, clearance, out var rearLane, out var frontLane);
         const float duration = 0.54f;
-        for (float elapsed = 0f; elapsed < duration; elapsed += Time.unscaledDeltaTime)
+        for (float elapsed = 0f; elapsed < duration; elapsed += Time.deltaTime)
         {
             first.transform.position = SwapPosition(firstSlot, secondSlot, rearLane, elapsed / duration);
             second.transform.position = SwapPosition(secondSlot, firstSlot, frontLane, elapsed / duration);
@@ -426,8 +427,10 @@ public sealed class ThirdMindSequence : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         phase = Phase.Done;
+        SceneEntryCheckpoint.CompleteTrainMemory(SceneEntryCheckpoint.TrainMemory.Michael, gameObject.scene);
         if (TrainMindSession.TryReturn(gameObject.scene)) yield break;
-        if (SceneSwitch.IsSceneAvailable(returnSceneIndex)) SceneSwitch.LoadSceneIndex(returnSceneIndex);
+        int destination = SceneEntryCheckpoint.GetReturnIndex(returnSceneIndex);
+        if (SceneSwitch.CanLoadSceneIndex(destination)) SceneSwitch.LoadSceneIndex(destination);
         else SceneManager.LoadScene("Train");
     }
 

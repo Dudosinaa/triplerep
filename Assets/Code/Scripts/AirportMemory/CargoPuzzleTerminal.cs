@@ -42,10 +42,11 @@ public sealed class CargoPuzzleTerminal : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null) return;
         if (open)
         {
-            if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)
+            if (InteractionInput.TryConsumeCancel() || (Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume()))
                 Close();
             return;
         }
@@ -79,6 +80,7 @@ public sealed class CargoPuzzleTerminal : MonoBehaviour
 
     private void OnGUI()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (!open)
         {
             if (solved)

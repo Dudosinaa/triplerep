@@ -109,7 +109,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     {
         if (escapeStarted)
         {
-            double now = Time.realtimeSinceStartupAsDouble;
+            double now = Time.timeAsDouble;
             HideExpired(chaseObjective, objectiveUntil, now);
             HideExpired(escapeSubtitle, subtitleUntil, now);
             HideExpired(escapeHint, hintUntil, now);
@@ -187,7 +187,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
             label.text = text;
             label.gameObject.SetActive(true);
         }
-        return Time.realtimeSinceStartupAsDouble + duration;
+        return Time.timeAsDouble + duration;
     }
 
     private static void HideExpired(Text label, double until, double now)

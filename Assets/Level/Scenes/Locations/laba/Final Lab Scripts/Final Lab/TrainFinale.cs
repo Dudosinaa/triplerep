@@ -79,7 +79,7 @@ public sealed class TrainFinale : MonoBehaviour
         alignAfterRise = true;
         Blend(Angry, .46f);
         const float standDuration = .45f;
-        for (float t = 0; t < standDuration; t += Time.unscaledDeltaTime)
+        for (float t = 0; t < standDuration; t += Time.deltaTime)
         {
             float lift = Mathf.SmoothStep(0f, 1f, t / standDuration);
             LookAt(Vector3.Lerp(seatedEye.position, standingEye.position, lift), head);
@@ -120,13 +120,13 @@ public sealed class TrainFinale : MonoBehaviour
         vignette.material = closingMask;
         closingMask.SetFloat("_Closure", 0f);
         vignette.enabled = true;
-        for (float t = 0; t < VignetteSeconds; t += Time.unscaledDeltaTime)
+        for (float t = 0; t < VignetteSeconds; t += Time.deltaTime)
         {
             closingMask.SetFloat("_Closure", Mathf.SmoothStep(0f, 1f, t / VignetteSeconds));
             yield return null;
         }
         closingMask.SetFloat("_Closure", 1f);
-        for (float t = 0; t < .8f; t += Time.unscaledDeltaTime)
+        for (float t = 0; t < .8f; t += Time.deltaTime)
         {
             title.alpha = Mathf.SmoothStep(0f, 1f, t / .8f);
             yield return null;
@@ -172,7 +172,7 @@ public sealed class TrainFinale : MonoBehaviour
     {
         Quaternion aim = Quaternion.LookRotation(head.position + Vector3.up * .06f - eye);
         view.transform.SetPositionAndRotation(eye, Quaternion.Slerp(view.transform.rotation, aim,
-            1f - Mathf.Exp(-8f * Time.unscaledDeltaTime)));
+            1f - Mathf.Exp(-8f * Time.deltaTime)));
     }
 
     private void OnDestroy()

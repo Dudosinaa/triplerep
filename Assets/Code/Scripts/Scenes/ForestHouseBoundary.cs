@@ -34,6 +34,6 @@ public sealed class ForestHouseBoundary : MonoBehaviour
     {
         float distance = DistanceFromHouse(player.position);
         showing = showing ? distance > hideDistance : distance >= showDistance;
-        warning.alpha = Mathf.MoveTowards(warning.alpha, showing ? 1f : 0f, Time.unscaledDeltaTime / fadeSeconds);
+        warning.alpha = Mathf.MoveTowards(warning.alpha, showing ? 1f : 0f, Time.deltaTime / fadeSeconds);
     }
 }
