@@ -24,6 +24,9 @@ public sealed class ThirdMindSequence : MonoBehaviour
     public Sprite cctvEntryPhoto;
     public Sprite cctvExitPhoto;
     public int returnSceneIndex = 3;
+    [Header("Document sounds")]
+    public AudioClip documentPickupSound;
+    public AudioClip documentSelectSound;
     [Header("Camera")]
     [Min(0.1f)] public float cameraMoveDuration = 1.3f;
     [SerializeField, Range(0f, 180f)] private float openingLookLeft = 70f;
@@ -148,11 +151,15 @@ public sealed class ThirdMindSequence : MonoBehaviour
         SetHoveredDocument(underPointer);
         if (underPointer != null && leftPressed)
         {
+            if (documentPickupSound != null) voiceSource.PlayOneShot(documentPickupSound);
             OpenDocument(underPointer);
             return;
         }
         if (underPointer != null && mouse.rightButton.wasPressedThisFrame)
+        {
+            if (documentSelectSound != null) voiceSource.PlayOneShot(documentSelectSound);
             SelectDocument(underPointer);
+        }
 
         if (keyboard == null) return;
         if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) MoveSelected(-1);

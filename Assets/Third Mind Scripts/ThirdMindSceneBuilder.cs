@@ -1025,6 +1025,9 @@ public static class ThirdMindSceneBuilder
         seq.dialogueData = dialogue; seq.memoryCamera = camera; seq.tableViewAnchor = anchor;
         seq.michaelHead = FindBone(head, "head"); seq.michaelSpine = FindBone(spine, "spine"); seq.playerController = playerRoot.GetComponent<FirstPersonPlayer>();
         seq.documents = docs;
+        const string interactionSounds = "Assets/Audio/Sound/Звуки взаимодействия/";
+        seq.documentPickupSound = AssetDatabase.LoadAssetAtPath<AudioClip>(interactionSounds + "берем документ в руки (ЛКМ).mp3");
+        seq.documentSelectSound = AssetDatabase.LoadAssetAtPath<AudioClip>(interactionSounds + "перебирание документов (на ПКМ).wav");
         seq.returnSceneIndex = SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath);
         seq.cameraMoveDuration = 1.35f;
         camera.fieldOfView = 55f;

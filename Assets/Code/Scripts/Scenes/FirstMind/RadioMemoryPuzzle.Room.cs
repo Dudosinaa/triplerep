@@ -11,7 +11,6 @@ public sealed partial class RadioMemoryPuzzle
     private const int SampleRate = 22050;
 
     [SerializeField] private Transform room;
-    [SerializeField] private Transform wallClock;
     [SerializeField] private Vector3[] fuseSpots;
 
     private BoxCollider fusePickup;
@@ -23,7 +22,7 @@ public sealed partial class RadioMemoryPuzzle
     private string notice = "";
     private float noticeUntil;
     private AudioSource effects;
-    private AudioClip contactClick, discharge, tapeNoise, clockLoop, draftLoop;
+    private AudioClip contactClick, discharge, tapeNoise, draftLoop;
 
     private float TimingPhase => Mathf.Repeat(Time.unscaledTime - timingStartedAt, CycleSeconds) / CycleSeconds;
     private static bool IsSafePhase(float phase) => phase >= SafeStart && phase <= SafeEnd;
@@ -97,12 +96,6 @@ public sealed partial class RadioMemoryPuzzle
             Mathf.Exp(-t * 9) * (.37f * noise + .16f * Mathf.Sin(t * 485 + t * t * 680)));
         tapeNoise = MakeClip("Cassette engagement and hiss", 3f, 61, (t, noise) =>
             .22f * Mathf.Exp(-t * 30) * Mathf.Sin(t * 1860) + noise * .065f * (1f - t / 3f));
-        clockLoop = MakeClip("Wall clock ticking", 2f, 42, (t, noise) =>
-        {
-            float age = Mathf.Repeat(t + .7f, 1f);
-            float tone = t < 1f ? 8100 : 10200;
-            return Mathf.Exp(-age * 78) * (.31f * Mathf.Sin(age * tone) + .28f * noise);
-        });
         draftLoop = MakeClip("Draft through the window", 12f, 82, (t, noise) =>
         {
             float gust = .45f + .25f * Mathf.Sin(t * 1.1f) + .15f * Mathf.Sin(t * 2.2f + 1);
@@ -111,11 +104,6 @@ public sealed partial class RadioMemoryPuzzle
         }, .055f);
 
         effects = CreateSoundSource("Radio effects", transform.position, .85f, 0f);
-        if (wallClock != null)
-        {
-            var face = wallClock.GetComponentInChildren<Renderer>();
-            StartRoomLoop("Clock ticking", face != null ? face.bounds.center : wallClock.position, .52f, clockLoop);
-        }
         if (room != null)
             StartRoomLoop("Window draft", room.TransformPoint(new Vector3(2.4f, 1.45f, -.55f)),
                 .60f, draftLoop);
@@ -170,7 +158,7 @@ public sealed partial class RadioMemoryPuzzle
     private void DisposeRoomProps()
     {
         foreach (var asset in new UnityEngine.Object[] { fuseGlass, fuseMetal, contactClick,
-            discharge, tapeNoise, clockLoop, draftLoop })
+            discharge, tapeNoise, draftLoop })
             if (asset != null) Destroy(asset);
     }
 }
