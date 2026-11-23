@@ -53,7 +53,8 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
         subtitles.Hide();
         foreach (var edge in outline) edge.enabled = false;
 
-        Vector3 low = new Vector3(eye.x, spawn.position.y + .68f, eye.z);
+        float lowerEye = Mathf.Min(eye.y, Mathf.Max(spawn.position.y + .68f, target.y + .18f));
+        Vector3 low = new Vector3(eye.x, lowerEye, eye.z);
         if (Physics.SphereCast(eye, .14f, Vector3.down, out RaycastHit obstacle,
                 eye.y - low.y, ~0, QueryTriggerInteraction.Ignore))
             low.y = eye.y - Mathf.Max(0f, obstacle.distance - .04f);

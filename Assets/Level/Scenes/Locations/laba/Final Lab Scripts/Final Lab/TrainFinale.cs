@@ -18,6 +18,7 @@ public sealed class TrainFinale : MonoBehaviour
     [SerializeField] private Camera view;
     [SerializeField] private Animator alexei;
     [SerializeField] private Transform seatedEye, standingEye;
+    [SerializeField] private Vector3 standingOffset;
     [SerializeField] private FinalLabIvanDialogue subtitles;
     [SerializeField] private CanvasGroup curtain;
     [SerializeField] private Image vignette;
@@ -35,6 +36,8 @@ public sealed class TrainFinale : MonoBehaviour
     }
 
     private bool active;
+    private bool alignAfterRise;
+    private Vector3 riseOrigin;
     private Material closingMask;
 
     private void Awake()
@@ -72,8 +75,10 @@ public sealed class TrainFinale : MonoBehaviour
             LookAt(seatedEye.position, head);
             yield return null;
         }
+        riseOrigin = alexei.transform.position;
+        alignAfterRise = true;
         Blend(Angry, .46f);
-        const float standDuration = .87f;
+        const float standDuration = .45f;
         for (float t = 0; t < standDuration; t += Time.unscaledDeltaTime)
         {
             float lift = Mathf.SmoothStep(0f, 1f, t / standDuration);
@@ -81,6 +86,7 @@ public sealed class TrainFinale : MonoBehaviour
             yield return null;
         }
         LookAt(standingEye.position, head);
+        while (alignAfterRise) yield return null;
 
         var lines = subtitles.ReadLines();
         for (int i = 0; i < lines.Length; i++)
@@ -146,6 +152,21 @@ public sealed class TrainFinale : MonoBehaviour
     }
 
     private void Blend(string state, float seconds) => alexei.CrossFadeInFixedTime("Base Layer." + state, seconds, 0, 0f);
+
+    private void LateUpdate()
+    {
+        if (!alignAfterRise) return;
+        if (alexei.IsInTransition(0) && alexei.GetNextAnimatorStateInfo(0).IsName("Base Layer." + Angry))
+        {
+            float weight = Mathf.Clamp01(alexei.GetAnimatorTransitionInfo(0).normalizedTime);
+            alexei.transform.position = riseOrigin + standingOffset * weight;
+        }
+        else if (Reached(Angry, 0f))
+        {
+            alexei.transform.position = riseOrigin + standingOffset;
+            alignAfterRise = false;
+        }
+    }
 
     private void LookAt(Vector3 eye, Transform head)
     {

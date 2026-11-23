@@ -20,6 +20,7 @@ internal static class FinalLabEndingSetup
     private const string ScriptPath = "Assets/Level/Scenes/Locations/laba/Final Lab Scripts/Final Lab/";
     private const string AssetsPath = ScriptPath + "Ending Assets/";
     private const float Scale = .82f;
+    private const float ContactCell = .06f;
 
     public static void Apply()
     {
@@ -173,12 +174,14 @@ internal static class FinalLabEndingSetup
             floor = tile.point.y;
 
         var actor = Actor(presentation, model, avatar, controller);
-        var seatEye = new Vector3(seats.b.center.x, floor + 1.23f, seats.b.center.z + .11f);
-        var upEye = new Vector3(seats.b.center.x - .49f, 0f, seats.b.center.z + .11f);
+        var seatEye = new Vector3(seats.b.center.x - .26f, floor + 1.23f, seats.b.center.z + .11f);
+        var upEye = new Vector3(seatEye.x, 0f, seatEye.z);
         var actorPosition = new Vector3(aisle + .18f, 0f, lane - 1.30f);
         actor.transform.rotation = Quaternion.LookRotation(upEye - actorPosition);
         var initial = Sample(actor, clips[0], 0f);
         var standing = Sample(actor, clips[0], clips[0].length);
+        var dialogueStart = Sample(actor, clips[1], 0f);
+        var standingOffset = Vector3.ProjectOnPlane(standing.hips - dialogueStart.hips, Vector3.up);
         actorPosition.y = floor - standing.bounds.min.y + .012f;
         actor.transform.position = actorPosition;
         var target = actorPosition + initial.head;
@@ -194,11 +197,13 @@ internal static class FinalLabEndingSetup
         foreach (var clip in clips.Take(5))
             foreach (float n in new[] { 0f, .25f, .5f, .75f, 1f })
             {
+                actor.transform.position = clip == clips[0] ? actorPosition : actorPosition + standingOffset;
                 var body = Sample(actor, clip, n * clip.length);
                 Require(body.bounds.min.y > floor - .13f, $"Train floor support failed for {clip.name} at {n} ({body.bounds.min.y:F2}/{floor:F2}).");
                 Require(body.bounds.min.x > seats.a.min.x - .16f && body.bounds.max.x < seats.b.max.x + .16f,
                     $"Alexei exceeds the carriage lateral clearance in {AssetDatabase.GetAssetPath(clip)} at {n}: {body.bounds}.");
             }
+        actor.transform.position = actorPosition;
         Debug.Log($"FINALE Train staging: floor {floor:F3}; seats {seats.a.center:F3} / {seats.b.center:F3}; camera {seatedEye.position:F3} -> {standingEye.position:F3}; motion root {actorPosition:F3}.");
 
         var subtitles = Object.Instantiate(original.gameObject, presentation).GetComponent<FinalLabIvanDialogue>();
@@ -240,6 +245,7 @@ internal static class FinalLabEndingSetup
         var setup = new SerializedObject(trainFinale);
         Set(setup, "ordinaryGameplay", ordinary);
         Set(setup, "ordinaryControls", controls);
+        setup.FindProperty("standingOffset").vector3Value = standingOffset;
         Set(setup, ("presentation", presentation.gameObject), ("view", view), ("alexei", actor), ("seatedEye", seatedEye),
             ("standingEye", standingEye), ("subtitles", subtitles), ("curtain", curtain), ("vignette", vignette), ("title", title));
         presentation.gameObject.SetActive(false);
@@ -266,9 +272,12 @@ internal static class FinalLabEndingSetup
         var death = father.runtimeAnimatorController.animationClips.Single(c => c.name == "Father_Death");
         var probe = Object.Instantiate(father, father.transform.parent);
         probe.gameObject.SetActive(true);
+        var surface = new Mesh();
         Bounds deadBody;
-        try { deadBody = Sample(probe, death, death.length).bounds; }
+        try { deadBody = Sample(probe, death, death.length, surface: surface).bounds; }
         finally { Object.DestroyImmediate(probe.gameObject); }
+        var support = FatherSurface(surface, deadBody);
+        Object.DestroyImmediate(surface);
         var room = new Bounds();
         room.SetMinMax(new Vector3(roomFloor.min.x + .35f, roomFloor.max.y, threshold.z + .17f),
             new Vector3(roomFloor.max.x - .32f, roomFloor.max.y + 1f, roomFloor.max.z - .32f));
@@ -286,31 +295,42 @@ internal static class FinalLabEndingSetup
             .Where(p => !Physics.CheckCapsule(p + Vector3.up * .28f, p + Vector3.up * 1.52f, .23f,
                 ~0, QueryTriggerInteraction.Ignore)).Select(p => p + Vector3.up * 1.65f).ToArray();
         float best = float.PositiveInfinity;
-        int inRoom = 0, clear = 0;
+        int inRoom = 0, clear = 0, contacts = 0;
         Vector3 head = default, position = default;
         Quaternion rotation = default;
         float bestDoorClearance = 0f;
-        deadBody.Expand(new Vector3(.20f, 0f, .20f));
-        foreach (float angle in Enumerable.Range(0, 24).Select(step => step * 15f))
+        foreach (var angles in from tilt in new[] { 8f, 16f, 24f, -10f, 0f }
+                     from yaw in Enumerable.Range(0, 12) select (tilt, yaw: yaw * 30f))
         {
-            actor.transform.SetPositionAndRotation(Vector3.zero, Quaternion.Euler(0, angle, 0));
+            actor.transform.SetPositionAndRotation(Vector3.zero, Quaternion.Euler(0f, angles.yaw, 0f) *
+                Quaternion.AngleAxis(angles.tilt, Vector3.forward));
             var slices = new Dictionary<int, Bounds>();
-            var pose = Sample(actor, clip, clip.length, slices);
+            var skin = new Dictionary<Vector2Int, Vector3>();
+            var pose = Sample(actor, clip, clip.length, slices, underside: skin);
             var bodyRotation = actor.transform.rotation;
-            for (float z = threshold.z + .52f; z <= room.max.z - .22f; z += .10f)
-                for (float x = room.min.x + .42f; x <= room.max.x - .28f; x += .12f)
+            float floorY = roomFloor.max.y - pose.bounds.min.y + .012f;
+            var underside = skin.Values.ToArray();
+            for (float z = deadBody.min.z - .40f; z <= deadBody.max.z + .30f; z += ContactCell)
+                for (float x = deadBody.min.x - .28f; x <= deadBody.max.x + .60f; x += ContactCell)
                 {
-                    var point = new Vector3(x, roomFloor.max.y - pose.bounds.min.y + .012f, z) -
+                    var point = new Vector3(x, floorY, z) -
                         new Vector3(pose.bounds.center.x, 0f, pose.bounds.center.z);
-                    var body = new Bounds(point + pose.bounds.center, pose.bounds.size + new Vector3(.14f, 0f, .14f));
+                    var body = new Bounds(point + pose.bounds.center, pose.bounds.size + new Vector3(.10f, 0f, .10f));
                     if (body.min.x < room.min.x || body.max.x > room.max.x || body.min.z < room.min.z ||
-                        body.max.z > room.max.z || body.Intersects(deadBody)) continue;
+                        body.max.z > room.max.z || body.max.z < deadBody.min.z || body.min.z > deadBody.max.z ||
+                        body.max.x < deadBody.min.x || body.min.x > deadBody.max.x) continue;
                     inRoom++;
+                    var (supportY, touching) = RestOnFather(point, underside, support);
+                    if (touching < 4 || supportY - floorY > .26f) continue;
+                    contacts++;
+                    point.y = supportY;
                     if (slices.Values.Any(b => Physics.CheckBox(point + bodyRotation * b.center,
                             b.extents + new Vector3(.018f, 0f, .035f), bodyRotation, ~0, QueryTriggerInteraction.Ignore))) continue;
                     clear++;
                     Vector3 visibleHead = point + pose.head;
-                    float cost = (body.center - deadBody.center).sqrMagnitude + .06f * (z - threshold.z);
+                    var doorDelta = visibleHead - threshold;
+                    float cost = doorDelta.x * doorDelta.x + doorDelta.z * doorDelta.z +
+                        .9f * (supportY - floorY) - .015f * Mathf.Min(touching, 24);
                     if (cost >= best || !approaches.Any(p => (p - visibleHead).sqrMagnitude < 2.3f * 2.3f &&
                         !Physics.Linecast(p, visibleHead, ~0, QueryTriggerInteraction.Ignore))) continue;
                     position = point;
@@ -321,9 +341,9 @@ internal static class FinalLabEndingSetup
                 }
         }
         Object.DestroyImmediate(openLeaf);
-        Require(!float.IsPositiveInfinity(best), $"No unobstructed ground pose with clear access from the door (room {inRoom}, obstacle-free {clear}).");
+        Require(!float.IsPositiveInfinity(best), $"No supported rescue pose (room {inRoom}, contact {contacts}, static clearance {clear}).");
         actor.transform.SetPositionAndRotation(position, rotation);
-        Debug.Log($"FINALE rescue: checked against the open door, architecture and fallen father. Head {head:F3}; actor {position:F3}; body center distance from open door {bestDoorClearance:F2} m.");
+        Debug.Log($"FINALE rescue: supported on the father's sampled surface; head {head:F3}; actor {position:F3}; center distance from open door {bestDoorClearance:F2} m.");
         var outline = RescueOutline(actor);
         actor.gameObject.SetActive(false);
         var canvas = Canvas(root, "Rescue HUD", 45);
@@ -373,8 +393,44 @@ internal static class FinalLabEndingSetup
             }).ToArray();
     }
 
+    private static Dictionary<Vector2Int, float> FatherSurface(Mesh mesh, Bounds bounds)
+    {
+        var temporary = new GameObject("Measure the father's final pose", typeof(MeshCollider));
+        var collider = temporary.GetComponent<MeshCollider>();
+        collider.sharedMesh = mesh;
+        Physics.SyncTransforms();
+        var heights = new Dictionary<Vector2Int, float>();
+        for (int x = Mathf.FloorToInt(bounds.min.x / ContactCell); x <= Mathf.CeilToInt(bounds.max.x / ContactCell); x++)
+            for (int z = Mathf.FloorToInt(bounds.min.z / ContactCell); z <= Mathf.CeilToInt(bounds.max.z / ContactCell); z++)
+            {
+                var ray = new Ray(new Vector3(x * ContactCell, bounds.max.y + .16f, z * ContactCell), Vector3.down);
+                if (collider.Raycast(ray, out var hit, bounds.size.y + .24f) && hit.point.y > bounds.min.y + .06f)
+                    heights.Add(new Vector2Int(x, z), hit.point.y);
+            }
+        Object.DestroyImmediate(temporary);
+        Require(heights.Count > 30, "No usable contact surface on the father's final pose.");
+        return heights;
+    }
+
+    private static (float height, int touching) RestOnFather(Vector3 point, Vector3[] underside,
+        Dictionary<Vector2Int, float> support)
+    {
+        float height = point.y;
+        foreach (Vector3 p in underside)
+            if (support.TryGetValue(ContactKey(point + p), out float top))
+                height = Mathf.Max(height, top - p.y + .027f);
+        int touching = 0;
+        foreach (Vector3 p in underside)
+            if (support.TryGetValue(ContactKey(point + p), out float top) && height + p.y - top < .08f)
+                touching++;
+        return (height, touching);
+    }
+
+    private static Vector2Int ContactKey(Vector3 p) => new Vector2Int(Mathf.RoundToInt(p.x / ContactCell), Mathf.RoundToInt(p.z / ContactCell));
+
     private static (Bounds bounds, Vector3 head, Vector3 hips, Vector3 across) Sample(Animator actor, AnimationClip clip,
-        float time, Dictionary<int, Bounds> horizontalSlices = null)
+        float time, Dictionary<int, Bounds> horizontalSlices = null, Mesh surface = null,
+        Dictionary<Vector2Int, Vector3> underside = null)
     {
         AnimationMode.StartAnimationMode();
         var scratch = new Mesh();
@@ -402,15 +458,25 @@ internal static class FinalLabEndingSetup
             bool first = true;
             Quaternion toActor = Quaternion.Inverse(actor.transform.rotation);
             Vector3 origin = actor.transform.position;
+            var vertices = surface != null ? new List<Vector3>() : null;
+            var triangles = surface != null ? new List<int>() : null;
             foreach (var mesh in meshes)
             {
                 mesh.BakeMesh(scratch);
                 // BakeMesh returns these FBX skin vertices in meters despite the inherited centimeter transform.
                 var toWorld = actor.isHuman && mesh.transform.lossyScale.x > 10f
                     ? Matrix4x4.TRS(mesh.transform.position, mesh.transform.rotation, Vector3.one) : mesh.transform.localToWorldMatrix;
+                if (surface != null)
+                    foreach (int index in scratch.triangles) triangles.Add(vertices.Count + index);
                 foreach (Vector3 local in scratch.vertices)
                 {
                     var p = toWorld.MultiplyPoint3x4(local);
+                    vertices?.Add(p);
+                    if (underside != null)
+                    {
+                        var key = ContactKey(p);
+                        if (!underside.TryGetValue(key, out Vector3 prior) || p.y < prior.y) underside[key] = p;
+                    }
                     if (first) { bounds = new Bounds(p, Vector3.zero); first = false; }
                     else bounds.Encapsulate(p);
                     if (horizontalSlices != null)
@@ -424,6 +490,12 @@ internal static class FinalLabEndingSetup
                 }
             }
             Require(!first, "No sampled skin vertices in " + actor.name);
+            if (surface != null)
+            {
+                surface.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                surface.SetVertices(vertices);
+                surface.SetTriangles(triangles, 0);
+            }
             if (!actor.isHuman) return (bounds, default, default, default);
             Transform Bone(HumanBodyBones bone) => actor.GetBoneTransform(bone);
             if (bounds.size.magnitude > 6f)
@@ -461,6 +533,7 @@ internal static class FinalLabEndingSetup
                 c.isLooping == (s.state.name == TrainFinale.Angry)), "Saved Train Animator, Avatar, and loop configuration.");
         var rise = (AnimationClip)states.Single(s => s.state.name == TrainFinale.Rise).state.motion;
         Require(rise.length > 7f, "Train must use the full floor-to-standing clip.");
+        VerifyHandoff(animator, finale.FindProperty("standingOffset").vector3Value);
         var player = InScene<FirstPersonPlayer>(train).Single();
         var ordinary = finale.FindProperty("ordinaryGameplay");
         Require(Enumerable.Range(0, ordinary.arraySize).Any(i => ordinary.GetArrayElementAtIndex(i).objectReferenceValue == player.gameObject),
@@ -486,6 +559,38 @@ internal static class FinalLabEndingSetup
                 outline.GetArrayElementAtIndex(i).objectReferenceValue is SkinnedMeshRenderer renderer &&
                 renderer.sharedMaterial.shader.name == "FinalLab/Rescue Outline"), "The rescue HUD and yellow skinned outline must be assigned.");
         Debug.Log("FINAL_LAB_ENDING_SAVED_AND_VERIFIED");
+    }
+
+    private static void VerifyHandoff(Animator saved, Vector3 offset)
+    {
+        var actor = Object.Instantiate(saved);
+        actor.transform.SetPositionAndRotation(saved.transform.position, saved.transform.rotation);
+        var origin = actor.transform.position;
+        var graph = PlayableGraph.Create("Check the Train animation handoff");
+        try
+        {
+            var playable = AnimatorControllerPlayable.Create(graph, actor.runtimeAnimatorController);
+            AnimationPlayableOutput.Create(graph, "Handoff", actor).SetSourcePlayable(playable);
+            graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+            graph.Play();
+            playable.Play("Base Layer.Rise", 0, 1f);
+            graph.Evaluate(.02f);
+            var hip = actor.GetBoneTransform(HumanBodyBones.Hips);
+            var planted = hip.position;
+            playable.CrossFadeInFixedTime("Base Layer.Angry", .46f, 0, 0);
+            float largest = 0f;
+            for (int i = 0; i < 15; i++)
+            {
+                graph.Evaluate(.04f);
+                float weight = playable.IsInTransition(0) ? Mathf.Clamp01(playable.GetAnimatorTransitionInfo(0).normalizedTime) :
+                    playable.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Angry") ? 1f : 0f;
+                actor.transform.position = origin + offset * weight;
+                largest = Mathf.Max(largest, Vector3.ProjectOnPlane(hip.position - planted, Vector3.up).magnitude);
+            }
+            Require(largest < .11f, $"Train handoff moves {largest:F3} m even after alignment.");
+            Debug.Log($"FINALE rise-to-dialogue: compensated {offset.magnitude:F3} m; remaining horizontal hip movement {largest:F3} m.");
+        }
+        finally { graph.Destroy(); Object.DestroyImmediate(actor.gameObject); }
     }
 
     private static T[] InScene<T>(Scene scene) where T : Component =>
