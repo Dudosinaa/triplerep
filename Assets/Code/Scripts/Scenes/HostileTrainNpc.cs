@@ -15,7 +15,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
         Animator.StringToHash("Base Layer.Firing"), Animator.StringToHash("Base Layer.Defeated")
     };
     private const int DamagePerHit = 25;
-    private const float StressPerHit = 10f;
+    private const float StressPerHit = 5f;
     private const float ShotMoment = 0.06f;
     private const float MinShotInterval = 0.2f;
     private const float MaxShotInterval = 1f;

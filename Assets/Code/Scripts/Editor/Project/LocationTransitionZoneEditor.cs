@@ -14,6 +14,7 @@ public sealed class LocationTransitionZoneEditor : Editor
         if (EditorGUI.EndChangeCheck()) path.stringValue = scene != null ? AssetDatabase.GetAssetPath(scene) : "";
         EditorGUILayout.PropertyField(serializedObject.FindProperty("fadeOutDuration"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("fadeInDuration"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("waitForIvan"));
         serializedObject.ApplyModifiedProperties();
 
         if (!LocationTransition.TryGetBuildIndex(path.stringValue, out _))

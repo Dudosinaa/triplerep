@@ -12,6 +12,9 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform[] route = System.Array.Empty<Transform>();
     [SerializeField] private Transform destination;
+    [SerializeField] private TrainCarriageZone continuationCarriage;
+    [SerializeField] private Transform continuationDestination;
+    [SerializeField] private GameObject[] activateOnContinuation = System.Array.Empty<GameObject>();
     [SerializeField] private TrainInterCarDoor[] routeDoors = System.Array.Empty<TrainInterCarDoor>();
     [SerializeField] private TrainHostileEncounter encounter;
     [SerializeField] private GameObject[] hideAfterDialogue = System.Array.Empty<GameObject>();
@@ -27,6 +30,11 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     private bool departed;
     private bool escaping;
     private bool escapeStarted;
+    private bool waitingForPlayer;
+    private bool runningContinuation;
+    private bool continuationStarted;
+    private FirstPersonPlayer chasePlayer;
+    private CharacterController chasePlayerBody;
     private int nextWaypoint;
     private float floorHeight;
     private float animatedSpeed;
@@ -42,6 +50,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     private double hintUntil;
 
     internal bool CanOpenDoors => escaping && isActiveAndEnabled;
+    internal bool HasReachedExit { get; private set; }
 
     private void Awake()
     {
@@ -64,6 +73,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
 
     private void OnDisable()
     {
+        SetPlayerCollisionIgnored(false);
         dialogue.ConversationCompleted -= BeginEscape;
         dialogue.ConversationCancelled -= ResetDialogueStaging;
         dialogue.ScriptedCue -= StageDialogue;
@@ -97,6 +107,8 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     {
         if (departed || destination == null) return;
         departed = true;
+        chasePlayer = player;
+        chasePlayerBody = player != null ? player.GetComponent<CharacterController>() : null;
         dialoguePlayer = null;
         retreating = false;
         dialogue.enabled = false;
@@ -126,10 +138,24 @@ public sealed class TrainIvanEncounter : MonoBehaviour
                     retreating = false;
             }
         }
-        if (!escaping || Time.deltaTime <= 0f) return;
+        if (Time.deltaTime <= 0f || (!escaping && !waitingForPlayer)) return;
 
+        // In the narrow aisle a player who arrives first can stand directly on Ivan's route.
+        SetPlayerCollisionIgnored(true);
+        if (waitingForPlayer)
+        {
+            if (chasePlayer != null)
+                Face(PlanarOffset(chasePlayer.transform.position), 600f);
+            if (!continuationCarriage.PlayerInside || chasePlayer == null || !chasePlayer.isActiveAndEnabled)
+                return;
+
+            waitingForPlayer = false;
+            runningContinuation = true;
+            escaping = true;
+        }
         bool finalSegment = nextWaypoint == route.Length;
-        Transform target = finalSegment ? destination : route[nextWaypoint];
+        Transform target = runningContinuation ? continuationDestination :
+            finalSegment ? destination : route[nextWaypoint];
         Vector3 offset = PlanarOffset(target.position);
         if (offset.sqrMagnitude <= ArrivalDistance * ArrivalDistance)
         {
@@ -140,8 +166,24 @@ public sealed class TrainIvanEncounter : MonoBehaviour
             }
 
             escaping = false;
+            animatedSpeed = 0f;
             animator.SetBool(IsRunning, false);
             animator.speed = 1f;
+            if (!runningContinuation && continuationDestination != null && continuationCarriage != null)
+            {
+                waitingForPlayer = true;
+                if (chasePlayer != null)
+                {
+                    Vector3 towardPlayer = PlanarOffset(chasePlayer.transform.position);
+                    if (towardPlayer.sqrMagnitude > 0.001f)
+                        transform.rotation = Quaternion.LookRotation(towardPlayer);
+                }
+            }
+            else
+            {
+                HasReachedExit = true;
+                SetPlayerCollisionIgnored(false);
+            }
             return;
         }
 
@@ -153,6 +195,12 @@ public sealed class TrainIvanEncounter : MonoBehaviour
         bool moving = animatedSpeed > 0.45f;
         animator.SetBool(IsRunning, moving);
         animator.speed = moving ? Mathf.Clamp(animatedSpeed / RunningClipSpeed, 0.45f, 1.3f) : 1f;
+        if (runningContinuation && moving && !continuationStarted)
+        {
+            continuationStarted = true;
+            foreach (var targetObject in activateOnContinuation)
+                if (targetObject != null) targetObject.SetActive(true);
+        }
         if (moving && !escapeStarted) ConfirmEscapeStarted();
     }
 
@@ -205,6 +253,16 @@ public sealed class TrainIvanEncounter : MonoBehaviour
                 turnSpeed * Time.deltaTime);
     }
 
+    private void SetPlayerCollisionIgnored(bool ignored)
+    {
+        if (chasePlayerBody == null || !chasePlayerBody.enabled || !chasePlayerBody.gameObject.activeInHierarchy ||
+            body == null || !body.enabled || !gameObject.activeInHierarchy)
+            return;
+
+        if (Physics.GetIgnoreCollision(body, chasePlayerBody) != ignored)
+            Physics.IgnoreCollision(body, chasePlayerBody, ignored);
+    }
+
     private void MoveOnDeck(Vector3 step)
     {
         body.Move(step);
@@ -228,5 +286,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
             from = waypoint.position;
         }
         if (destination != null) Gizmos.DrawLine(from, destination.position);
+        if (destination != null && continuationDestination != null)
+            Gizmos.DrawLine(destination.position, continuationDestination.position);
     }
 }
