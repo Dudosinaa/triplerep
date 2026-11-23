@@ -32,7 +32,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     [SerializeField, Min(0.1f)] private float walkingStepDistance = 1.8f;
     [SerializeField, Min(0.1f)] private float crouchingStepDistance = 2.3f;
 
-    internal const float KeyInteractionDistance = 3f;
+    private const float InteractionDistance = 3f;
     internal Camera PlayerCamera => playerCamera;
     internal bool CanDrawPistol => trainEncounter == null || trainEncounter.CanDrawPistol;
 
@@ -44,7 +44,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     private float distanceSinceStep;
     private int lastClipIndex = -1;
     private readonly Collider[] standingClearanceHits = new Collider[16];
-    private readonly RaycastHit[] keyInteractionHits = new RaycastHit[8];
+    private readonly RaycastHit[] interactionHits = new RaycastHit[8];
     private readonly HashSet<DoorKey> collectedKeys = new HashSet<DoorKey>();
 
     private void Awake()
@@ -157,7 +157,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
         bool pressedE = keyboard.eKey.wasPressedThisFrame;
         if (!pressedE && (interactionHints == null || !interactionHints.CanShow)) return;
-        if (!TryGetKeyInteractionHit(out var hit)) return;
+        if (!TryGetInteractionHit(out var hit)) return;
 
         var key = hit.collider.GetComponentInParent<DoorKey>();
         if (key != null && key.isActiveAndEnabled)
@@ -171,27 +171,35 @@ public sealed class FirstPersonPlayer : MonoBehaviour
             return;
         }
 
+        var lightSwitch = hit.collider.GetComponentInParent<LightSwitch>();
+        if (lightSwitch != null && lightSwitch.isActiveAndEnabled)
+        {
+            interactionHints?.OfferFocus(lightSwitch);
+            if (pressedE && InteractionInput.TryConsume()) lightSwitch.Toggle();
+            return;
+        }
+
         var door = hit.collider.GetComponentInParent<KeyDoor>();
         if (door == null || !door.isActiveAndEnabled || !door.CanInteract(this)) return;
         interactionHints?.OfferFocus(door);
         if (pressedE && InteractionInput.TryConsume()) door.TryToggle(this);
     }
 
-    private bool TryGetKeyInteractionHit(out RaycastHit hit)
+    private bool TryGetInteractionHit(out RaycastHit hit)
     {
         var view = playerCamera.transform;
         var ray = new Ray(view.position, view.forward);
-        if (!Physics.Raycast(ray, out hit, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore))
+        if (!Physics.Raycast(ray, out hit, InteractionDistance, ~0, QueryTriggerInteraction.Ignore))
             return false;
         if (!hit.collider.transform.IsChildOf(transform))
             return true;
 
-        // Looking down at the key can hit the player's capsule before the key.
-        RaycastHit[] hits = keyInteractionHits;
-        int count = Physics.RaycastNonAlloc(ray, hits, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore);
+        // Looking down can hit the player's capsule before the target.
+        RaycastHit[] hits = interactionHits;
+        int count = Physics.RaycastNonAlloc(ray, hits, InteractionDistance, ~0, QueryTriggerInteraction.Ignore);
         if (count == hits.Length)
         {
-            hits = Physics.RaycastAll(ray, KeyInteractionDistance, ~0, QueryTriggerInteraction.Ignore);
+            hits = Physics.RaycastAll(ray, InteractionDistance, ~0, QueryTriggerInteraction.Ignore);
             count = hits.Length;
         }
 
