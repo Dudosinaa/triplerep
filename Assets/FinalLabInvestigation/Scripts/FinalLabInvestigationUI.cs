@@ -111,6 +111,11 @@ namespace FinalLab.Investigation
             progressFade.alpha = 1;
         }
 
+        public void SetResearchProgressVisible(bool visible)
+        {
+            if (hud != null) hud.gameObject.SetActive(visible);
+        }
+
         public void SetLaboratoryGameplay(bool active)
         {
             SetCinematic(false);
