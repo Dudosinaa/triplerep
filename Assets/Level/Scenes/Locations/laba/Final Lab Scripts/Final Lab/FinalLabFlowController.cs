@@ -4,7 +4,7 @@ using UnityEngine;
 
 public sealed class FinalLabFlowController : MonoBehaviour
 {
-    public enum Stage { IvanDialogue, GameplayPhase, FatherDoorReady, FatherDoorOpening, FatherIntroduction, FatherDialogue, FatherDeath, FatherSceneFinished }
+    public enum Stage { IvanDialogue, GameplayPhase, FatherDoorReady, FatherDoorOpening, FatherIntroduction, FatherDialogue, FatherDeath, FatherSceneFinished, IvanGameplayPhase, AlexeiRescue }
 
     [SerializeField] private bool skipGameplayForTesting = true;
     [SerializeField] private FinalLabIvanCutsceneController ivanDialogue;
@@ -12,6 +12,8 @@ public sealed class FinalLabFlowController : MonoBehaviour
     [SerializeField] private FatherCutsceneController father;
     [SerializeField] private FinalLabInvestigationUI hud;
     [SerializeField] private GameObject doorMarker;
+    [SerializeField] private bool skipIvanGameplayForTesting = true;
+    [SerializeField] private FinalLabAlexeiRescue rescue;
 
     public Stage State { get; private set; }
     public bool SkipGameplayForTesting { get => skipGameplayForTesting; set => skipGameplayForTesting = value; }
@@ -20,6 +22,8 @@ public sealed class FinalLabFlowController : MonoBehaviour
     public bool DoorMarkerVisible => doorMarker.activeSelf;
     public event Action GameplayPhaseStarted;
     public event Action FatherSequenceFinished;
+    public event Action IvanGameplayPhaseStarted;
+    public bool SkipIvanGameplayForTesting { get => skipIvanGameplayForTesting; set => skipIvanGameplayForTesting = value; }
 
     public void Configure(FinalLabIvanCutsceneController ivan, FinalLabMetalDoor door, FatherCutsceneController sequence,
         FinalLabInvestigationUI ui, GameObject marker)
@@ -91,6 +95,17 @@ public sealed class FinalLabFlowController : MonoBehaviour
         if (State != Stage.FatherDeath) return;
         State = Stage.FatherSceneFinished;
         FatherSequenceFinished?.Invoke();
+        if (rescue == null) return;
+        State = Stage.IvanGameplayPhase;
+        if (skipIvanGameplayForTesting) OnIvanGameplayCompleted();
+        else IvanGameplayPhaseStarted?.Invoke();
+    }
+
+    public void OnIvanGameplayCompleted()
+    {
+        if (State != Stage.IvanGameplayPhase) return;
+        State = Stage.AlexeiRescue;
+        rescue.Begin(father);
     }
 
     internal void RetryFatherDoor()

@@ -16,6 +16,7 @@ public static partial class FinalLabInvestigationValidation
         flow.OnGameplayCompleted();
         Require(flow.State == Stage.IvanDialogue && flow.FatherDoor.IsLocked, "An early gameplay callback cannot unlock the father door.");
         if (Application.isBatchMode) flow.SkipGameplayForTesting = false;
+        flow.SkipIvanGameplayForTesting = false;
         var center = flow.FatherDoor.transform.position;
         Aim(player, camera, controller, center + Vector3.back * 1.31f, center + Vector3.up * 1.15f);
         for (int f = 0; f < 3; f++) yield return null;
@@ -88,7 +89,7 @@ public static partial class FinalLabInvestigationValidation
         var skin = animator.GetComponentsInChildren<SkinnedMeshRenderer>();
         try
         {
-            while (flow.State != Stage.FatherSceneFinished)
+            while (flow.State != Stage.IvanGameplayPhase)
             {
                 var state = animator.IsInTransition(0) ? animator.GetNextAnimatorStateInfo(0) : animator.GetCurrentAnimatorStateInfo(0);
                 bool Is(string name) => state.IsName("Base Layer." + name);

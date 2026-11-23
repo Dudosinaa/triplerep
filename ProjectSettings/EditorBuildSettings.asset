@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Level/Scenes/Gameplay/StressDemo.unity
     guid: 180cf797cc7dfd461ae87a6516b4c7ca
+  - enabled: 1
+    path: Assets/Level/Scenes/Locations/laba/FinalScene.unity
+    guid: 6b74784b4c3766e41bc21eb556e242e5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

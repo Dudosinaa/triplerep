@@ -284,6 +284,15 @@ public sealed class FatherCutsceneController : MonoBehaviour
         suspended.Add(behaviour);
     }
 
+    internal CanvasGroup ReleaseViewForRescue()
+    {
+        storedCamera?.Restore();
+        storedCamera = null;
+        suspended.Clear();
+        subtitles.Hide();
+        return blackout;
+    }
+
     private void OnDisable() => RestoreControls();
 
     private void RestoreControls()

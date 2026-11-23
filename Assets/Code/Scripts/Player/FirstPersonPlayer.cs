@@ -96,6 +96,14 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         controller.enabled = wasEnabled;
     }
 
+    public void SetViewDirection(Vector3 direction)
+    {
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+        cameraPitch = Mathf.Clamp(Mathf.DeltaAngle(0f, rotation.eulerAngles.x), -85f, 85f);
+        playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
+    }
+
     private void Update()
     {
         if (Keyboard.current == null || Mouse.current == null || playerCamera == null) return;
