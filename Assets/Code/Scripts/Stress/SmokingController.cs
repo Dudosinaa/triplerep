@@ -43,7 +43,8 @@ public sealed class SmokingController : MonoBehaviour
     }
     private bool CanStart()
     {
-        return modelReady && playerStress != null && !IsSmoking &&
+        return gameObject.scene.path == TrainMindSession.TrainPath &&
+            modelReady && playerStress != null && !IsSmoking &&
             !playerStress.IsRecoveringAfterSmoking && playerStress.stress >= smokingThreshold &&
             CanMove();
     }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
@@ -8,8 +7,6 @@ public class PlayerStress : MonoBehaviour
 {
     [Header("Стресс")]
     [Range(0f, 100f)] public float stress = 0f;
-    public float increaseSpeed = 10f;
-    public float decreaseSpeed = 10f;
 
     [Header("Виньетка")]
     public Volume volume;
@@ -58,14 +55,6 @@ public class PlayerStress : MonoBehaviour
     void Update()
     {
         if (GameplayPause.BlocksGameplayInput) return;
-        if (!calmingForMind && !IsRecoveringAfterSmoking)
-        {
-            if (Keyboard.current != null && Keyboard.current.spaceKey.isPressed)
-                stress += increaseSpeed * Time.deltaTime;
-            if (Keyboard.current != null && Keyboard.current.minusKey.isPressed)
-                stress -= decreaseSpeed * Time.deltaTime;
-        }
-
         SetStress(stress);
 
         UpdateStressEffects();

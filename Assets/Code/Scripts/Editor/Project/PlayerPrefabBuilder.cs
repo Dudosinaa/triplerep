@@ -70,7 +70,6 @@ public static class PlayerPrefabBuilder
             volume.sharedProfile = GetStressProfile();
             var stress = player.AddComponent<PlayerStress>();
             stress.volume = volume;
-            stress.increaseSpeed = stress.decreaseSpeed = 20f;
             stress.maxVignetteIntensity = 1f;
             stress.soundThreshold = 70f;
             stress.stressSound = Resources.Load<AudioClip>("MergeStressSound");

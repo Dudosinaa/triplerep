@@ -34,8 +34,10 @@ public sealed class MergedGameBootstrap : MonoBehaviour
         var scaler = go.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
-        MakeText(go.transform, "Controls", locationLabel + "  |  WASD — идти, Ctrl — присесть, E — взаимодействие, T — сознание\n" +
-            "ЛКМ — выстрел, ПКМ — прицел, R — перезарядка, Q — оружие; пробел / минус — стресс, Y — покурить",
+        var controls = locationLabel + "  |  WASD — идти, Ctrl — присесть, E — взаимодействие, T — сознание, ПКМ — приблизить";
+        if (gameObject.scene.path == TrainMindSession.TrainPath)
+            controls += "\nЛКМ — выстрел, R — перезарядка, Q — оружие, Y — покурить";
+        MakeText(go.transform, "Controls", controls,
             new Vector2(0.02f, 0.87f), new Vector2(0.98f, 0.98f));
         return canvas;
     }

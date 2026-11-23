@@ -36,7 +36,8 @@ public sealed class PistolController : MonoBehaviour
         CanDrawPistol &&
         (smoking == null || !smoking.IsSmoking) &&
         playerCamera != null && playerCamera.enabled && Cursor.lockState == CursorLockMode.Locked;
-    private bool CanDrawPistol => movement == null || movement.CanDrawPistol;
+    private bool CanDrawPistol => gameObject.scene.path == TrainMindSession.TrainPath &&
+        (movement == null || movement.CanDrawPistol);
 
     private void Awake()
     {
