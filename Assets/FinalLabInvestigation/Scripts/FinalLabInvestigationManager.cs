@@ -72,7 +72,7 @@ namespace FinalLab.Investigation
         {
             inspection = new DocumentInspectionCamera(view, player.transform);
             progress = new InvestigationProgress(points.Length);
-            lastAction = Time.time;
+            lastAction = Time.unscaledTime;
             UpdateObjective(true);
         }
 
@@ -82,7 +82,7 @@ namespace FinalLab.Investigation
             if (progress == null) return;
             if (state == ViewState.Moving)
             {
-                bool ended = inspection.Advance(Time.deltaTime, out float amount);
+                bool ended = inspection.Advance(Time.unscaledDeltaTime, out float amount);
                 if (movingPaper != null)
                     movingPaper.SetPositionAndRotation(Vector3.LerpUnclamped(paperFrom.position, paperTo.position, amount),
                         Quaternion.SlerpUnclamped(paperFrom.rotation, paperTo.rotation, amount));
@@ -115,7 +115,7 @@ namespace FinalLab.Investigation
                 ui.SetPrompt(point != null ? point.Prompt : "");
                 if (point != null && keyboard != null && keyboard.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
                     TryOpen(point);
-                if (active == null && !hinted && ObjectivePoint != null && Time.time - lastAction >= 20f)
+                if (active == null && !hinted && ObjectivePoint != null && Time.unscaledTime - lastAction >= 20f)
                 {
                     ui.Hint(ObjectivePoint.Hint);
                     hinted = true;
@@ -138,7 +138,7 @@ namespace FinalLab.Investigation
             }
             if (RequiresAllDocuments) return;
             if (mouse != null) Scroll(mouse.scroll.ReadValue().y / 120f);
-            inspection.Zoom(zoomTarget, Time.deltaTime);
+            inspection.Zoom(zoomTarget, Time.unscaledDeltaTime);
         }
 
         public InvestigationPoint NearbyPoint()
@@ -189,7 +189,7 @@ namespace FinalLab.Investigation
             player.enabled = false;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            lastAction = Time.time;
+            lastAction = Time.unscaledTime;
             ui.ClearHint();
             ui.SetPrompt("");
             Move(OverviewPose(), OverviewFov(), AtDesk ? 0.66f : 0.53f, ShowOverview);
@@ -248,7 +248,7 @@ namespace FinalLab.Investigation
                 if (RequiresAllDocuments && Array.IndexOf(RequiredDocuments, item.Id) >= 0)
                     ViewedDocuments.Add(item.Id);
                 state = ViewState.Detail;
-                lastAction = Time.time;
+                lastAction = Time.unscaledTime;
                 if (!RequiresAllDocuments)
                     ui.SetControls(item.Lifts
                         ? "Колёсико — Масштаб\nЛКМ / Esc — Положить документ"
@@ -321,7 +321,7 @@ namespace FinalLab.Investigation
             {
                 if (!reactionShown && !(lastIvanDesk && Completed == points.Length))
                     ShowReaction();
-                lastAction = Time.time;
+                lastAction = Time.unscaledTime;
             }
             active = null;
             state = ViewState.Walking;
@@ -417,13 +417,14 @@ namespace FinalLab.Investigation
             }
         }
 
-        private bool NearestHit(Ray ray, float range, out RaycastHit nearest)
+        internal bool NearestHit(Ray ray, float range, out RaycastHit nearest,
+            QueryTriggerInteraction triggers = QueryTriggerInteraction.Collide)
         {
             var results = hits;
-            int count = Physics.RaycastNonAlloc(ray, results, range, ~0, QueryTriggerInteraction.Collide);
+            int count = Physics.RaycastNonAlloc(ray, results, range, ~0, triggers);
             if (count == results.Length)
             {
-                results = Physics.RaycastAll(ray, range, ~0, QueryTriggerInteraction.Collide);
+                results = Physics.RaycastAll(ray, range, ~0, triggers);
                 count = results.Length;
             }
             nearest = default;

@@ -65,13 +65,8 @@ public static partial class FinalLabInvestigationValidation
                 Keys(Key.E, Key.W, Key.Escape);
                 for (int f = 0; f < 4; f++) yield return null;
                 Keys();
-                Require(Time.timeScale == 0f && Vector3.Distance(feet, player.transform.position) < .001f &&
-                    door.IsOpen && dialogue.Index == 0, "Escape pauses the dialogue at the current line.");
-                yield return null;
-                GameObject.Find("Продолжить").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
-                for (int f = 0; f < 3; f++) yield return null;
-                Keys();
-                Require(Time.timeScale > 0f, "Continue resumes the dialogue.");
+                Require(Vector3.Distance(feet, player.transform.position) < .001f && door.IsOpen && dialogue.Index == 0,
+                    "E, W and Escape leave the dialogue, player position and door unchanged.");
             }
             if (index is 0 or 1 or 8 or 10 or 24 or 32 or 34)
             {
@@ -109,20 +104,16 @@ public static partial class FinalLabInvestigationValidation
         foreach (var frame in CheckIvanWalk(scene, camera, leaving: false)) yield return frame;
         while (scene.State != Stage.Finished) yield return null;
         Require(ivan.transform.position.z > door.transform.position.z + .90f && !door.IsOpen && !door.IsMoving &&
-            player.enabled && investigation.enabled && investigation.Completed == 3 && !dialogue.Visible &&
+            player.enabled && investigation.enabled == (activeScope != Scope.FatherEncounter) &&
+            investigation.Completed == 3 && !dialogue.Visible &&
             Vector3.Distance(originalEye, camera.transform.position) < .035f,
             "Ivan is safely inside, the door is closed, FPS controls and camera are restored, and progress remains 3/3.");
         Capture(camera, "Cutscene-06-restored");
         Keys(Key.Escape);
         for (int f = 0; f < 3; f++) yield return null;
         Keys();
-        Require(Time.timeScale == 0f && scene.State == Stage.Finished && !dialogue.Visible,
-            "Escape pauses after the completed cutscene.");
-        yield return null;
-        GameObject.Find("Продолжить").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
-        for (int f = 0; f < 3; f++) yield return null;
-        Keys();
-        Require(Time.timeScale > 0f, "Continue resumes player control after the cutscene.");
+        Require(scene.State == Stage.Finished && (!dialogue.Visible || dialogue.Index == -1),
+            "Escape cannot replay the completed cutscene.");
         if (activeScope == Scope.FatherEncounter)
         {
             Debug.Log("FINAL_LAB_IVAN_CONVERSATION_PLAYED_35_LINES");

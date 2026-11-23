@@ -17,27 +17,41 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
 
     internal void Begin(FatherCutsceneController father) => StartCoroutine(Rescue(father));
 
+    private Transform restingHead;
+
+    internal Transform PrepareAlexei()
+    {
+        if (restingHead != null) return restingHead;
+        alexei.gameObject.SetActive(true);
+        alexei.applyRootMotion = false;
+        alexei.Play("Base Layer.Unconscious", 0, 1f);
+        alexei.Update(0);
+        alexei.speed = 0;
+        foreach (var edge in outline) edge.enabled = false;
+        restingHead = alexei.GetBoneTransform(HumanBodyBones.Head);
+        return restingHead;
+    }
+
     private IEnumerator Rescue(FatherCutsceneController father)
     {
         var curtain = father.ReleaseViewForRescue();
         var subtitles = father.Subtitles;
-        alexei.gameObject.SetActive(true);
-        alexei.Play("Base Layer.Unconscious", 0, 1f);
-        alexei.Update(0);
-        alexei.speed = 0;
-        Transform head = alexei.GetBoneTransform(HumanBodyBones.Head);
+        Transform head = PrepareAlexei();
+        foreach (var edge in outline) edge.enabled = true;
 
         player.Teleport(spawn.position);
         view.transform.localPosition = new Vector3(0f, 1.65f, 0f);
         player.SetViewDirection(resonator.position - view.transform.position);
         player.enabled = true;
+        objective.text = "Спасти Алексея";
         objective.gameObject.SetActive(true);
         yield return Fade(curtain, 0f, 1.25f);
 
         Vector3 target = head.position;
         while ((view.transform.position - target).sqrMagnitude > 2.3f * 2.3f ||
                Vector3.Dot(view.transform.position - roomThreshold.position, roomThreshold.forward) < .15f ||
-               Physics.Linecast(view.transform.position, target, ~0, QueryTriggerInteraction.Ignore))
+               father.Interactions.NearestHit(new Ray(view.transform.position, target - view.transform.position),
+                   Vector3.Distance(view.transform.position, target), out _, QueryTriggerInteraction.Ignore))
             yield return null;
 
         player.enabled = false;
@@ -62,7 +76,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
 
         prompt.gameObject.SetActive(true);
         yield return null;
-        while (GameplayPause.BlocksGameplayInput || Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame) yield return null;
+        while (Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame) yield return null;
         prompt.gameObject.SetActive(false);
         objective.gameObject.SetActive(false);
         Vector3 forward = (target - low).normalized;
@@ -79,7 +93,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
         var cameraTransform = view.transform;
         Vector3 start = cameraTransform.position;
         Quaternion rotation = cameraTransform.rotation;
-        for (float t = 0; t < duration; t += Time.deltaTime)
+        for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
         {
             float progress = Mathf.SmoothStep(0f, 1f, t / duration);
             Vector3 eye = Vector3.Lerp(start, targetEye, progress);
@@ -93,7 +107,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
     internal static IEnumerator Fade(CanvasGroup curtain, float end, float duration)
     {
         float start = curtain.alpha;
-        for (float t = 0; t < duration; t += Time.deltaTime)
+        for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
         {
             curtain.alpha = Mathf.SmoothStep(start, end, t / duration);
             yield return null;

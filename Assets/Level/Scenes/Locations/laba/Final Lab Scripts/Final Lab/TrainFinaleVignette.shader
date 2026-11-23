@@ -1,6 +1,10 @@
 Shader "FinalLab/Ending Vignette"
 {
-    Properties { _Closure ("Closure", Range(0, 1)) = 0 }
+    Properties
+    {
+        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _Closure ("Closure", Range(0, 1)) = 0
+    }
     SubShader
     {
         Tags { "Queue"="Transparent" "RenderType"="Transparent" }

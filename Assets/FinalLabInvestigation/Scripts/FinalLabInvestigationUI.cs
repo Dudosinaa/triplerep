@@ -111,9 +111,16 @@ namespace FinalLab.Investigation
             progressFade.alpha = 1;
         }
 
-        public void SetResearchProgressVisible(bool visible)
+        public void SetLaboratoryGameplay(bool active)
         {
-            if (hud != null) hud.gameObject.SetActive(visible);
+            SetCinematic(false);
+            hud.gameObject.SetActive(!active);
+            if (!active) return;
+            SetControls("");
+            SetPrompt("");
+            ClearHint();
+            subtitleUntil = 0;
+            subtitleFade.alpha = 0;
         }
 
         public void SetPrompt(string value) => prompt.text = value;
@@ -127,13 +134,13 @@ namespace FinalLab.Investigation
         public void React(string quote)
         {
             subtitle.text = "АЛЕКСЕЙ   " + quote;
-            subtitleUntil = Time.time + 6.65f;
+            subtitleUntil = Time.unscaledTime + 6.65f;
         }
 
         public void Hint(string text)
         {
             routeHint.text = text;
-            hintUntil = Time.time + 6.1f;
+            hintUntil = Time.unscaledTime + 6.1f;
         }
 
         public void ClearHint() => hintUntil = 0;
@@ -182,7 +189,7 @@ namespace FinalLab.Investigation
             archiveWarning.fontSize = fontSize;
             archiveWarningBacking.color = background;
             archiveWarningBacking.rectTransform.sizeDelta = new Vector2(archiveWarning.GetPreferredValues(warning).x + 18, 36);
-            archiveWarningUntil = Time.time + 2.65f;
+            archiveWarningUntil = Time.unscaledTime + 2.65f;
         }
 
         private void SetReadingMode(bool overview, bool detail)
@@ -202,7 +209,7 @@ namespace FinalLab.Investigation
         {
             if (transition >= 0)
             {
-                transition += Time.deltaTime;
+                transition += Time.unscaledDeltaTime;
                 if (transition >= 0.20f)
                 {
                     if (status.text != pendingStatus) status.text = pendingStatus;
@@ -212,9 +219,9 @@ namespace FinalLab.Investigation
                 else progressFade.alpha = 1 - transition / 0.20f;
                 if (transition >= 0.42f) transition = -1;
             }
-            subtitleFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((subtitleUntil - Time.time) * 2.2f);
-            hintFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((hintUntil - Time.time) * 2.2f);
-            archiveWarningFade.alpha = Mathf.Clamp01((archiveWarningUntil - Time.time) * 2f);
+            subtitleFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((subtitleUntil - Time.unscaledTime) * 2.2f);
+            hintFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((hintUntil - Time.unscaledTime) * 2.2f);
+            archiveWarningFade.alpha = Mathf.Clamp01((archiveWarningUntil - Time.unscaledTime) * 2f);
         }
 
         private static RectTransform Panel(Transform parent, string name, Vector2 anchor, Vector2 pivot, Vector2 position,

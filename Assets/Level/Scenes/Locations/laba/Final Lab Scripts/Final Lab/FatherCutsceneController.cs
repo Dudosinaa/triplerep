@@ -44,6 +44,7 @@ public sealed class FatherCutsceneController : MonoBehaviour
     private string storedClickHint;
     private float headDip, imbalance;
     public Animator Actor => father;
+    internal FinalLabInvestigationManager Interactions => interactions;
     public FinalLabIvanDialogue Subtitles => subtitles;
     public IReadOnlyList<Line> Lines => lines;
     public float Blackout => blackout.alpha;
@@ -73,23 +74,26 @@ public sealed class FatherCutsceneController : MonoBehaviour
     public void Begin(FinalLabFlowController flow)
     {
         if (storedCamera != null || finished) return;
+        PrepareOnBed();
         LockControls();
         StartCoroutine(Sequence(flow));
+    }
+
+    internal void PrepareOnBed()
+    {
+        if (father.gameObject.activeSelf) return;
+        father.gameObject.SetActive(true);
+        father.speed = 1f;
+        father.Play("Base Layer." + InitialBedPose, 0, 0f);
+        father.Update(0f);
+        father.speed = 0f;
     }
 
     private IEnumerator Sequence(FinalLabFlowController flow)
     {
         var door = flow.FatherDoor;
-        bool revealed = false;
         for (float time = 0; !door.IsOpen && time < door.TravelTime + 2f; time += Time.deltaTime)
         {
-            if (!revealed && door.Openness > .005f)
-            {
-                father.gameObject.SetActive(true);
-                father.Play("Base Layer." + InitialBedPose, 0, 0);
-                father.Update(0f);
-                revealed = true;
-            }
             float through = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(.30f, .88f, door.Openness));
             Vector3 approach = Vector3.Lerp(hallEye.position, roomEye.position, through);
             Track(approach, Focus(.76f), 60f);
@@ -98,7 +102,6 @@ public sealed class FatherCutsceneController : MonoBehaviour
         if (!door.IsOpen)
         {
             door.CloseDoor();
-            father.gameObject.SetActive(false);
             RestoreControls();
             flow.RetryFatherDoor();
             yield break;
@@ -106,6 +109,7 @@ public sealed class FatherCutsceneController : MonoBehaviour
 
         flow.OnFatherDoorOpened();
         yield return Hold(.29f, roomEye.position, bedFrame: true);
+        father.speed = 1f;
         yield return Animate(SitUp, .24f, roomEye.position);
         yield return Caption(0, roomEye.position);
         yield return Animate(StandUp, .43f, roomEye.position);

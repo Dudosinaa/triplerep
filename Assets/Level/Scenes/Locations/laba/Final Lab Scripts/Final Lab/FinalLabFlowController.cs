@@ -6,15 +6,14 @@ public sealed class FinalLabFlowController : MonoBehaviour
 {
     public enum Stage { IvanDialogue, GameplayPhase, FatherDoorReady, FatherDoorOpening, FatherIntroduction, FatherDialogue, FatherDeath, FatherSceneFinished, IvanGameplayPhase, AlexeiRescue }
 
-    [SerializeField] private bool skipGameplayForTesting = true;
+    [SerializeField] private bool skipGameplayForTesting;
     [SerializeField] private FinalLabIvanCutsceneController ivanDialogue;
     [SerializeField] private FinalLabMetalDoor fatherDoor;
     [SerializeField] private FatherCutsceneController father;
     [SerializeField] private FinalLabInvestigationUI hud;
     [SerializeField] private GameObject doorMarker;
-    [SerializeField] private bool skipIvanGameplayForTesting = true;
+    [SerializeField] private bool skipIvanGameplayForTesting;
     [SerializeField] private FinalLabAlexeiRescue rescue;
-    [SerializeField] private IvanFinaleController ivanFinale;
 
     public Stage State { get; private set; }
     public bool SkipGameplayForTesting { get => skipGameplayForTesting; set => skipGameplayForTesting = value; }
@@ -40,7 +39,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
     private void Awake()
     {
         fatherDoor.SetLocked(true);
-        fatherDoor.OpenPrompt = "Открыть дверь в комнату отца — E";
+        fatherDoor.OpenPrompt = "Открыть дверь — E";
         doorMarker.SetActive(false);
     }
 
@@ -98,13 +97,6 @@ public sealed class FinalLabFlowController : MonoBehaviour
         if (State != Stage.FatherDeath) return;
         State = Stage.FatherSceneFinished;
         FatherSequenceFinished?.Invoke();
-        if (!skipIvanGameplayForTesting && ivanFinale != null)
-        {
-            State = Stage.IvanGameplayPhase;
-            ivanFinale.UseFatherBody(father.Actor.gameObject);
-            ivanFinale.BeginIvanPhase(father.ReleaseViewForRescue());
-            return;
-        }
         if (rescue == null) return;
         State = Stage.IvanGameplayPhase;
         if (skipIvanGameplayForTesting) OnIvanGameplayCompleted();
@@ -125,9 +117,9 @@ public sealed class FinalLabFlowController : MonoBehaviour
 
     private void SetDoorReady()
     {
+        father.PrepareOnBed();
         State = Stage.FatherDoorReady;
         fatherDoor.SetLocked(false);
         doorMarker.SetActive(true);
-        hud.Hint("Найдите отца");
     }
 }

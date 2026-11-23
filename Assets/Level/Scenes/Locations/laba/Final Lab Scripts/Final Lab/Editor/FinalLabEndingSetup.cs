@@ -428,7 +428,7 @@ internal static class FinalLabEndingSetup
 
     private static Vector2Int ContactKey(Vector3 p) => new Vector2Int(Mathf.RoundToInt(p.x / ContactCell), Mathf.RoundToInt(p.z / ContactCell));
 
-    private static (Bounds bounds, Vector3 head, Vector3 hips, Vector3 across) Sample(Animator actor, AnimationClip clip,
+    internal static (Bounds bounds, Vector3 head, Vector3 hips, Vector3 across) Sample(Animator actor, AnimationClip clip,
         float time, Dictionary<int, Bounds> horizontalSlices = null, Mesh surface = null,
         Dictionary<Vector2Int, Vector3> underside = null)
     {
