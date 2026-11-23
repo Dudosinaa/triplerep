@@ -24,3 +24,8 @@ Assets/Art/Models/Environment/Mind/interogation_room/interogation_room.glb filte
 /Assets/Forst/Conifers[[:space:]]\[BOTD\]/Sources/Textures/BODT[[:space:]]Conifer[[:space:]]Trunk[[:space:]]\[Normal\][[:space:]]\[AO\][[:space:]]\[Specular\].psd filter=lfs diff=lfs merge=lfs -text
 /Assets/Forst/Conifers[[:space:]]\[BOTD\]/Sources/Textures/BODT[[:space:]]Conifer[[:space:]]x[[:space:]]Stump[[:space:]]\[Normal\][[:space:]]\[AO\][[:space:]]\[Specular\].tif filter=lfs diff=lfs merge=lfs -text
 /Assets/Level/Scenes/Locations/MindsScenes/FirstMindInteriorData/Television[[:space:]]scan[[:space:]]cleaned.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Art/Models/Environment/FinalLab/Machinery/laboratory_oscilloscope_20mhz.glb filter=lfs diff=lfs merge=lfs -text
+Assets/Art/Models/Environment/FinalLab/Machinery/labratory_old-school_equipment.glb filter=lfs diff=lfs merge=lfs -text
+Assets/Art/Models/Environment/FinalLab/Machinery/tesla_coil_old.glb filter=lfs diff=lfs merge=lfs -text
+Assets/Art/Models/Environment/ThirdMind/interogation_room/interogation_room.glb filter=lfs diff=lfs merge=lfs -text
+Assets/Dnk_Dev/HospitalHorrorPack/Textures/T_Bed_Metal_01_M.psd filter=lfs diff=lfs merge=lfs -text

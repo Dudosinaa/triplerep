@@ -30,7 +30,7 @@ public static class ThirdMindSceneBuilder
     private const string CctvEntryPath = DataPath + "/C12_2353_Entry.png";
     private const string CctvExitPath = DataPath + "/C12_0017_Exit.png";
     private const string IvanModelPath = "Assets/Art/Models/Characters/MindHeroes/ThirdMind/IVAN.glb";
-    private const string OldLampPath = "Assets/Art/Models/Environment/Mind/old_lamp.glb";
+    private const string OldLampPath = "Assets/Art/Models/Environment/ThirdMind/old_lamp.glb";
     private const string WallMaterialPath = MaterialPath + "/Interrogation Walls Neutral Gray.mat";
 
     [MenuItem("Tools/Third Mind/Build Interrogation Memory")]

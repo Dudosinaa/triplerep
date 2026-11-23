@@ -17,6 +17,7 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     [SerializeField, Min(0.1f)] private float crouchSpeed = 2f;
     [SerializeField] private float gravity = -20f;
     [SerializeField, Min(0.1f)] private float mouseSensitivity = 0.12f;
+    [SerializeField, Range(-85f, 85f)] private float initialViewPitch;
 
     [Header("Crouch")]
     [SerializeField, Min(0.5f)] private float standingHeight = 1.8f;
@@ -36,6 +37,10 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     internal Camera PlayerCamera => playerCamera;
     internal bool CanDrawPistol => trainEncounter == null || trainEncounter.CanDrawPistol;
 
+    public void ResetView(float yaw) => SetViewDirection(Quaternion.Euler(0, yaw, 0) * Vector3.forward);
+
+    public float WalkSpeed { get => walkSpeed; set => walkSpeed = Mathf.Max(.1f, value); }
+
     private InteractionHints interactionHints;
     private AudioClip generatedStep;
     private CharacterController controller;
@@ -52,6 +57,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         controller = GetComponent<CharacterController>();
         interactionHints = GetComponent<InteractionHints>();
         if (playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
+        cameraPitch = initialViewPitch;
+        if (playerCamera != null && initialViewPitch != 0f)
+            playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
         if (footstepSource == null) footstepSource = GetComponent<AudioSource>();
 
         if (footstepSource != null && (footstepClips == null || footstepClips.Length == 0))
@@ -122,6 +130,14 @@ public sealed class FirstPersonPlayer : MonoBehaviour
         cameraPitch = pose.Pitch;
         playerCamera.transform.SetLocalPositionAndRotation(pose.CameraPosition, pose.CameraRotation);
         playerCamera.fieldOfView = pose.FieldOfView;
+    }
+
+    public void SetViewDirection(Vector3 direction)
+    {
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+        cameraPitch = Mathf.Clamp(Mathf.DeltaAngle(0f, rotation.eulerAngles.x), -85f, 85f);
+        playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
     }
 
     private void Update()
