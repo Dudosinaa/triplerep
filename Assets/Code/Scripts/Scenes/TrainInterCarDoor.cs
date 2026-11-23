@@ -5,6 +5,7 @@ using UnityEngine;
 public sealed class TrainInterCarDoor : MonoBehaviour
 {
     [SerializeField] private FirstPersonPlayer player;
+    [SerializeField] private bool requiresAllTrainMemories;
     [SerializeField, Min(0.1f)] private float activationRadius = 1.8f;
     [SerializeField, Min(0.01f)] private float openDuration = 0.85f;
     [SerializeField, Min(0f)] private float closeDelay = 2f;
@@ -32,7 +33,11 @@ public sealed class TrainInterCarDoor : MonoBehaviour
 
     private void Update()
     {
-        if (IsActorNearby(player != null ? player.transform : null) ||
+        if (requiresAllTrainMemories && !SceneEntryCheckpoint.AllTrainMemoriesCompleted)
+        {
+            wantsOpen = false;
+        }
+        else if (IsActorNearby(player != null ? player.transform : null) ||
             (npcApproach != null && npcApproach.CanOpenDoors && IsActorNearby(npcApproach.transform)))
         {
             wantsOpen = true;

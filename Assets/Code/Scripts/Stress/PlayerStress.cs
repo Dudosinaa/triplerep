@@ -57,6 +57,7 @@ public class PlayerStress : MonoBehaviour
 
     void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (!calmingForMind && !IsRecoveringAfterSmoking)
         {
             if (Keyboard.current != null && Keyboard.current.spaceKey.isPressed)

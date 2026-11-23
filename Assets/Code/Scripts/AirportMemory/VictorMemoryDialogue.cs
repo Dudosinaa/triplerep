@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class VictorMemoryDialogue : MonoBehaviour
 {
@@ -50,7 +51,9 @@ public sealed class VictorMemoryDialogue : MonoBehaviour
         introductionCompleted = true;
         if (!discussingWaybill || terminal == null || !terminal.IsSolved) return;
 
-        if (!TrainMindSession.TryReturn(gameObject.scene))
-            LocationTransition.TryBegin(player, TrainMindSession.TrainPath, 0.55f, 0.65f, this);
+        SceneEntryCheckpoint.CompleteTrainMemory(SceneEntryCheckpoint.TrainMemory.Innokenty, gameObject.scene);
+        if (TrainMindSession.TryReturn(gameObject.scene)) return;
+        int destination = SceneEntryCheckpoint.GetReturnIndex(SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath));
+        LocationTransition.TryBegin(player, SceneUtility.GetScenePathByBuildIndex(destination), 0.55f, 0.65f, this);
     }
 }

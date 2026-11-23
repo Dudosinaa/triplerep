@@ -53,6 +53,7 @@ public sealed class SmokingController : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         bool canStart = CanStart();
         if (hintText != null) hintText.gameObject.SetActive(canStart);
         if (!canStart || Keyboard.current == null || !Keyboard.current.yKey.wasPressedThisFrame) return;

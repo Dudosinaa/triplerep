@@ -153,7 +153,7 @@ public sealed class FinalLabIvanCutsceneController : MonoBehaviour
             // A click during a pose change or held across the reveal cannot advance the new line.
             yield return null;
             while (Mouse.current != null && Mouse.current.leftButton.isPressed) yield return null;
-            while (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) yield return null;
+            while (GameplayPause.BlocksGameplayInput || Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) yield return null;
         }
     }
 

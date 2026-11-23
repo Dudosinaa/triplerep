@@ -127,13 +127,13 @@ namespace FinalLab.Investigation
         public void React(string quote)
         {
             subtitle.text = "АЛЕКСЕЙ   " + quote;
-            subtitleUntil = Time.unscaledTime + 6.65f;
+            subtitleUntil = Time.time + 6.65f;
         }
 
         public void Hint(string text)
         {
             routeHint.text = text;
-            hintUntil = Time.unscaledTime + 6.1f;
+            hintUntil = Time.time + 6.1f;
         }
 
         public void ClearHint() => hintUntil = 0;
@@ -182,7 +182,7 @@ namespace FinalLab.Investigation
             archiveWarning.fontSize = fontSize;
             archiveWarningBacking.color = background;
             archiveWarningBacking.rectTransform.sizeDelta = new Vector2(archiveWarning.GetPreferredValues(warning).x + 18, 36);
-            archiveWarningUntil = Time.unscaledTime + 2.65f;
+            archiveWarningUntil = Time.time + 2.65f;
         }
 
         private void SetReadingMode(bool overview, bool detail)
@@ -202,7 +202,7 @@ namespace FinalLab.Investigation
         {
             if (transition >= 0)
             {
-                transition += Time.unscaledDeltaTime;
+                transition += Time.deltaTime;
                 if (transition >= 0.20f)
                 {
                     if (status.text != pendingStatus) status.text = pendingStatus;
@@ -212,9 +212,9 @@ namespace FinalLab.Investigation
                 else progressFade.alpha = 1 - transition / 0.20f;
                 if (transition >= 0.42f) transition = -1;
             }
-            subtitleFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((subtitleUntil - Time.unscaledTime) * 2.2f);
-            hintFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((hintUntil - Time.unscaledTime) * 2.2f);
-            archiveWarningFade.alpha = Mathf.Clamp01((archiveWarningUntil - Time.unscaledTime) * 2f);
+            subtitleFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((subtitleUntil - Time.time) * 2.2f);
+            hintFade.alpha = readingDetail || deskOverview ? 0 : Mathf.Clamp01((hintUntil - Time.time) * 2.2f);
+            archiveWarningFade.alpha = Mathf.Clamp01((archiveWarningUntil - Time.time) * 2f);
         }
 
         private static RectTransform Panel(Transform parent, string name, Vector2 anchor, Vector2 pivot, Vector2 position,

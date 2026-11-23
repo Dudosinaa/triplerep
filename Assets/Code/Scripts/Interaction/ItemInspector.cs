@@ -59,12 +59,13 @@ public sealed class ItemInspector : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null || playerCamera == null) return;
 
         bool pressedE = Keyboard.current.eKey.wasPressedThisFrame;
         if (inspectedItem != null)
         {
-            if ((pressedE || Keyboard.current.escapeKey.wasPressedThisFrame) && InteractionInput.TryConsume()) CloseInspection();
+            if (InteractionInput.TryConsumeCancel() || (pressedE && InteractionInput.TryConsume())) CloseInspection();
             else RotatePreview();
             return;
         }

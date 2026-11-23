@@ -13,7 +13,6 @@ public sealed class SceneSwitch : MonoBehaviour
     public TMP_Text hintText;
     public bool returnOnly;
     [Min(0)] public int returnSceneIndex = 1;
-    private static int entrySceneIndex = -1;
     private bool isMoving;
     private FocusPoint currentPoint;
     private readonly RaycastHit[] aimHits = new RaycastHit[16];
@@ -27,11 +26,12 @@ public sealed class SceneSwitch : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         var keyboard = Keyboard.current;
         if (returnOnly)
         {
             if (keyboard != null && keyboard.uKey.wasPressedThisFrame && !TrainMindSession.TryReturn(gameObject.scene))
-                LoadSceneIndex(entrySceneIndex >= 0 ? entrySceneIndex : returnSceneIndex);
+                LoadSceneIndex(SceneEntryCheckpoint.GetReturnIndex(returnSceneIndex));
             return;
         }
         if (keyboard == null)
@@ -106,14 +106,17 @@ public sealed class SceneSwitch : MonoBehaviour
             yield break;
         }
 
-        entrySceneIndex = origin.buildIndex;
         if (player != null)
         {
             foreach (var behaviour in player.GetComponents<MonoBehaviour>())
                 if (behaviour != this && !(behaviour is PlayerStress)) behaviour.enabled = false;
         }
         yield return AnimateToNPC(camera, point, moveDuration);
-        if (point != null) LoadSceneIndex(point.sceneIndex);
+        if (point != null && IsSceneAvailable(point.sceneIndex))
+        {
+            SceneEntryCheckpoint.ReturnPath = origin.path;
+            SceneManager.LoadScene(point.sceneIndex);
+        }
     }
 
     private static IEnumerator AnimateToNPC(Camera camera, FocusPoint point, float moveDuration)

@@ -31,12 +31,13 @@ public sealed class DocumentReader : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null || playerCamera == null) return;
 
         bool pressedE = Keyboard.current.eKey.wasPressedThisFrame;
         if (openDocument != null)
         {
-            if ((pressedE || Keyboard.current.escapeKey.wasPressedThisFrame) && InteractionInput.TryConsume()) CloseDocument();
+            if (InteractionInput.TryConsumeCancel() || (pressedE && InteractionInput.TryConsume())) CloseDocument();
             else ScrollDocument();
             return;
         }

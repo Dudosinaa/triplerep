@@ -142,13 +142,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (Keyboard.current == null || Mouse.current == null || playerCamera == null) return;
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
         if (Mouse.current.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -168,15 +164,22 @@ public sealed class FirstPersonPlayer : MonoBehaviour
     // Reading, inspection and dialogue get first use of E in Update.
     private void LateUpdate()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         var keyboard = Keyboard.current;
         if (keyboard == null || playerCamera == null || !playerCamera.isActiveAndEnabled) return;
+
+        if (keyboard.escapeKey.wasPressedThisFrame && !GameplayPause.HandlesEscape && InteractionInput.TryConsumeCancel())
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
 
         bool pressedE = keyboard.eKey.wasPressedThisFrame;
         if (!pressedE && (interactionHints == null || !interactionHints.CanShow)) return;
         if (!TryGetInteractionHit(out var hit)) return;
 
         var key = hit.collider.GetComponentInParent<DoorKey>();
-        if (key != null && key.isActiveAndEnabled)
+        if (key != null && key.CanPickUp)
         {
             interactionHints?.OfferFocus(key);
             if (pressedE && InteractionInput.TryConsume())

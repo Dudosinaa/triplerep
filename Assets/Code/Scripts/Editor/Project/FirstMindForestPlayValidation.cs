@@ -116,7 +116,14 @@ public static class FirstMindForestPlayValidation
             KeyState(Key.Escape);
             yield return null;
             yield return null;
-            Check(Cursor.lockState == CursorLockMode.None, "Escape releases the cursor");
+            Check(Time.timeScale == 0f && Cursor.lockState == CursorLockMode.None,
+                "Escape pauses the game and releases the cursor");
+            KeyState();
+            yield return null;
+            GameObject.Find("Продолжить").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+            yield return null;
+            yield return null;
+            Check(Time.timeScale > 0f, "Continue resumes the paused game");
             KeyState();
         }
         else Debug.Log("FIRST_MIND_MANUAL_CHECK: native cursor lock and mouse look require a focused Game View");

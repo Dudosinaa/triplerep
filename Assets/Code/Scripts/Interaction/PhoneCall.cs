@@ -17,18 +17,24 @@ public sealed class PhoneCall : MonoBehaviour
         WaitingForTasks,
         CountingDown,
         Ringing,
-        Answered
+        InProgress,
+        Completed
     }
 
     [SerializeField] private CurrentTaskList taskList;
     [SerializeField, Min(0f)] private float ringDelay = 15f;
     [SerializeField] private Line[] dialogue = Array.Empty<Line>();
 
+    [SerializeField] private string completionHint;
+
     private AudioSource ringSource;
     private CallState state;
     private float ringAt;
 
     internal bool CanAnswer => isActiveAndEnabled && state == CallState.Ringing && dialogue.Length > 0;
+
+    internal bool IsCompleted => state == CallState.Completed;
+    internal string CompletionHint => completionHint;
 
     private void Awake()
     {
@@ -79,9 +85,17 @@ public sealed class PhoneCall : MonoBehaviour
         lines = null;
         if (!CanAnswer) return false;
 
-        state = CallState.Answered;
+        state = CallState.InProgress;
         ringSource.Stop();
         lines = dialogue;
         return true;
+    }
+
+    internal void EndCall(bool completed)
+    {
+        if (state != CallState.InProgress) return;
+
+        state = completed ? CallState.Completed : CallState.Ringing;
+        if (!completed && isActiveAndEnabled) PlayRing();
     }
 }

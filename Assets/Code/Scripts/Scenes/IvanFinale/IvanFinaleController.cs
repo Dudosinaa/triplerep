@@ -200,6 +200,7 @@ public sealed class IvanFinaleController : MonoBehaviour
 
     private void Update()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (State == Phase.Waiting || view == null) return;
         fade = Mathf.MoveTowards(fade, 0, Time.deltaTime);
         if (State == Phase.Escape)
@@ -461,6 +462,7 @@ public sealed class IvanFinaleController : MonoBehaviour
 
     private void OnGUI()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         if (State == Phase.Waiting) return;
         text ??= new GUIStyle(GUI.skin.label) { fontSize = 20, wordWrap = true, alignment = TextAnchor.MiddleCenter };
         caption ??= new GUIStyle(text) { fontSize = 24 };

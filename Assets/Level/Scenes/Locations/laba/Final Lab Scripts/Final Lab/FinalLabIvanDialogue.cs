@@ -49,6 +49,7 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
 
     public bool ReadContinue()
     {
+        if (GameplayPause.BlocksGameplayInput) return false;
         if (continueRequested) return true;
         var mouse = Mouse.current;
         if (!Visible || mouse == null || Time.frameCount == shownFrame) return false;

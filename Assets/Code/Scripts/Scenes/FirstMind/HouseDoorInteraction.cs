@@ -29,6 +29,7 @@ public sealed class HouseDoorInteraction : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (GameplayPause.BlocksGameplayInput) return;
         HouseDoor door = player.isActiveAndEnabled && view.isActiveAndEnabled ? FindDoor() : null;
         hint.alpha = door != null ? 1f : 0f;
         if (door == null) return;
