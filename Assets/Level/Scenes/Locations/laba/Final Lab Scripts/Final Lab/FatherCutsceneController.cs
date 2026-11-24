@@ -17,6 +17,7 @@ public sealed class FatherCutsceneController : MonoBehaviour
     {
         public string speaker;
         [TextArea] public string text;
+        public AudioClip voiceClip;
         public Line(string speaker, string text)
         {
             this.speaker = speaker;
@@ -158,7 +159,7 @@ public sealed class FatherCutsceneController : MonoBehaviour
     private void Show(int index)
     {
         var line = lines[index];
-        subtitles.Show(index, line.speaker, line.text);
+        subtitles.Show(index, line.speaker, line.text, line.voiceClip);
     }
 
     private IEnumerator Caption(int index, Vector3 eye, bool down = false)

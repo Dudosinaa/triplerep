@@ -73,6 +73,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
     private float openingYaw;
     private float openingPitch;
     private AudioSource voiceSource;
+    private AudioSource documentSoundSource;
 
     private void Awake()
     {
@@ -88,8 +89,9 @@ public sealed class ThirdMindSequence : MonoBehaviour
         openingCameraLocalRotation = memoryCamera.transform.localRotation;
         if (playerController != null) playerController.enabled = false;
         memoryCamera.GetComponent<AudioListener>().enabled = true;
-        voiceSource = GetComponent<AudioSource>();
-        if (voiceSource == null) voiceSource = gameObject.AddComponent<AudioSource>();
+        documentSoundSource = GetComponent<AudioSource>();
+        if (documentSoundSource == null) documentSoundSource = gameObject.AddComponent<AudioSource>();
+        voiceSource = gameObject.AddComponent<AudioSource>();
         BuildInterface();
         if (michaelHead != null) headBaseRotation = michaelHead.localRotation;
         phase = Phase.Opening;
@@ -110,6 +112,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
 
     private void OnDisable()
     {
+        if (voiceSource != null) voiceSource.Stop();
         if (Cursor.lockState == CursorLockMode.Confined)
             Cursor.lockState = CursorLockMode.None;
     }
@@ -152,13 +155,13 @@ public sealed class ThirdMindSequence : MonoBehaviour
         SetHoveredDocument(underPointer);
         if (underPointer != null && leftPressed)
         {
-            if (documentPickupSound != null) voiceSource.PlayOneShot(documentPickupSound);
+            if (documentPickupSound != null) documentSoundSource.PlayOneShot(documentPickupSound);
             OpenDocument(underPointer);
             return;
         }
         if (underPointer != null && mouse.rightButton.wasPressedThisFrame)
         {
-            if (documentSelectSound != null) voiceSource.PlayOneShot(documentSelectSound);
+            if (documentSelectSound != null) documentSoundSource.PlayOneShot(documentSelectSound);
             SelectDocument(underPointer);
         }
 
@@ -225,11 +228,13 @@ public sealed class ThirdMindSequence : MonoBehaviour
         speakerText.text = line.characterName;
         dialogueText.text = line.text;
         dialogueHint.text = "Пробел — продолжить";
-        if (voiceSource != null && line.voiceClip != null) voiceSource.PlayOneShot(line.voiceClip);
+        voiceSource.clip = line.voiceClip;
+        if (line.voiceClip != null) voiceSource.Play();
     }
 
     private void AdvanceDialogue()
     {
+        voiceSource.Stop();
         lineIndex++;
         if (lineIndex < activeLines.Length) { RenderDialogueLine(); return; }
         dialoguePanel.SetActive(false);

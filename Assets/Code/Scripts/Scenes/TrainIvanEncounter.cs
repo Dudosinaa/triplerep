@@ -223,9 +223,11 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     private void ShowAlexeyLine(string text, AudioClip voice)
     {
         subtitleUntil = ShowFeedback(escapeSubtitle, text, 3d);
+        if (alexeyVoice != null) alexeyVoice.Stop();
         if (voice == null) return;
         if (alexeyVoice == null) alexeyVoice = gameObject.AddComponent<AudioSource>();
-        alexeyVoice.PlayOneShot(voice);
+        alexeyVoice.clip = voice;
+        alexeyVoice.Play();
     }
 
     private static double ShowFeedback(Text label, string text, double duration)

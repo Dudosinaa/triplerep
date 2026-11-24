@@ -25,12 +25,15 @@ public sealed class FinalLabMechanisms : MonoBehaviour
     [SerializeField] private Renderer[] segments;
     [SerializeField] private Light[] reserveLights, pulseLights;
     [SerializeField] private LineRenderer[] arcs;
+    [SerializeField] private AudioClip restoreReserveVoice, remainingLinesVoice, isolationHintVoice, twoContoursVoice, doorUnlockedVoice;
+    [SerializeField] private AudioClip unstablePowerVoice, tractionVoice, alternativeModeVoice, modeBVoice, unstableContourVoice;
+    [SerializeField] private AudioClip isolationRisingVoice, isolationCompleteVoice;
 
     private Step step;
     private FinalLabIvanDialogue subtitles;
     private Material outlineMaterial, focusMaterial;
     private CanvasGroup blackout;
-    private readonly Queue<string> messages = new();
+    private readonly Queue<(string Text, AudioClip Clip)> messages = new();
     private float nextLine, feedbackUntil, isolation, current = 9.4f;
     private int reserves, isolated;
     private bool blocked;
@@ -85,7 +88,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         step = Step.Reserve;
         Goal("Резервное питание: 0/3");
         foreach (var lamp in reserveLights) lamp.enabled = false;
-        Say("Алёша, дверь камеры запитана отдельно. Основная сеть мертва… Попробуй восстановить резервное питание.");
+        Say("Алёша, дверь камеры запитана отдельно. Основная сеть мертва… Попробуй восстановить резервное питание.", restoreReserveVoice);
     }
 
     private void StartIvan() => StartCoroutine(ChangePerspective());
@@ -109,7 +112,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         blocked = false;
         Goal("Исследовать питание установки");
         displayedCurrent = current;
-        Say("Питание установки нестабильно. Похоже, сущность использует общую энергетическую сеть.");
+        Say("Питание установки нестабильно. Похоже, сущность использует общую энергетическую сеть.", unstablePowerVoice);
     }
 
     private void UseGameplayHud()
@@ -140,7 +143,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         if (target != null && target.Kind == FinalLabSwitch.Function.Traction && !tractionNoted)
         {
             tractionNoted = true;
-            Say("Тяговая линия продолжает подавать питание…");
+            Say("Тяговая линия продолжает подавать питание…", tractionVoice);
         }
 
         bool lookingAtDoor = target == null && step >= Step.Mode &&
@@ -226,13 +229,13 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 reserves++;
                 if (reserves <= reserveLights.Length) reserveLights[reserves - 1].enabled = true;
                 Goal($"Резервное питание: {reserves}/3");
-                if (reserves == 1) Say("Есть! Но одной линии недостаточно. Где-то должны быть остальные.");
+                if (reserves == 1) Say("Есть! Но одной линии недостаточно. Где-то должны быть остальные.", remainingLinesVoice);
                 if (reserves != 3) return;
                 step = Step.Isolation;
                 Goal("Изоляция: 0/2");
                 Report("Резервное питание: 3/3");
-                ReplaceSpeech("Питание вернулось. Но дверь всё ещё заблокирована… Значит, дело в изоляции камеры.",
-                    "Система изоляции не даёт открыть дверь. Кажется, у неё два независимых контура. Проверь их, Алёша.");
+                ReplaceSpeech("Питание вернулось. Но дверь всё ещё заблокирована… Значит, дело в изоляции камеры.", isolationHintVoice);
+                Say("Система изоляции не даёт открыть дверь. Кажется, у неё два независимых контура. Проверь их, Алёша.", twoContoursVoice);
                 break;
             case FinalLabSwitch.Function.Isolation:
                 isolated++;
@@ -244,7 +247,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 Report("Изоляция: 2/2");
                 investigation.enabled = true;
                 investigationHud.SetLaboratoryGameplay(true);
-                ReplaceSpeech("Получилось! Дверь разблокирована. Иди к отцу… Только будь осторожен.");
+                ReplaceSpeech("Получилось! Дверь разблокирована. Иди к отцу… Только будь осторожен.", doorUnlockedVoice);
                 flow.OnGameplayCompleted();
                 break;
             case FinalLabSwitch.Function.Traction:
@@ -254,20 +257,20 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 controlDoor.SetLocked(false);
                 Goal("Проверить режим резонатора К-17");
                 Report("Тяговая линия отключена. К-17 на резерве");
-                ReplaceSpeech("Основной режим не позволяет разорвать связь. Возможно, существует другой способ работы установки.");
+                ReplaceSpeech("Основной режим не позволяет разорвать связь. Возможно, существует другой способ работы установки.", alternativeModeVoice);
                 break;
             case FinalLabSwitch.Function.Mode:
                 step = Step.Contour;
                 modeFlash = Time.unscaledTime + .85f;
                 Goal("Стабилизировать контур");
                 Report("Режим Б активирован. Параметры изменились");
-                ReplaceSpeech("Режим Б активирован. Параметры изменились.",
-                    "Контур неустойчив. Нужно удержать систему в рабочем состоянии.");
+                ReplaceSpeech("Режим Б активирован. Параметры изменились.", modeBVoice);
+                Say("Контур неустойчив. Нужно удержать систему в рабочем состоянии.", unstableContourVoice);
                 break;
             case FinalLabSwitch.Function.Contour:
                 step = Step.Stabilizing;
                 Goal("Удерживай E у включённого рубильника");
-                ReplaceSpeech("Ток падает… Изоляция растёт.");
+                ReplaceSpeech("Ток падает… Изоляция растёт.", isolationRisingVoice);
                 break;
             case FinalLabSwitch.Function.Cover:
                 Report("Аварийная кнопка доступна");
@@ -295,7 +298,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         step = Step.Overload;
         Goal("Запустить аварийную перегрузку К-17");
         Report("Контур стабилен");
-        ReplaceSpeech("Изоляция завершена. Но сущность ещё здесь…");
+        ReplaceSpeech("Изоляция завершена. Но сущность ещё здесь…", isolationCompleteVoice);
     }
 
     private IEnumerator Discharge()
@@ -433,16 +436,13 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 ? new Color(.26f, .77f, .45f) : new Color(.13f, .17f, .16f));
     }
 
-    private void Say(params string[] lines)
-    {
-        foreach (string line in lines) messages.Enqueue(line);
-    }
+    private void Say(string text, AudioClip clip) => messages.Enqueue((text, clip));
 
-    private void ReplaceSpeech(params string[] lines)
+    private void ReplaceSpeech(string text, AudioClip clip)
     {
         messages.Clear();
         nextLine = 0;
-        Say(lines);
+        Say(text, clip);
     }
 
     private void PresentSpeech()
@@ -450,9 +450,10 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         if (Time.unscaledTime < nextLine) return;
         if (subtitles.Visible) subtitles.Hide();
         if (messages.Count == 0) return;
-        string line = messages.Dequeue();
-        subtitles.Show(-1, "ИВАН", line);
-        nextLine = Time.unscaledTime + Mathf.Clamp(1.7f + line.Length * .037f, 3.2f, 6.6f);
+        var (text, clip) = messages.Dequeue();
+        subtitles.Show(-1, "ИВАН", text, clip);
+        float readingTime = Mathf.Clamp(1.7f + text.Length * .037f, 3.2f, 6.6f);
+        nextLine = Time.unscaledTime + Mathf.Max(readingTime, clip != null ? clip.length : 0f);
     }
 
     private void Goal(string line) => Set(objective, line);

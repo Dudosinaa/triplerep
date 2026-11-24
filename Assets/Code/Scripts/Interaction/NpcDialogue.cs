@@ -14,6 +14,7 @@ public sealed class NpcDialogue : MonoBehaviour
     public sealed class Choice
     {
         [TextArea(1, 2)] public string text;
+        public AudioClip voiceClip;
         [HideInInspector] public int nextNode = -1; // Legacy index-based dialogue data.
         [SerializeField, HideInInspector] private int targetNodeId;
         [Tooltip("Завершает диалог сразу при выборе ответа.")]
@@ -28,6 +29,7 @@ public sealed class NpcDialogue : MonoBehaviour
     {
         [SerializeField, HideInInspector] private int id;
         [TextArea(2, 5)] public string npcText;
+        public AudioClip voiceClip;
         public Choice[] choices;
 
         public int Id => id;
@@ -40,11 +42,13 @@ public sealed class NpcDialogue : MonoBehaviour
         [TextArea(2, 5)] public string text;
         [Min(0f)] public float pauseBefore;
         public string cue;
+        public AudioClip voiceClip;
     }
 
     [SerializeField] private string characterName = "Смотритель";
     [SerializeField] private string playerName = "Вы";
     [SerializeField, TextArea(2, 5)] private string openingLine;
+    [SerializeField] private AudioClip openingVoiceClip;
     [SerializeField, HideInInspector] private int startNodeId;
     [SerializeField] private Node[] nodes;
     [SerializeField] private ScriptedLine[] scriptedLines;
@@ -68,6 +72,7 @@ public sealed class NpcDialogue : MonoBehaviour
     public string CharacterName => characterName;
     internal string PlayerName => string.IsNullOrEmpty(playerName) ? "Вы" : playerName;
     internal string OpeningLine => openingLine;
+    internal AudioClip OpeningVoiceClip => openingVoiceClip;
     internal ScriptedLine[] ScriptedLines => scriptedLines;
     internal bool HasScriptedLines => scriptedLines != null && scriptedLines.Length > 0;
     public Node[] Nodes => nodes;

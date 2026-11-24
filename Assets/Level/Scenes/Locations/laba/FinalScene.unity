@@ -4726,6 +4726,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalLabIvanDialogue
   transcript: {fileID: 4900000, guid: 3cb8cc5598c624640b3511b18e7ff8e7, type: 3}
+  transcriptVoices:
+  - {fileID: 8300000, guid: 2f446dde088ad8d45b11ea15260febab, type: 3}
+  - {fileID: 8300000, guid: 7a5c9536b85aadf4989eb6f92aa0367d, type: 3}
+  - {fileID: 8300000, guid: 52de55a506cc8ea4b93ce46722030f96, type: 3}
+  - {fileID: 8300000, guid: efa325e71ce32a8419dcfdafbb9ebaeb, type: 3}
+  - {fileID: 8300000, guid: b9ae2705d69c9a5448b3d0c4136ace39, type: 3}
+  - {fileID: 8300000, guid: 5e5f94e77d766f84d80c426ed151dd01, type: 3}
+  - {fileID: 8300000, guid: af6af8bd75d05bc4185b8ffb06cfdf8a, type: 3}
+  - {fileID: 8300000, guid: 2353d655295e721409ffa279db56a780, type: 3}
+  - {fileID: 8300000, guid: 83dd94eaa3af6db47aaa4f93dc8aafdb, type: 3}
+  - {fileID: 8300000, guid: ec12a6c4d08972045a1dd260682b33ae, type: 3}
+  - {fileID: 8300000, guid: 92bfb358b83a23d43b8b50b757e47543, type: 3}
+  - {fileID: 8300000, guid: 962b9bbfeb2816943a73a640cb7017e9, type: 3}
+  - {fileID: 8300000, guid: ff9c17a945680ce4d84e5c6c09236263, type: 3}
+  - {fileID: 8300000, guid: 682231a37606daa4b88890872130f171, type: 3}
+  - {fileID: 8300000, guid: a9f7e0148ab19b2499c3b1e37d382369, type: 3}
+  - {fileID: 8300000, guid: 793ead71535d715459840d8b2a12b4d2, type: 3}
+  - {fileID: 8300000, guid: b300ded928a5b7447a1f2ac0c5f43351, type: 3}
+  - {fileID: 8300000, guid: ba218f7d1231a4f479f84d0a9bef05bf, type: 3}
+  - {fileID: 8300000, guid: a480fdb7bdabb4348b72d8928b5f16ba, type: 3}
+  - {fileID: 8300000, guid: ec33262d702d8da459aaf9101581d9f6, type: 3}
+  - {fileID: 8300000, guid: c6e3dbc25f96d7544918c719d62fb827, type: 3}
+  - {fileID: 8300000, guid: 21c8412be73faf94586b52cf41670afa, type: 3}
+  - {fileID: 8300000, guid: 1f2186c3b4ed8c44c8e888cbf0ece971, type: 3}
+  - {fileID: 8300000, guid: 95571d0f3a69a5943a5c57a03132239c, type: 3}
+  - {fileID: 8300000, guid: 033d635bee2fc984a92133f9b79bf59a, type: 3}
+  - {fileID: 8300000, guid: 62246b5df249dcd448ca9dac460ee05b, type: 3}
+  - {fileID: 8300000, guid: 4378fbac8731bd04d85edbf8d185da34, type: 3}
+  - {fileID: 8300000, guid: 57aca90204c9d6d4aaad326f92459c8b, type: 3}
+  - {fileID: 8300000, guid: edb9c7e0f62ac684bb098f6e8481d05e, type: 3}
+  - {fileID: 8300000, guid: 606140256cc5f5e418dec9753bafc529, type: 3}
+  - {fileID: 8300000, guid: e2fa503e6a5fe2649a74fa262af59817, type: 3}
+  - {fileID: 8300000, guid: 4e6ef5db9dfdb204480a124f8802b3fb, type: 3}
+  - {fileID: 8300000, guid: 300482eea6571c34db80d7ed9e17f530, type: 3}
+  - {fileID: 8300000, guid: 3671033a5ab77af43a6a1d8b733bb21f, type: 3}
+  - {fileID: 8300000, guid: 898cddceeefa1a045b87246409a4f55c, type: 3}
   canvas: {fileID: 105020113}
   speaker: {fileID: 133258590}
   body: {fileID: 1941689170}
@@ -10260,6 +10296,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 321708ef99160f44c91bbbb0c21576b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalLabAlexeiRescue
+  fearVoice: {fileID: 8300000, guid: 0987d74e8a94db241aebba1c068a1880, type: 3}
+  apologyVoice: {fileID: 8300000, guid: 27128014310268741aca5dab11bf00c6, type: 3}
   player: {fileID: 1395016068}
   view: {fileID: 185203938}
   alexei: {fileID: 165082645}
@@ -46843,31 +46881,37 @@ MonoBehaviour:
   blackout: {fileID: 917008054}
   lines:
   - speaker: "\u041E\u0422\u0415\u0426"
+    voiceClip: {fileID: 8300000, guid: 47c4cba0ae0b4124bb1dcfd2ba21aaff, type: 3}
     text: "\u0427\u0442\u043E?.. \u0413\u0434\u0435 \u044F?.. \u0421\u043A\u043E\u043B\u044C\u043A\u043E
       \u0432\u0440\u0435\u043C\u0435\u043D\u0438 \u043F\u0440\u043E\u0448\u043B\u043E?.."
   - speaker: "\u041E\u0422\u0415\u0426"
+    voiceClip: {fileID: 8300000, guid: a212bc07b7100844eaf39a6711f44c5b, type: 3}
     text: "\u0410\u043B\u0451\u0448\u0430?.. \u042D\u0442\u043E \u0442\u044B?.. \u0410\u043B\u0451\u0448\u0430,
       \u043D\u0435\u0443\u0436\u0435\u043B\u0438 \u044D\u0442\u043E \u043F\u0440\u0430\u0432\u0434\u0430
       \u0442\u044B?.."
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
+    voiceClip: {fileID: 8300000, guid: 3cb266977ca9b5e40ba93fc37a9be037, type: 3}
     text: "\u041F\u0430\u043F\u0430?.. \u042D\u0442\u043E \u044F. \u042F \u0437\u0434\u0435\u0441\u044C.
       \u041C\u044B \u0441\u0442\u043E\u043B\u044C\u043A\u043E \u043B\u0435\u0442
       \u0442\u0435\u0431\u044F \u0438\u0441\u043A\u0430\u043B\u0438... \u042F \u0434\u0443\u043C\u0430\u043B,
       \u0447\u0442\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0438\u043A\u043E\u0433\u0434\u0430
       \u0442\u0435\u0431\u044F \u043D\u0435 \u0443\u0432\u0438\u0436\u0443"
   - speaker: "\u041E\u0422\u0415\u0426"
+    voiceClip: {fileID: 8300000, guid: d086ef02236755d40842dc2f41181ae6, type: 3}
     text: "\u042F \u0441\u043B\u044B\u0448\u0430\u043B, \u043A\u0430\u043A \u0442\u044B
       \u0437\u0432\u0430\u043B \u043C\u0435\u043D\u044F... \u0434\u0430\u0436\u0435
       \u0442\u0430\u043C. \u041D\u043E \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437
       \u0431\u043E\u044F\u043B\u0441\u044F, \u0447\u0442\u043E \u044D\u0442\u043E
       \u043E\u043F\u044F\u0442\u044C \u043D\u0435 \u0442\u044B"
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
+    voiceClip: {fileID: 8300000, guid: 7a6b136e5c4dee6459e059ba83c6dc13, type: 3}
     text: "\u0412\u0441\u0451 \u0437\u0430\u043A\u043E\u043D\u0447\u0438\u043B\u043E\u0441\u044C.
       \u041C\u044B \u0432\u044B\u0431\u0435\u0440\u0435\u043C\u0441\u044F \u043E\u0442\u0441\u044E\u0434\u0430,
       \u0441\u043B\u044B\u0448\u0438\u0448\u044C? \u042F \u043F\u043E\u043C\u043E\u0433\u0443
       \u0442\u0435\u0431\u0435. \u0422\u0435\u043F\u0435\u0440\u044C \u0432\u0441\u0451
       \u0431\u0443\u0434\u0435\u0442 \u0445\u043E\u0440\u043E\u0448\u043E"
   - speaker: "\u041E\u0422\u0415\u0426"
+    voiceClip: {fileID: 8300000, guid: 5840de18cf5c417458070612929d9045, type: 3}
     text: "\u041D\u0435\u0442, \u0441\u044B\u043D\u043E\u043A... \u041E\u043D\u0438
       \u0432\u0435\u0440\u043D\u0443\u043B\u0438 \u0442\u043E\u043B\u044C\u043A\u043E
       \u043C\u043E\u0451 \u0442\u0435\u043B\u043E. \u0410 \u0447\u0442\u043E-\u0442\u043E
@@ -46875,21 +46919,25 @@ MonoBehaviour:
       \u0438 \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C \u043F\u043E \u0442\u0443
       \u0441\u0442\u043E\u0440\u043E\u043D\u0443"
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
+    voiceClip: {fileID: 8300000, guid: f4cc001702d95464eb239c797b79bd6f, type: 3}
     text: "\u041D\u0435 \u0433\u043E\u0432\u043E\u0440\u0438 \u0442\u0430\u043A.
       \u041F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430... \u041F\u0440\u043E\u0441\u0442\u043E
       \u0434\u0430\u0439 \u043C\u043D\u0435 \u0440\u0443\u043A\u0443. \u041C\u044B
       \u0432\u0435\u0434\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430\u0448\u043B\u0438
       \u0434\u0440\u0443\u0433 \u0434\u0440\u0443\u0433\u0430"
   - speaker: "\u041E\u0422\u0415\u0426"
+    voiceClip: {fileID: 8300000, guid: 74c43c2233e2a214a8505ffe27399496, type: 3}
     text: "\u041F\u0440\u043E\u0441\u0442\u0438 \u043C\u0435\u043D\u044F, \u0410\u043B\u0451\u0448\u0430...
       \u042F \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u043B \u0432\u0435\u0440\u043D\u0443\u0442\u044C\u0441\u044F
       \u043A \u0442\u0435\u0431\u0435 \u043D\u0430\u043C\u043D\u043E\u0433\u043E
       \u0440\u0430\u043D\u044C\u0448\u0435. \u042F \u0442\u0430\u043A \u0442\u0435\u0431\u044F
       \u043B\u044E\u0431\u043B\u044E, \u0441\u044B\u043D\u043E\u043A..."
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
+    voiceClip: {fileID: 8300000, guid: e7b689973fab0704391cfd55a976d7da, type: 3}
     text: "\u041F\u0430\u043F\u0430?.. \u041F\u0430\u043F\u0430, \u043D\u0435\u0442!
       \u041F\u043E\u0441\u043C\u043E\u0442\u0440\u0438 \u043D\u0430 \u043C\u0435\u043D\u044F!.."
   - speaker: "\u0418\u0412\u0410\u041D"
+    voiceClip: {fileID: 8300000, guid: 434a3fcede3aa2d4fb442498292212f3, type: 3}
     text: "\u041D\u0435\u0442, \u043F\u0430\u043F\u0430... \u0410\u043B\u0435\u043A\u0441\u0435\u0439,
       \u0441\u043A\u0430\u0436\u0438, \u0447\u0442\u043E \u043E\u043D \u0434\u044B\u0448\u0438\u0442!"
 --- !u!114 &1197382735
@@ -64381,6 +64429,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aec5963cf0a6ef4b93e6914528880fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalLabMechanisms
+  restoreReserveVoice: {fileID: 8300000, guid: de9c79b912ca8d6418f3fd0a54ecea08, type: 3}
+  remainingLinesVoice: {fileID: 8300000, guid: c255d4a07396d794e90e82ddbf359c09, type: 3}
+  isolationHintVoice: {fileID: 8300000, guid: 4fa60c14cb3567242b7b70076aeee680, type: 3}
+  twoContoursVoice: {fileID: 8300000, guid: 8aa9c569fa6a68840a141d34f82f64ad, type: 3}
+  doorUnlockedVoice: {fileID: 8300000, guid: 63cb56c963b99ca4b9704568c4b53057, type: 3}
+  unstablePowerVoice: {fileID: 8300000, guid: cbeaf75fb6975fc4995c331b314b319e, type: 3}
+  tractionVoice: {fileID: 8300000, guid: d5eaeb91d67377342b77a86ba4fcafc6, type: 3}
+  alternativeModeVoice: {fileID: 8300000, guid: eeb84bb11eb6dd84fb0792f474058e12, type: 3}
+  modeBVoice: {fileID: 8300000, guid: cd761c904d8799d4cb2542c9707360ce, type: 3}
+  unstableContourVoice: {fileID: 8300000, guid: 32f5e9e5d4faaf94d97b3efb071d1f8c, type: 3}
+  isolationRisingVoice: {fileID: 8300000, guid: 4c92380e0071a67409b81b508baa10ce, type: 3}
+  isolationCompleteVoice: {fileID: 8300000, guid: 56130ddbeec44494e821119675a4d765, type: 3}
   flow: {fileID: 1197382735}
   player: {fileID: 1395016068}
   view: {fileID: 185203938}

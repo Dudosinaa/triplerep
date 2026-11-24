@@ -10,6 +10,7 @@ public sealed class PhoneCall : MonoBehaviour
     {
         public string speaker;
         [TextArea(2, 4)] public string text;
+        public AudioClip voiceClip;
     }
 
     private enum CallState
@@ -26,6 +27,7 @@ public sealed class PhoneCall : MonoBehaviour
     [SerializeField] private Line[] dialogue = Array.Empty<Line>();
 
     [SerializeField] private string completionHint;
+    [SerializeField] private AudioClip completionVoiceClip;
 
     private AudioSource ringSource;
     private CallState state;
@@ -35,6 +37,7 @@ public sealed class PhoneCall : MonoBehaviour
 
     internal bool IsCompleted => state == CallState.Completed;
     internal string CompletionHint => completionHint;
+    internal AudioClip CompletionVoiceClip => completionVoiceClip;
 
     private void Awake()
     {

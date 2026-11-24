@@ -111484,7 +111484,11 @@ MonoBehaviour:
   player: {fileID: 151400209}
   view: {fileID: 1493103625}
   recordingSource: {fileID: 0}
-  voiceLines: []
+  voiceLines:
+  - {fileID: 8300000, guid: 1a5f17fed2efca445bd39f87da82a0d0, type: 3}
+  - {fileID: 8300000, guid: 1dee22b9399b4454d9d9c7041c7053ff, type: 3}
+  - {fileID: 8300000, guid: bbe23c3f8f1a069429d80cf9c3373f31, type: 3}
+  - {fileID: 0}
 --- !u!1 &2100014962
 GameObject:
   m_ObjectHideFlags: 0

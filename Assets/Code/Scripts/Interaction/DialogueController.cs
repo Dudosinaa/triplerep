@@ -32,6 +32,7 @@ public sealed class DialogueController : MonoBehaviour
     private Collider aimedCollider;
     private PhoneCall activePhone;
     private PhoneCall.Line[] phoneLines;
+    private AudioSource dialogueVoice;
     private string completionHint;
     private float completionHintUntil;
     private readonly RaycastHit[] aimHits = new RaycastHit[16];
@@ -179,7 +180,7 @@ public sealed class DialogueController : MonoBehaviour
         OpenDialogue(npc.transform);
         if (npc.HasScriptedLines) PrepareScriptedLine();
         else if (string.IsNullOrEmpty(npc.OpeningLine)) ShowNpcNode();
-        else ShowPlayerReply(npc.OpeningLine, startIndex);
+        else ShowPlayerReply(npc.OpeningLine, startIndex, npc.OpeningVoiceClip);
     }
 
     private void OpenDialogue(Transform target)
@@ -217,7 +218,7 @@ public sealed class DialogueController : MonoBehaviour
     private void ShowPhoneLine()
     {
         var line = phoneLines[nodeIndex];
-        ShowLine(line.speaker, line.text, true);
+        ShowLine(line.speaker, line.text, true, line.voiceClip);
     }
 
     private void PrepareScriptedLine()
@@ -239,7 +240,7 @@ public sealed class DialogueController : MonoBehaviour
     {
         waitingForScriptedLine = false;
         var line = activeNpc.ScriptedLines[nodeIndex];
-        ShowLine(line.playerSpeaks ? activeNpc.PlayerName : activeNpc.CharacterName, line.text, true);
+        ShowLine(line.playerSpeaks ? activeNpc.PlayerName : activeNpc.CharacterName, line.text, true, line.voiceClip);
     }
 
     private void ShowNpcNode()
@@ -251,15 +252,26 @@ public sealed class DialogueController : MonoBehaviour
         }
         showingPlayerReply = false;
         NpcDialogue.Node node = activeNpc.Nodes[nodeIndex];
-        ShowLine(activeNpc.CharacterName, node.npcText, false);
+        ShowLine(activeNpc.CharacterName, node.npcText, false, node.voiceClip);
         ShowChoices(node.choices);
     }
 
-    private void ShowLine(string speaker, string line, bool canContinue)
+    private void ShowLine(string speaker, string line, bool canContinue, AudioClip voiceClip = null)
     {
         if (speakerText != null) speakerText.text = speaker;
         if (dialogueText != null) dialogueText.text = line;
         if (continueButton != null) continueButton.gameObject.SetActive(canContinue);
+        PlayVoice(voiceClip);
+    }
+
+    private void PlayVoice(AudioClip voiceClip)
+    {
+        if (dialogueVoice != null) dialogueVoice.Stop();
+        if (voiceClip == null) return;
+
+        if (dialogueVoice == null) dialogueVoice = gameObject.AddComponent<AudioSource>();
+        dialogueVoice.clip = voiceClip;
+        dialogueVoice.Play();
     }
 
     private void ShowChoices(NpcDialogue.Choice[] choices)
@@ -295,14 +307,14 @@ public sealed class DialogueController : MonoBehaviour
             EndDialogue(completed: true);
             return;
         }
-        ShowPlayerReply(choice.text, activeNpc.GetNextNodeIndex(choice));
+        ShowPlayerReply(choice.text, activeNpc.GetNextNodeIndex(choice), choice.voiceClip);
     }
 
-    private void ShowPlayerReply(string line, int nextNode)
+    private void ShowPlayerReply(string line, int nextNode, AudioClip voiceClip)
     {
         pendingNextNode = nextNode;
         showingPlayerReply = true;
-        ShowLine(activeNpc.PlayerName, line, true);
+        ShowLine(activeNpc.PlayerName, line, true, voiceClip);
         ShowChoices(null);
     }
 
@@ -336,6 +348,7 @@ public sealed class DialogueController : MonoBehaviour
 
     private void EndDialogue(bool completed = false)
     {
+        if (dialogueVoice != null) dialogueVoice.Stop();
         var npc = activeNpc;
         var phone = activePhone;
         activeNpc = null;
@@ -369,6 +382,7 @@ public sealed class DialogueController : MonoBehaviour
                 completionHint = phone.CompletionHint;
                 completionHintUntil = Time.time + CompletionHintDuration;
                 UpdateInteractionPrompt(false, null);
+                PlayVoice(phone.CompletionVoiceClip);
             }
         }
         if (npc != null)
@@ -381,6 +395,7 @@ public sealed class DialogueController : MonoBehaviour
     private void OnDisable()
     {
         if (IsTalking) EndDialogue();
+        else if (dialogueVoice != null) dialogueVoice.Stop();
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
     }
 }

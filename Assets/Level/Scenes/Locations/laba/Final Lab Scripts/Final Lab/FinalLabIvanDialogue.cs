@@ -16,10 +16,12 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
     private sealed class Transcript { public Line[] lines; }
 
     [SerializeField] private TextAsset transcript;
+    [SerializeField] private AudioClip[] transcriptVoices = Array.Empty<AudioClip>();
     [SerializeField] private Canvas canvas;
     [SerializeField] private TMP_Text speaker, body;
     private int shownFrame;
     private bool released, continueRequested;
+    private AudioSource voiceSource;
     public Line[] ReadLines() => JsonUtility.FromJson<Transcript>(transcript.text).lines;
     public int Index { get; private set; } = -1;
     public bool Visible => canvas.enabled;
@@ -34,9 +36,10 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
         body = line;
     }
 
-    public void Show(int index, Line line) => Show(index, line.speaker, line.text);
+    public void Show(int index, Line line) => Show(index, line.speaker, line.text,
+        index >= 0 && index < transcriptVoices.Length ? transcriptVoices[index] : null);
 
-    public void Show(int index, string name, string text)
+    public void Show(int index, string name, string text, AudioClip voiceClip = null)
     {
         Index = index;
         speaker.text = name;
@@ -45,6 +48,11 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
         shownFrame = Time.frameCount;
         released = Mouse.current == null || !Mouse.current.leftButton.isPressed;
         continueRequested = false;
+        StopVoice();
+        if (voiceClip == null) return;
+        if (voiceSource == null) voiceSource = gameObject.AddComponent<AudioSource>();
+        voiceSource.clip = voiceClip;
+        voiceSource.Play();
     }
 
     public bool ReadContinue()
@@ -54,11 +62,20 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
         if (!Visible || mouse == null || Time.frameCount == shownFrame) return false;
         if (!released) released = !mouse.leftButton.isPressed;
         else continueRequested = mouse.leftButton.wasPressedThisFrame;
+        if (continueRequested) StopVoice();
         return continueRequested;
     }
 
     public void Hide()
     {
+        StopVoice();
         if (canvas != null) canvas.enabled = false;
+    }
+
+    private void OnDisable() => StopVoice();
+
+    private void StopVoice()
+    {
+        if (voiceSource != null) voiceSource.Stop();
     }
 }

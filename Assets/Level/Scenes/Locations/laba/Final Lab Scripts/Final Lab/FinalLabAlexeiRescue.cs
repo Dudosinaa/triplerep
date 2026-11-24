@@ -14,6 +14,7 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
     [SerializeField] private Renderer[] outline;
     [SerializeField] private TMP_Text objective;
     [SerializeField] private TMP_Text prompt;
+    [SerializeField] private AudioClip fearVoice, apologyVoice;
 
     internal void Begin(FatherCutsceneController father) => StartCoroutine(Rescue(father));
 
@@ -60,9 +61,9 @@ public sealed class FinalLabAlexeiRescue : MonoBehaviour
         Vector3 eye = view.transform.position;
         yield return MoveCamera(eye, target, .42f);
 
-        subtitles.Show(0, "ИВАН", "Нет, Алёша... Только не ты. Я уже потерял отца. Тебя я им не отдам");
+        subtitles.Show(0, "ИВАН", "Нет, Алёша... Только не ты. Я уже потерял отца. Тебя я им не отдам", fearVoice);
         while (!subtitles.ReadContinue()) yield return null;
-        subtitles.Show(1, "ИВАН", "Прости меня, брат. За всё, что я натворил... Но сейчас я тебя вытащу. Обещаю");
+        subtitles.Show(1, "ИВАН", "Прости меня, брат. За всё, что я натворил... Но сейчас я тебя вытащу. Обещаю", apologyVoice);
         while (!subtitles.ReadContinue()) yield return null;
         subtitles.Hide();
         foreach (var edge in outline) edge.enabled = false;

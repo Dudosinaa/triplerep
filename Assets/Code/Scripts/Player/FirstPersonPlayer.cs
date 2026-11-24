@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-public sealed class FirstPersonPlayer : MonoBehaviour
+public sealed partial class FirstPersonPlayer : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Camera playerCamera;
@@ -157,7 +157,9 @@ public sealed class FirstPersonPlayer : MonoBehaviour
 
         UpdateCrouch(crouching);
         UpdateView();
+        CaptureFallRecoveryStart();
         UpdateMovement(crouching);
+        RecoverFromFall();
         UpdateZoom();
     }
 
