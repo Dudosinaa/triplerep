@@ -35,6 +35,7 @@ internal sealed class TrainMindSession : MonoBehaviour
     private bool cursorVisible;
     private bool canReturn;
     private bool returnOnU;
+    private bool manualReturnBlocked;
     private TransitionVignette vignette;
 
     internal static bool CanBegin(Scene train, CharacterController player, Camera camera, FocusPoint focus) =>
@@ -66,8 +67,13 @@ internal sealed class TrainMindSession : MonoBehaviour
     private void Update()
     {
         if (GameplayPause.BlocksGameplayInput) return;
-        if (canReturn && returnOnU && Keyboard.current?.uKey.wasPressedThisFrame == true)
+        if (canReturn && returnOnU && !manualReturnBlocked && Keyboard.current?.uKey.wasPressedThisFrame == true)
             TryReturn(mind);
+    }
+
+    internal static void SetManualReturnBlocked(Scene source, bool blocked)
+    {
+        if (OwnsMindScene(source)) current.manualReturnBlocked = blocked;
     }
 
     internal static bool TryReturn(Scene source)

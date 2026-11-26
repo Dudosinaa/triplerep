@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,8 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         "[Запись прерывается.]"
     };
     private static readonly float[] LineSeconds = { 4.5f, 4.5f, 4.5f, 2f };
+    private const float ReturnDelay = 2f;
+    private const float ReturnFadeDuration = 1.2f;
     public const string ClueKey = "FirstMind.Clue.K17";
 
     [SerializeField] private FirstPersonPlayer player;
@@ -26,6 +29,8 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
     private bool hasFuse, fuseInstalled, speakerConnected, externalInput, solved;
     private int line = -1;
     private float lineEndsAt;
+    private Coroutine returnRoutine;
+    private float returnFade;
     private string feedback = "";
     private Target aimedTarget;
     private DragPart dragging;
@@ -49,7 +54,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 
     private void Update()
     {
-        if (GameplayPause.BlocksGameplayInput) return;
+        if (GameplayPause.BlocksGameplayInput || returnRoutine != null) return;
         if (line >= 0 && Time.time >= lineEndsAt)
         {
             if (line + 1 < Subtitles.Length) ShowLine(line + 1);
@@ -60,18 +65,14 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
                 PlayerPrefs.SetInt(ClueKey, 1);
                 SceneEntryCheckpoint.CompleteTrainMemory(SceneEntryCheckpoint.TrainMemory.Petrovich, gameObject.scene);
                 PlayerPrefs.Save();
+                aimedTarget = Target.None;
+                TrainMindSession.SetManualReturnBlocked(gameObject.scene, true);
+                returnRoutine = StartCoroutine(WaitAndReturn());
+                return;
             }
         }
 
         var keyboard = Keyboard.current;
-        if (solved && !panelOpen && line < 0 && keyboard != null &&
-            keyboard.uKey.wasPressedThisFrame)
-        {
-            if (!TrainMindSession.TryReturn(gameObject.scene))
-                SceneSwitch.LoadSceneIndex(SceneEntryCheckpoint.GetReturnIndex(
-                    SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath)));
-            return;
-        }
         if (panelOpen)
         {
             if (InteractionInput.TryConsumeCancel()) { Close(); return; }
@@ -139,9 +140,51 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 
     private void OnDisable()
     {
+        if (returnRoutine != null)
+        {
+            StopCoroutine(returnRoutine);
+            ResetReturn();
+        }
         Close();
         if (recordingSource != null) recordingSource.Stop();
         line = -1;
+    }
+
+    private IEnumerator WaitAndReturn()
+    {
+        yield return new WaitForSeconds(ReturnDelay);
+        for (float elapsed = 0f; elapsed < ReturnFadeDuration; elapsed += Time.deltaTime)
+        {
+            returnFade = elapsed / ReturnFadeDuration;
+            yield return null;
+        }
+        returnFade = 1f;
+        yield return null;
+
+        if (TrainMindSession.TryReturn(gameObject.scene))
+        {
+            // A successful return unloads this scene. Clear the fade if the visit could not end.
+            while (TrainMindSession.IsTransitioning) yield return null;
+        }
+        else
+        {
+            int trainIndex = SceneUtility.GetBuildIndexByScenePath(TrainMindSession.TrainPath);
+            int destination = SceneEntryCheckpoint.GetReturnIndex(trainIndex);
+            if (SceneSwitch.CanLoadSceneIndex(destination))
+            {
+                SceneSwitch.LoadSceneIndex(destination);
+                yield break;
+            }
+            Debug.LogError("First Mind: the return scene is unavailable.", this);
+        }
+        ResetReturn();
+    }
+
+    private void ResetReturn()
+    {
+        TrainMindSession.SetManualReturnBlocked(gameObject.scene, false);
+        returnRoutine = null;
+        returnFade = 0f;
     }
 
     private void PlayRecording()
@@ -244,12 +287,20 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         {
             var rect = new Rect(width - 302, 16, 286, 38);
             Backdrop(rect);
-            string clue = TrainMindSession.OwnsMindScene(gameObject.scene)
-                ? "Улика №1 · K-17   [U] Вернуться"
-                : "Улика №1 · Номер K-17";
-            GUI.Label(rect, clue, centeredStyle);
+            GUI.Label(rect, "Улика №1 · Номер K-17", centeredStyle);
         }
         GUI.matrix = matrix;
+
+        if (returnFade > 0f && Event.current.type == EventType.Repaint)
+        {
+            var color = GUI.color;
+            int depth = GUI.depth;
+            GUI.depth = int.MinValue;
+            GUI.color = new Color(0f, 0f, 0f, returnFade);
+            GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), Texture2D.whiteTexture);
+            GUI.color = color;
+            GUI.depth = depth;
+        }
     }
 
     private static void Backdrop(Rect rect)
