@@ -1,11 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public sealed class DialogueController : MonoBehaviour
 {
-    private const float ExitIconSize = 22f;
-    private const float ExitIconGap = 8f;
     private const float CompletionHintDuration = 4f;
 
     [SerializeField] private Camera playerCamera;
@@ -18,11 +17,6 @@ public sealed class DialogueController : MonoBehaviour
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject[] otherPrompts;
     [SerializeField] private GameObject interactionPrompt;
-    [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private Text speakerText;
-    [SerializeField] private Text dialogueText;
-    [SerializeField] private Button[] choiceButtons;
-    [SerializeField] private Button continueButton;
     [SerializeField, Min(0.1f)] private float talkDistance = 2.7f;
 
 
@@ -46,7 +40,9 @@ public sealed class DialogueController : MonoBehaviour
     private bool inspectorWasEnabled;
     private bool crosshairWasActive;
     private bool[] otherPromptsWereActive;
-    private (Text Label, DialogueExitIcon Icon, Vector2 OriginalOffsetMin)[] choiceViews;
+    private readonly List<NpcDialogue.Choice> availableChoices = new();
+    private DialoguePanel panel;
+    private DialogueClick click;
 
     public bool IsTalking => activeNpc != null || phoneLines != null;
 
@@ -60,40 +56,13 @@ public sealed class DialogueController : MonoBehaviour
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         if (playerBody != null) playerBody.SetActive(false);
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        choiceViews = new (Text, DialogueExitIcon, Vector2)[choiceButtons?.Length ?? 0];
-        for (int i = 0; i < choiceViews.Length; i++)
-        {
-            Button button = choiceButtons[i];
-            if (button == null) continue;
-            int index = i;
-            button.onClick.AddListener(() => SelectChoice(index));
-            Text label = button.GetComponentInChildren<Text>(true);
-            if (label != null)
-                choiceViews[i] = (label, CreateExitIcon(label), label.rectTransform.offsetMin);
-        }
-        if (continueButton != null) continueButton.onClick.AddListener(ContinueDialogue);
-    }
-
-    private DialogueExitIcon CreateExitIcon(Text label)
-    {
-        var iconObject = new GameObject("Dialogue Exit Icon", typeof(RectTransform), typeof(DialogueExitIcon));
-        iconObject.SetActive(false);
-        var icon = iconObject.GetComponent<DialogueExitIcon>();
-        icon.color = speakerText != null ? speakerText.color : label.color;
-        icon.raycastTarget = false;
-        RectTransform rect = icon.rectTransform;
-        rect.SetParent(label.rectTransform, false);
-        rect.anchorMin = rect.anchorMax = new Vector2(0f, 0.5f);
-        rect.sizeDelta = Vector2.one * ExitIconSize;
-        rect.anchoredPosition = new Vector2(-ExitIconGap - ExitIconSize * 0.5f, 0f);
-        return icon;
+        panel = DialoguePanel.Create(transform);
     }
 
     private void Update()
     {
         if (GameplayPause.BlocksGameplayInput) return;
-        if (Keyboard.current == null) return;
+        var keyboard = Keyboard.current;
         if (!IsTalking)
         {
             nearbyNpc = FindNearbyNpc();
@@ -104,7 +73,7 @@ public sealed class DialogueController : MonoBehaviour
                 (itemInspector == null || !itemInspector.IsInspecting);
             if (canTalk) interactionHints?.OfferFocus(phone);
             UpdateInteractionPrompt(canTalk, phone);
-            if (canTalk && Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume())
+            if (canTalk && keyboard?.eKey.wasPressedThisFrame == true && InteractionInput.TryConsume())
             {
                 if (phone != null) AnswerPhone(phone);
                 else BeginDialogue(nearbyNpc);
@@ -114,6 +83,7 @@ public sealed class DialogueController : MonoBehaviour
 
         if (InteractionInput.TryConsumeCancel())
         {
+            if (Mouse.current?.leftButton.wasPressedThisFrame == true) InteractionInput.ConsumePrimary();
             EndDialogue();
             return;
         }
@@ -124,17 +94,25 @@ public sealed class DialogueController : MonoBehaviour
             return;
         }
 
-        if (showingPlayerReply || phoneLines != null || (activeNpc != null && activeNpc.HasScriptedLines))
+        bool clicked = click.ReadPress();
+        if (click.IsNewLine) return;
+        if (availableChoices.Count < 2 && clicked)
         {
-            if (Keyboard.current.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : Keyboard.current.spaceKey.wasPressedThisFrame)
-                ContinueDialogue();
+            InteractionInput.ConsumePrimary();
+            ContinueDialogue();
+            return;
         }
-        else
+
+        if (keyboard == null) return;
+        if (availableChoices.Count > 0)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectChoice(0);
-            else if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectChoice(1);
-            else if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectChoice(2);
+            if (keyboard.digit1Key.wasPressedThisFrame) SelectChoice(0);
+            else if (keyboard.digit2Key.wasPressedThisFrame) SelectChoice(1);
+            else if (keyboard.digit3Key.wasPressedThisFrame) SelectChoice(2);
         }
+        if (!IsTalking || click.IsNewLine || availableChoices.Count >= 2) return;
+        if (keyboard.eKey.wasPressedThisFrame ? InteractionInput.TryConsume() : keyboard.spaceKey.wasPressedThisFrame)
+            ContinueDialogue();
     }
 
     private void UpdateInteractionPrompt(bool canTalk, PhoneCall phone)
@@ -208,7 +186,6 @@ public sealed class DialogueController : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(towardTarget);
         crosshairWasActive = crosshair != null && crosshair.activeSelf;
         if (crosshair != null) crosshair.SetActive(false);
-        if (dialoguePanel != null) dialoguePanel.SetActive(true);
         playerCamera.enabled = true;
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         Cursor.lockState = CursorLockMode.None;
@@ -218,7 +195,7 @@ public sealed class DialogueController : MonoBehaviour
     private void ShowPhoneLine()
     {
         var line = phoneLines[nodeIndex];
-        ShowLine(line.speaker, line.text, true, line.voiceClip);
+        ShowLine(line.speaker, line.text, DialoguePanel.ContinueHint, line.voiceClip);
     }
 
     private void PrepareScriptedLine()
@@ -233,34 +210,40 @@ public sealed class DialogueController : MonoBehaviour
         }
         waitingForScriptedLine = true;
         scriptedLineReadyAt = Time.time + line.pauseBefore;
-        ShowLine(activeNpc.CharacterName, string.Empty, false);
+        ShowLine(activeNpc.CharacterName, string.Empty, string.Empty);
     }
 
     private void ShowScriptedLine()
     {
         waitingForScriptedLine = false;
         var line = activeNpc.ScriptedLines[nodeIndex];
-        ShowLine(line.playerSpeaks ? activeNpc.PlayerName : activeNpc.CharacterName, line.text, true, line.voiceClip);
+        ShowLine(line.playerSpeaks ? activeNpc.PlayerName : activeNpc.CharacterName,
+            line.text, DialoguePanel.ContinueHint, line.voiceClip);
     }
 
     private void ShowNpcNode()
     {
-        if (nodeIndex < 0 || nodeIndex >= activeNpc.Nodes.Length)
+        if (nodeIndex < 0 || nodeIndex >= activeNpc.Nodes.Length || activeNpc.Nodes[nodeIndex] == null)
         {
             EndDialogue();
             return;
         }
         showingPlayerReply = false;
         NpcDialogue.Node node = activeNpc.Nodes[nodeIndex];
-        ShowLine(activeNpc.CharacterName, node.npcText, false, node.voiceClip);
         ShowChoices(node.choices);
+        string prompt = availableChoices.Count switch
+        {
+            0 => DialoguePanel.FinishHint,
+            1 => availableChoices[0].EndsDialogue ? DialoguePanel.FinishHint : DialoguePanel.ContinueHint,
+            _ => "Выберите ответ"
+        };
+        ShowLine(activeNpc.CharacterName, node.npcText, prompt, node.voiceClip);
     }
 
-    private void ShowLine(string speaker, string line, bool canContinue, AudioClip voiceClip = null)
+    private void ShowLine(string speaker, string line, string prompt, AudioClip voiceClip = null)
     {
-        if (speakerText != null) speakerText.text = speaker;
-        if (dialogueText != null) dialogueText.text = line;
-        if (continueButton != null) continueButton.gameObject.SetActive(canContinue);
+        click.Reset();
+        panel.Show(speaker, line, prompt);
         PlayVoice(voiceClip);
     }
 
@@ -276,32 +259,23 @@ public sealed class DialogueController : MonoBehaviour
 
     private void ShowChoices(NpcDialogue.Choice[] choices)
     {
-        for (int i = 0; i < choiceViews.Length; i++)
-        {
-            Button button = choiceButtons[i];
-            if (button == null) continue;
-            NpcDialogue.Choice choice = choices != null && i < choices.Length ? choices[i] : null;
-            var (label, icon, originalOffsetMin) = choiceViews[i];
-            if (label != null)
-            {
-                bool showExit = choice != null && choice.EndsDialogue;
-                icon.gameObject.SetActive(showExit);
-                label.rectTransform.offsetMin = showExit
-                    ? originalOffsetMin + Vector2.right * (ExitIconSize + ExitIconGap)
-                    : originalOffsetMin;
-                if (choice != null) label.text = (i + 1) + ". " + choice.text;
-            }
-            button.gameObject.SetActive(choice != null);
-        }
+        availableChoices.Clear();
+        if (choices != null)
+            foreach (var choice in choices)
+                if (choice != null) availableChoices.Add(choice);
+        panel.SetChoices(availableChoices, OnChoiceClicked);
+    }
+
+    private void OnChoiceClicked(int index)
+    {
+        if (availableChoices.Count < 2 || !click.CanSelect || GameplayPause.BlocksGameplayInput) return;
+        SelectChoice(index);
     }
 
     private void SelectChoice(int index)
     {
-        if (activeNpc == null || activeNpc.HasScriptedLines || showingPlayerReply) return;
-        NpcDialogue.Choice[] choices = activeNpc.Nodes[nodeIndex].choices;
-        if (choices == null || index < 0 || index >= choices.Length) return;
-        NpcDialogue.Choice choice = choices[index];
-        if (choice == null) return;
+        if (!IsTalking || index < 0 || index >= availableChoices.Count) return;
+        NpcDialogue.Choice choice = availableChoices[index];
         if (choice.EndsDialogue)
         {
             EndDialogue(completed: true);
@@ -314,8 +288,9 @@ public sealed class DialogueController : MonoBehaviour
     {
         pendingNextNode = nextNode;
         showingPlayerReply = true;
-        ShowLine(activeNpc.PlayerName, line, true, voiceClip);
         ShowChoices(null);
+        string prompt = nextNode < 0 ? DialoguePanel.FinishHint : DialoguePanel.ContinueHint;
+        ShowLine(activeNpc.PlayerName, line, prompt, voiceClip);
     }
 
     private void ContinueDialogue()
@@ -336,7 +311,12 @@ public sealed class DialogueController : MonoBehaviour
             else EndDialogue(completed: true);
             return;
         }
-        if (!showingPlayerReply) return;
+        if (!showingPlayerReply)
+        {
+            if (availableChoices.Count == 1) SelectChoice(0);
+            else if (availableChoices.Count == 0) EndDialogue(completed: true);
+            return;
+        }
         if (pendingNextNode < 0 || pendingNextNode >= activeNpc.Nodes.Length)
         {
             EndDialogue(completed: true);
@@ -356,7 +336,8 @@ public sealed class DialogueController : MonoBehaviour
         phoneLines = null;
         showingPlayerReply = false;
         waitingForScriptedLine = false;
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+        availableChoices.Clear();
+        panel.Hide();
         if (dialogueCamera != null) dialogueCamera.enabled = false;
         if (playerCamera != null) playerCamera.enabled = true;
         if (playerBody != null) playerBody.SetActive(false);

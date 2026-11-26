@@ -297,6 +297,7 @@ internal static partial class FinalLabIvanSceneSetup
     private static FinalLabIvanDialogue BuildSubtitles(Transform parent)
     {
         var font = Load<TMP_FontAsset>(FinalLabEvidenceAssets.Root + "/Data/FinalLab_Cyrillic_SDF.asset");
+        var material = Load<Material>(FinalLabEvidenceAssets.Root + "/Data/Dialogue Text.mat");
         var hosting = new GameObject("Ivan and Alexei subtitles", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(FinalLabIvanDialogue));
         hosting.transform.SetParent(parent, false);
         var canvas = hosting.GetComponent<Canvas>();
@@ -307,35 +308,37 @@ internal static partial class FinalLabIvanSceneSetup
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = .42f;
-        var frame = Image(hosting.transform, "Frame", new Color(.43f, .37f, .26f, .72f));
-        frame.anchorMin = new Vector2(.17f, 0);
-        frame.anchorMax = new Vector2(.83f, 0);
+        const float alpha = DialoguePanelFrame.BackgroundAlpha;
+        var frame = Image<DialoguePanelFrame>(hosting.transform, "Frame", new Color(.43f, .37f, .26f, alpha));
+        frame.anchorMin = new Vector2(.2625f, 0);
+        frame.anchorMax = new Vector2(.7375f, 0);
         frame.pivot = new Vector2(.5f, 0);
         frame.anchoredPosition = new Vector2(0, 35);
-        frame.sizeDelta = new Vector2(0, 176);
-        var background = Image(frame, "Dark backing", new Color(.025f, .027f, .023f, .93f));
-        Stretch(background, new Vector2(1, 1), new Vector2(-1, -1));
-        var speaker = Text(background, "Speaker", font, 24, new Color(.92f, .80f, .58f));
+        frame.sizeDelta = new Vector2(0, DialoguePanelFrame.MinimumHeight);
+        var background = Image<Image>(frame, "Dark backing", new Color(.025f, .027f, .023f, alpha));
+        Stretch(background, new Vector2(1.25f, 1.25f), new Vector2(-1.25f, -1.25f));
+        var speaker = Text(background, "Speaker", font, material, 17.5f, new Color(.92f, .80f, .58f));
         speaker.fontStyle = FontStyles.Bold;
-        Stretch(speaker.rectTransform, new Vector2(32, 122), new Vector2(-32, -15));
-        var body = Text(background, "Dialogue text", font, 30, new Color(.98f, .956f, .905f));
+        SetTextArea(speaker.rectTransform, 1, 1, -31.25f, -8.75f);
+        var body = Text(background, "Dialogue text", font, material, 22.5f, new Color(.98f, .956f, .905f));
         body.enableAutoSizing = true;
-        body.fontSizeMin = 23;
-        body.fontSizeMax = 30;
+        body.fontSizeMin = 17.5f;
+        body.fontSizeMax = 22.5f;
         body.textWrappingMode = TextWrappingModes.Normal;
-        Stretch(body.rectTransform, new Vector2(32, 41), new Vector2(-32, -48));
-        var hint = Text(background, "Continue prompt", font, 19, new Color(.79f, .75f, .65f));
+        SetTextArea(body.rectTransform, 0, 1, 23.75f, -31.25f);
+        frame.GetComponent<DialoguePanelFrame>().Configure(body);
+        var hint = Text(background, "Continue prompt", font, material, 15, new Color(.79f, .75f, .65f));
         hint.text = "ЛКМ — следующая реплика";
         hint.alignment = TextAlignmentOptions.TopRight;
-        Stretch(hint.rectTransform, new Vector2(32, 12), new Vector2(-32, -137));
+        SetTextArea(hint.rectTransform, 0, 0, 6.25f, 23.75f);
         var dialogue = hosting.GetComponent<FinalLabIvanDialogue>();
         dialogue.Configure(Load<TextAsset>(Scripts + "FinalLabIvanDialogue.json"), canvas, speaker, body);
         return dialogue;
     }
 
-    private static RectTransform Image(Transform parent, string name, Color color)
+    private static RectTransform Image<T>(Transform parent, string name, Color color) where T : Image
     {
-        var node = new GameObject(name, typeof(RectTransform), typeof(Image));
+        var node = new GameObject(name, typeof(RectTransform), typeof(T));
         node.transform.SetParent(parent, false);
         var image = node.GetComponent<Image>();
         image.color = color;
@@ -343,18 +346,27 @@ internal static partial class FinalLabIvanSceneSetup
         return image.rectTransform;
     }
 
-    private static TMP_Text Text(Transform parent, string name, TMP_FontAsset font, float size, Color color)
+    private static TMP_Text Text(Transform parent, string name, TMP_FontAsset font, Material material, float size, Color color)
     {
         var node = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
         node.transform.SetParent(parent, false);
         var label = node.GetComponent<TMP_Text>();
         label.font = font;
+        label.fontSharedMaterial = material;
         label.fontSize = size;
         label.color = color;
         label.raycastTarget = false;
         label.richText = false;
         label.alignment = TextAlignmentOptions.TopLeft;
         return label;
+    }
+
+    private static void SetTextArea(RectTransform rect, float minY, float maxY, float bottom, float top)
+    {
+        rect.anchorMin = new Vector2(0f, minY);
+        rect.anchorMax = new Vector2(1f, maxY);
+        rect.offsetMin = new Vector2(20f, bottom);
+        rect.offsetMax = new Vector2(-20f, top);
     }
 
     private static void Stretch(RectTransform rect, Vector2 min, Vector2 max)

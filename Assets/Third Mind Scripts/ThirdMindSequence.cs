@@ -44,10 +44,8 @@ public sealed class ThirdMindSequence : MonoBehaviour
     private const string ReadHint = "ЛКМ — положить документ";
 
     private Canvas canvas;
-    private TMP_Text speakerText;
-    private TMP_Text dialogueText;
-    private TMP_Text dialogueHint;
-    private GameObject dialoguePanel;
+    private DialoguePanel dialoguePanel;
+    private DialogueClick dialogueClick;
     private RectTransform studyPanel;
     private TMP_Text studyHint;
     private TMP_Text studyProgress;
@@ -113,6 +111,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
     private void OnDisable()
     {
         if (voiceSource != null) voiceSource.Stop();
+        if (dialoguePanel != null) dialoguePanel.Hide();
         if (Cursor.lockState == CursorLockMode.Confined)
             Cursor.lockState = CursorLockMode.None;
     }
@@ -133,7 +132,9 @@ public sealed class ThirdMindSequence : MonoBehaviour
         if (phase == Phase.Opening) UpdateOpeningLook();
         if (phase == Phase.Opening || phase == Phase.Confession)
         {
-            if (Keyboard.current?.spaceKey.wasPressedThisFrame == true) AdvanceDialogue();
+            if (dialogueClick.ReadPress() ||
+                (!dialogueClick.IsNewLine && Keyboard.current?.spaceKey.wasPressedThisFrame == true))
+                AdvanceDialogue();
             return;
         }
         if (phase != Phase.Studying || documentMoving) return;
@@ -217,7 +218,6 @@ public sealed class ThirdMindSequence : MonoBehaviour
             else FinishConfession();
             return;
         }
-        dialoguePanel.SetActive(true);
         RenderDialogueLine();
     }
 
@@ -225,9 +225,8 @@ public sealed class ThirdMindSequence : MonoBehaviour
     {
         if (lineIndex < 0 || lineIndex >= activeLines.Length) return;
         var line = activeLines[lineIndex];
-        speakerText.text = line.characterName;
-        dialogueText.text = line.text;
-        dialogueHint.text = "Пробел — продолжить";
+        dialogueClick.Reset();
+        dialoguePanel.Show(line.characterName, line.text, DialoguePanel.ContinueHint);
         voiceSource.clip = line.voiceClip;
         if (line.voiceClip != null) voiceSource.Play();
     }
@@ -237,7 +236,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
         voiceSource.Stop();
         lineIndex++;
         if (lineIndex < activeLines.Length) { RenderDialogueLine(); return; }
-        dialoguePanel.SetActive(false);
+        dialoguePanel.Hide();
         if (phase == Phase.Opening) BeginTableView();
         else if (phase == Phase.Confession) StartCoroutine(WaitAndFade());
     }
@@ -489,13 +488,7 @@ public sealed class ThirdMindSequence : MonoBehaviour
             SceneManager.MoveGameObjectToScene(eventObject, gameObject.scene);
             eventObject.GetComponent<EventSystem>().sendNavigationEvents = false;
         }
-        dialoguePanel = Panel("Dialogue Panel", canvas.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1440, 228), new Color(0.035f, 0.052f, 0.067f, 0.96f));
-        dialoguePanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 24f);
-        speakerText = Text("Speaker", dialoguePanel.transform, "", 32, new Color(0.86f, 0.72f, 0.45f), TextAlignmentOptions.TopLeft, new Vector2(0f, 0.76f), new Vector2(1f, 0.96f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
-        speakerText.rectTransform.offsetMin = new Vector2(46f, 0f); speakerText.rectTransform.offsetMax = new Vector2(-46f, 0f);
-        dialogueText = Text("Line", dialoguePanel.transform, "", 28, Color.white, TextAlignmentOptions.TopLeft, new Vector2(0f, 0.2f), new Vector2(1f, 0.73f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
-        dialogueText.rectTransform.offsetMin = new Vector2(46f, 0f); dialogueText.rectTransform.offsetMax = new Vector2(-46f, 0f);
-        dialogueHint = Text("Dialogue Hint", dialoguePanel.transform, "ЛКМ — продолжить", 20, new Color(0.72f, 0.76f, 0.78f), TextAlignmentOptions.BottomRight, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(460, 32), new Vector2(-40, 17));
+        dialoguePanel = DialoguePanel.Create(transform);
 
         var bottomCenter = new Vector2(0.5f, 0f);
         studyPanel = Panel("Study Controls", canvas.transform, bottomCenter, bottomCenter, bottomCenter,

@@ -7,12 +7,12 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
 {
     private enum Target { None, Radio, Fuse, Photo, Lamp }
     private enum DragPart { None, Fuse, SpeakerPlug }
-    private static readonly string[] Subtitles =
+    private static readonly (string Speaker, string Text)[] Subtitles =
     {
-        "Отец: Я говорил тебе, что K-17 нельзя перевозить отдельно.",
-        "Иван: Я уже всё оформил. Контейнер отправят раньше нас.",
-        "Отец: Ты хоть понимаешь, что без второго блока он бесполезен?",
-        "[Запись прерывается.]"
+        ("Отец", "Я говорил тебе, что K-17 нельзя перевозить отдельно."),
+        ("Иван", "Я уже всё оформил. Контейнер отправят раньше нас."),
+        ("Отец", "Ты хоть понимаешь, что без второго блока он бесполезен?"),
+        ("", "[Запись прерывается.]")
     };
     private static readonly float[] LineSeconds = { 4.5f, 4.5f, 4.5f, 2f };
     private const float ReturnDelay = 2f;
@@ -34,7 +34,8 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
     private string feedback = "";
     private Target aimedTarget;
     private DragPart dragging;
-    private GUIStyle titleStyle, bodyStyle, centeredStyle, subtitleStyle;
+    private GUIStyle titleStyle, bodyStyle, centeredStyle;
+    private DialoguePanel recordingPanel;
 
     private void Awake()
     {
@@ -61,6 +62,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             else
             {
                 line = -1;
+                recordingPanel.Hide();
                 solved = true;
                 PlayerPrefs.SetInt(ClueKey, 1);
                 SceneEntryCheckpoint.CompleteTrainMemory(SceneEntryCheckpoint.TrainMemory.Petrovich, gameObject.scene);
@@ -147,6 +149,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
         }
         Close();
         if (recordingSource != null) recordingSource.Stop();
+        if (recordingPanel != null) recordingPanel.Hide();
         line = -1;
     }
 
@@ -230,6 +233,9 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
     private void ShowLine(int index)
     {
         line = index;
+        if (recordingPanel == null) recordingPanel = DialoguePanel.Create(transform);
+        var subtitle = Subtitles[index];
+        recordingPanel.Show(subtitle.Speaker, subtitle.Text);
         var clip = voiceLines != null && index < voiceLines.Length ? voiceLines[index] : null;
         if (recordingSource != null)
         {
@@ -247,7 +253,6 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
             titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 23, fontStyle = FontStyle.Bold };
             bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 17, wordWrap = true };
             centeredStyle = new GUIStyle(bodyStyle) { alignment = TextAnchor.MiddleCenter };
-            subtitleStyle = new GUIStyle(centeredStyle) { fontSize = 21 };
         }
 
         float scale = Mathf.Min(Screen.width / 960f, Screen.height / 600f);
@@ -263,13 +268,7 @@ public sealed partial class RadioMemoryPuzzle : MonoBehaviour
                 : feedback + "\nЛКМ — взять или нажать   •   Esc — отойти";
             GUI.Label(new Rect(help.x + 18, help.y + 4, help.width - 36, 60), instructions, centeredStyle);
         }
-        else if (line >= 0)
-        {
-            var rect = new Rect((width - 720) / 2, height - 106, 720, 76);
-            Backdrop(rect);
-            GUI.Label(new Rect(rect.x + 18, rect.y + 4, rect.width - 36, 68), Subtitles[line], subtitleStyle);
-        }
-        else if (aimedTarget != Target.None || Time.time < noticeUntil)
+        else if (line < 0 && (aimedTarget != Target.None || Time.time < noticeUntil))
         {
             string hint = aimedTarget switch
             {

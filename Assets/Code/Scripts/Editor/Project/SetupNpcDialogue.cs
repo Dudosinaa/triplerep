@@ -77,27 +77,6 @@ public static class SetupNpcDialogue
             32, Color.white, TextAnchor.MiddleCenter);
         Center(prompt.rectTransform, new Vector2(650f, 60f), new Vector2(0f, -350f));
 
-        var panel = new GameObject("Dialogue Panel", typeof(RectTransform), typeof(Image));
-        panel.transform.SetParent(canvasObject.transform, false);
-        Center(panel.GetComponent<RectTransform>(), new Vector2(1400f, 490f), new Vector2(0f, -275f));
-        panel.GetComponent<Image>().color = new Color(0.06f, 0.09f, 0.13f, 0.94f);
-
-        Text speaker = MakeText("Speaker", panel.transform, "", 38,
-            new Color(0.93f, 0.72f, 0.39f), TextAnchor.MiddleLeft);
-        Center(speaker.rectTransform, new Vector2(1280f, 54f), new Vector2(0f, 200f));
-        Text line = MakeText("Dialogue Text", panel.transform, "", 32,
-            Color.white, TextAnchor.UpperLeft);
-        Center(line.rectTransform, new Vector2(1280f, 110f), new Vector2(0f, 120f));
-        line.horizontalOverflow = HorizontalWrapMode.Wrap;
-        line.verticalOverflow = VerticalWrapMode.Overflow;
-
-        var choices = new Button[3];
-        for (int i = 0; i < choices.Length; i++)
-            choices[i] = MakeButton("Choice " + (i + 1), panel.transform,
-                new Vector2(1250f, 63f), new Vector2(0f, 12f - i * 74f), "", 27);
-        Button next = MakeButton("Continue", panel.transform,
-            new Vector2(1250f, 63f), new Vector2(0f, -160f), "Продолжить  [E / Пробел]", 27);
-
         if (Object.FindFirstObjectByType<EventSystem>() == null)
         {
             var eventObject = new GameObject("Dialogue EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -116,19 +95,10 @@ public static class SetupNpcDialogue
         data.FindProperty("crosshair").objectReferenceValue = GameObject.Find("Crosshair");
         SetOtherPrompts(data);
         data.FindProperty("interactionPrompt").objectReferenceValue = prompt.gameObject;
-        data.FindProperty("dialoguePanel").objectReferenceValue = panel;
-        data.FindProperty("speakerText").objectReferenceValue = speaker;
-        data.FindProperty("dialogueText").objectReferenceValue = line;
-        var buttonProperty = data.FindProperty("choiceButtons");
-        buttonProperty.arraySize = choices.Length;
-        for (int i = 0; i < choices.Length; i++)
-            buttonProperty.GetArrayElementAtIndex(i).objectReferenceValue = choices[i];
-        data.FindProperty("continueButton").objectReferenceValue = next;
         data.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(controller);
 
         prompt.gameObject.SetActive(false);
-        panel.SetActive(false);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
         Debug.Log("NPC dialogue demo is ready. Approach the Sмотритель and press E.");
@@ -243,23 +213,6 @@ public static class SetupNpcDialogue
         text.text = content;
         text.raycastTarget = false;
         return text;
-    }
-
-    private static Button MakeButton(string name, Transform parent, Vector2 size, Vector2 position, string label, int textSize)
-    {
-        var obj = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
-        obj.transform.SetParent(parent, false);
-        Center(obj.GetComponent<RectTransform>(), size, position);
-        Image image = obj.GetComponent<Image>();
-        image.color = new Color(0.16f, 0.25f, 0.32f, 1f);
-        Button button = obj.GetComponent<Button>();
-        var colors = button.colors;
-        colors.highlightedColor = new Color(0.28f, 0.45f, 0.56f, 1f);
-        colors.pressedColor = new Color(0.34f, 0.57f, 0.67f, 1f);
-        button.colors = colors;
-        Text text = MakeText("Label", obj.transform, label, textSize, Color.white, TextAnchor.MiddleLeft);
-        Center(text.rectTransform, size - new Vector2(36f, 0f), Vector2.zero);
-        return button;
     }
 
     private static void Center(RectTransform rect, Vector2 size, Vector2 position)

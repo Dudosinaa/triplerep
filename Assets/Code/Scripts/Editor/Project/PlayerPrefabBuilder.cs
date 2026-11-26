@@ -175,10 +175,9 @@ public static class PlayerPrefabBuilder
         RequireReferences(prefab.GetComponent<FirstPersonPlayer>(), "playerCamera", "footstepSource");
         RequireReferences(prefab.GetComponent<DocumentReader>(), "playerCamera", "movement", "interactionPrompt", "readingPanel", "titleText", "bodyText", "bodyScrollRect");
         RequireReferences(prefab.GetComponent<ItemInspector>(), "playerCamera", "movement", "documentReader", "interactionPrompt", "promptText", "inspectionPanel", "itemTitle", "previewImage");
-        RequireReferences(prefab.GetComponent<DialogueController>(), "playerCamera", "movement", "documentReader", "itemInspector", "crosshair", "interactionPrompt", "dialoguePanel", "speakerText", "dialogueText", "continueButton");
+        RequireReferences(prefab.GetComponent<DialogueController>(), "playerCamera", "movement", "documentReader", "itemInspector", "crosshair", "interactionPrompt");
         RequireReferences(prefab.GetComponent<PistolController>(), "playerCamera", "movement", "viewModel", "statusText");
-        var choices = new SerializedObject(prefab.GetComponent<DialogueController>()).FindProperty("choiceButtons");
-        Require(choices.arraySize == 3 && Enumerable.Range(0, 3).All(i => choices.GetArrayElementAtIndex(i).objectReferenceValue != null), "All three dialogue choices are assigned");
+        Require(Resources.Load<GameObject>("DialoguePanel") != null, "The shared dialogue panel is available");
         Require(new SerializedObject(stress).FindProperty("blendWithSceneProfile").boolValue && stress.volume.weight == 0f,
             "Stress starts with zero volume weight and blends with scene lighting");
         Require(prefab.GetComponentInChildren<Camera>().GetUniversalAdditionalCameraData().renderPostProcessing, "Player camera enables post processing");

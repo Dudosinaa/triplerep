@@ -6,9 +6,14 @@ public static class InteractionInput
 {
     private static int consumedFrame = -1;
     private static int cancelFrame = -1;
+    private static int primaryFrame = -1;
+
+    internal static bool PrimaryConsumedThisFrame => primaryFrame == Time.frameCount;
+
+    internal static void ConsumePrimary() => primaryFrame = Time.frameCount;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetState() => consumedFrame = cancelFrame = -1;
+    private static void ResetState() => consumedFrame = cancelFrame = primaryFrame = -1;
 
     public static bool TryConsumeCancel()
     {

@@ -85,7 +85,7 @@ public sealed class PistolController : MonoBehaviour
         if (Keyboard.current.qKey.wasPressedThisFrame) SetEquipped(!equipped);
         if (!equipped) return;
         if (Keyboard.current.rKey.wasPressedThisFrame) TryReload();
-        if (Mouse.current.leftButton.wasPressedThisFrame) TryFire();
+        if (Mouse.current.leftButton.wasPressedThisFrame && !InteractionInput.PrimaryConsumedThisFrame) TryFire();
     }
     private void LateUpdate()
     {

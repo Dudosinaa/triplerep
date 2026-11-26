@@ -20,7 +20,6 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     [SerializeField] private GameObject[] hideAfterDialogue = System.Array.Empty<GameObject>();
     [SerializeField, Min(0.1f)] private float runSpeed = 4.6f;
     [SerializeField] private Text chaseObjective;
-    [SerializeField] private Text escapeSubtitle;
     [SerializeField] private Text escapeHint;
     [SerializeField] private AudioClip escapeVoice;
     [SerializeField] private AudioClip nextCarriageVoice;
@@ -44,6 +43,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     private float lookAtTime;
     private Vector3 retreatPoint;
     private bool retreating;
+    private DialoguePanel escapeSubtitle;
     private AudioSource alexeyVoice;
     private double objectiveUntil;
     private double subtitleUntil;
@@ -74,6 +74,8 @@ public sealed class TrainIvanEncounter : MonoBehaviour
     private void OnDisable()
     {
         SetPlayerCollisionIgnored(false);
+        if (escapeSubtitle != null) escapeSubtitle.Hide();
+        if (alexeyVoice != null) alexeyVoice.Stop();
         dialogue.ConversationCompleted -= BeginEscape;
         dialogue.ConversationCancelled -= ResetDialogueStaging;
         dialogue.ScriptedCue -= StageDialogue;
@@ -123,7 +125,7 @@ public sealed class TrainIvanEncounter : MonoBehaviour
         {
             double now = Time.timeAsDouble;
             HideExpired(chaseObjective, objectiveUntil, now);
-            HideExpired(escapeSubtitle, subtitleUntil, now);
+            if (escapeSubtitle != null && now >= subtitleUntil) escapeSubtitle.Hide();
             HideExpired(escapeHint, hintUntil, now);
         }
         if (dialoguePlayer != null && Time.time >= lookAtTime)
@@ -222,7 +224,9 @@ public sealed class TrainIvanEncounter : MonoBehaviour
 
     private void ShowAlexeyLine(string text, AudioClip voice)
     {
-        subtitleUntil = ShowFeedback(escapeSubtitle, text, 3d);
+        if (escapeSubtitle == null) escapeSubtitle = DialoguePanel.Create(transform);
+        escapeSubtitle.Show("Алексей", text);
+        subtitleUntil = Time.timeAsDouble + 3d;
         if (alexeyVoice != null) alexeyVoice.Stop();
         if (voice == null) return;
         if (alexeyVoice == null) alexeyVoice = gameObject.AddComponent<AudioSource>();

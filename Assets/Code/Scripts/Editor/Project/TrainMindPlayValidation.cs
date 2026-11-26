@@ -442,9 +442,9 @@ public static class TrainMindPlayValidation
     private static IEnumerable CheckDialogues(FirstPersonPlayer player, Camera camera,
         DialogueController dialogue, SceneSwitch entry, params (NpcDialogue Npc, string Name, Vector3 Approach)[] targets)
     {
-        var dialogueView = new SerializedObject(dialogue);
-        var speaker = (Text)dialogueView.FindProperty("speakerText").objectReferenceValue;
-        var line = (Text)dialogueView.FindProperty("dialogueText").objectReferenceValue;
+        var dialogueView = dialogue.transform.Find("Dialogue Panel");
+        var speaker = dialogueView.Find("Frame/Dark backing/Speaker").GetComponent<TMPro.TMP_Text>();
+        var line = dialogueView.Find("Frame/Dark backing/Dialogue text").GetComponent<TMPro.TMP_Text>();
         var hint = entry.hintText.gameObject;
         foreach (var (npc, name, approach) in targets)
         {
