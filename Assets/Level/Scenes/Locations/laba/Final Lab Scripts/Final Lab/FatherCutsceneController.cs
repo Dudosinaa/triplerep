@@ -111,9 +111,12 @@ public sealed class FatherCutsceneController : MonoBehaviour
         flow.OnFatherDoorOpened();
         yield return Hold(.29f, roomEye.position, bedFrame: true);
         father.speed = 1f;
-        yield return Animate(SitUp, .24f, roomEye.position);
+        var audio = flow.Audio;
+        yield return Animate(SitUp, .24f, roomEye.position, .15f,
+            () => audio?.Spatial(FinalLabAudio.Cue.BedCreak, hips.position, .34f));
         yield return Caption(0, roomEye.position);
-        yield return Animate(StandUp, .43f, roomEye.position);
+        yield return Animate(StandUp, .43f, roomEye.position, .14f,
+            () => audio?.Spatial(FinalLabAudio.Cue.FatherStands, hips.position, .39f));
 
         Play(Surprised, .30f);
         Show(1);
@@ -139,13 +142,19 @@ public sealed class FatherCutsceneController : MonoBehaviour
 
         yield return Hold(1.35f, conversationEye.position);
         flow.OnFatherDeathStarted();
-        yield return Animate(Death, DeathBlend, conversationEye.position);
+        yield return Animate(Death, DeathBlend, conversationEye.position, .59f,
+            () => audio?.Spatial(FinalLabAudio.Cue.FatherHitsFloor, hips.position, .48f));
         father.speed = 0;
         var lowEye = BodyEye;
         yield return Caption(8, lowEye, down: true);
         yield return Hold(.62f, lowEye, down: true);
         yield return Caption(9, lowEye, down: true);
-        yield return Hold(2.85f, lowEye, down: true);
+        if (audio == null) yield return Hold(2.85f, lowEye, down: true);
+        else
+        {
+            audio.Signal(FinalLabAudio.Cue.EntityEnters, .27f);
+            yield return audio.Possession(() => Track(lowEye, Focus(.48f), 64f));
+        }
         for (float t = 0; t < 2f; t += Time.deltaTime)
         {
             blackout.alpha = Mathf.SmoothStep(0, 1, t / 2f);
@@ -180,13 +189,13 @@ public sealed class FatherCutsceneController : MonoBehaviour
 
     private void Play(string state, float blend) => father.CrossFadeInFixedTime("Base Layer." + state, blend, 0, 0);
 
-    private IEnumerator Animate(string state, float blend, Vector3 eye)
+    private IEnumerator Animate(string state, float blend, Vector3 eye, float cueAt, Action cue)
     {
         Play(state, blend);
-        yield return WaitForMotion(state, eye);
+        yield return WaitForMotion(state, eye, cueAt: cueAt, cue: cue);
     }
 
-    private IEnumerator WaitForMotion(string state, Vector3 eye, bool allowContinue = false)
+    private IEnumerator WaitForMotion(string state, Vector3 eye, bool allowContinue = false, float cueAt = 0, Action cue = null)
     {
         string path = "Base Layer." + state;
         float timeout = 2.5f;
@@ -196,6 +205,11 @@ public sealed class FatherCutsceneController : MonoBehaviour
             if (allowContinue) subtitles.ReadContinue();
             if (info.IsName(path))
             {
+                if (cue != null && info.normalizedTime >= cueAt)
+                {
+                    cue();
+                    cue = null;
+                }
                 timeout = Mathf.Max(timeout, info.length + 2f);
                 if (info.normalizedTime >= 1f && !father.IsInTransition(0)) yield break;
             }

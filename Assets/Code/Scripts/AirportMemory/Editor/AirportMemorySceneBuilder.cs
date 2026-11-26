@@ -63,15 +63,15 @@ public static class AirportMemorySceneBuilder
             for (int z = -5; z <= -4; z++)
                 Cube("Desk leg", new Vector3(x, .43f, z), new Vector3(.16f, .86f, .16f), steel, desk);
         Document("1 Family baggage", new Vector3(-5.5f, 1.01f, -4.35f),
-            "Семейный багаж", "Накладная F-04. Отправка: 12.06.2004. " +
+            "Семейный багаж", "Накладная F-04. Отправка: 12.06.1992. " +
             "Отправитель: Сергей Карамазов. Получатель: семейный багаж, Нью-Йорк. " +
             "В списке нет технического оборудования.", folder, desk);
         Document("2 Technical container", new Vector3(-4.7f, .04f, 5.4f),
-            "Технический контейнер", "Маркировка контейнера: К-17. Дата отправки: 14.06.2004. " +
-            "Подпись отправителя: И. Карамазов. Адрес получателя: технический склад, Нью-Йорк. " +
+            "Технический контейнер", "Маркировка контейнера: К-17. Дата отправки: 14.06.1992. " +
+            "Подпись отправителя: Иван Карамазов. Адрес получателя: технический склад, Нью-Йорк. " +
             "Номер К-17 совпадает с маркировкой кассеты из первого воспоминания.", folder, null);
         Document("3 Personal items", new Vector3(3.5f, .59f, 11.2f),
-            "Личные вещи", "Дополнительная отправка L-09. Дата: 16.06.2004. " +
+            "Личные вещи", "Дополнительная отправка L-09. Дата: 16.06.1992. " +
             "Отправитель: Михаил Орлов. Получатель: личные вещи, Москва. " +
             "К техническому контейнеру отношения не имеет.", folder, null);
 
@@ -95,6 +95,7 @@ public static class AirportMemorySceneBuilder
         terminal.AddComponent<CargoPuzzleTerminal>();
 
         PlaceAssetBoxes();
+        AirportTerminalSetup.FitCardboardBoxes(scene);
         for (int i = 0; i < 2; i++)
         {
             var cart = new GameObject("Baggage trolley " + (i + 1)).transform;
@@ -114,6 +115,7 @@ public static class AirportMemorySceneBuilder
                 "Assets/Audio/Sound/AirportMemory/Announcement.wav"));
 
         PlacePlayer();
+        AirportTerminalSetup.BuildInterface(terminal.GetComponent<CargoPuzzleTerminal>());
         PlaceTikhon(terminal.GetComponent<CargoPuzzleTerminal>());
         PlaceKeyLighting();
         AssetDatabase.SaveAssets();

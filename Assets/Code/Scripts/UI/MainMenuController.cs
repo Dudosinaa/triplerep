@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public sealed class MainMenuController : MonoBehaviour
@@ -16,7 +17,9 @@ public sealed class MainMenuController : MonoBehaviour
     [SerializeField] private RawImage trainBackground;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject settingsPanel;
-    [SerializeField] private Button playButton;
+    [FormerlySerializedAs("playButton")]
+    [SerializeField] private Button newGameButton;
+    [SerializeField] private Button continueButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button backButton;
@@ -28,7 +31,6 @@ public sealed class MainMenuController : MonoBehaviour
     [SerializeField] private Dropdown resolutionDropdown;
     [SerializeField] private Button applyButton;
     [SerializeField] private Dropdown languageDropdown;
-    [SerializeField] private Text playLabel;
     [SerializeField] private Text settingsLabel;
     [SerializeField] private Text quitLabel;
     [SerializeField] private Text settingsTitle;
@@ -41,6 +43,7 @@ public sealed class MainMenuController : MonoBehaviour
     private List<Vector2Int> resolutions;
     private Vector2Int currentResolution;
     private Vector2 backgroundOffset;
+    private bool loadingGame;
     private static Vector2Int ScreenSize => new Vector2Int(Screen.width, Screen.height);
     private static float SavedMusicVolume =>
         Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, DefaultMusicVolume));
@@ -59,14 +62,16 @@ public sealed class MainMenuController : MonoBehaviour
         applyButton.onClick.AddListener(ApplySettings);
         settingsButton.onClick.AddListener(OpenSettings);
         backButton.onClick.AddListener(CloseSettings);
-        playButton.onClick.AddListener(Play);
+        continueButton.onClick.AddListener(Continue);
+        newGameButton.onClick.AddListener(NewGame);
         quitButton.onClick.AddListener(Quit);
 
         int language = Mathf.Clamp(PlayerPrefs.GetInt(LanguageKey), 0, languageDropdown.options.Count - 1);
         languageDropdown.SetValueWithoutNotify(language);
         ShowLanguage(language);
         languageDropdown.onValueChanged.AddListener(ChangeLanguage);
-        playButton.Select();
+        continueButton.interactable = SceneEntryCheckpoint.HasCheckpoint;
+        (continueButton.interactable ? continueButton : newGameButton).Select();
     }
 
     private void ChangeLanguage(int language)
@@ -79,7 +84,6 @@ public sealed class MainMenuController : MonoBehaviour
     private void ShowLanguage(int language)
     {
         bool english = language == 1;
-        playLabel.text = english ? "Play" : "Играть";
         settingsLabel.text = english ? "Settings" : "Настройки";
         quitLabel.text = english ? "Quit" : "Выход";
         settingsTitle.text = settingsLabel.text;
@@ -197,17 +201,29 @@ public sealed class MainMenuController : MonoBehaviour
         applyButton.interactable = false;
     }
 
-    private void Play()
+    private void Continue()
     {
-        if (!SceneEntryCheckpoint.TryGetStartIndex(out int index))
-        {
-            Debug.LogError("Main menu cannot load the starting scene. Enable Home in the build scene list.");
-            return;
-        }
+        if (loadingGame) return;
+        if (SceneEntryCheckpoint.TryContinue())
+            DisableGameButtons();
+        else
+            continueButton.interactable = false;
+    }
 
-        PlayerPrefs.Save();
-        playButton.interactable = false;
-        SceneManager.LoadSceneAsync(index);
+    private void NewGame()
+    {
+        if (loadingGame) return;
+        if (SceneEntryCheckpoint.TryStartNewGame())
+            DisableGameButtons();
+        else
+            Debug.LogError("Main menu cannot load the starting scene. Enable Home in the build scene list.");
+    }
+
+    private void DisableGameButtons()
+    {
+        loadingGame = true;
+        continueButton.interactable = false;
+        newGameButton.interactable = false;
     }
 
     private static void Quit()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,7 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
     public Line[] ReadLines() => JsonUtility.FromJson<Transcript>(transcript.text).lines;
     public int Index { get; private set; } = -1;
     public bool Visible => canvas.enabled;
+    internal bool IsVoicePlaying => voiceSource != null && voiceSource.isPlaying;
     public TMP_Text Speaker => speaker;
     public TMP_Text Body => body;
 
@@ -50,9 +52,43 @@ public sealed class FinalLabIvanDialogue : MonoBehaviour
         continueRequested = false;
         StopVoice();
         if (voiceClip == null) return;
-        if (voiceSource == null) voiceSource = gameObject.AddComponent<AudioSource>();
+        if (voiceSource == null)
+        {
+            voiceSource = gameObject.AddComponent<AudioSource>();
+            voiceSource.playOnAwake = false;
+        }
         voiceSource.clip = voiceClip;
+        voiceSource.volume = 1f;
         voiceSource.Play();
+    }
+
+    internal IEnumerator PlayTimedLine(FinalLabAudio.RecordedLine line, Action track = null)
+    {
+        if (line == null || line.voiceClip == null) yield break;
+        int caption = 0;
+        Show(-1, line.speaker, line.captions[caption].text, line.voiceClip);
+        voiceSource.volume = .92f;
+        voiceSource.priority = 32;
+        track?.Invoke();
+        yield return null;
+        while (GameplayPause.BlocksGameplayInput || IsVoicePlaying)
+        {
+            if (!GameplayPause.BlocksGameplayInput)
+            {
+                if (!InteractionInput.PrimaryConsumedThisFrame && ReadContinue())
+                {
+                    InteractionInput.ConsumePrimary();
+                    break;
+                }
+                float time = voiceSource.timeSamples / (float)line.voiceClip.frequency;
+                while (caption + 1 < line.captions.Length && time >= line.captions[caption + 1].start)
+                    body.text = line.captions[++caption].text;
+                track?.Invoke();
+            }
+            yield return null;
+        }
+        Hide();
+        voiceSource.priority = 128;
     }
 
     public bool ReadContinue()

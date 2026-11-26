@@ -37,6 +37,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
     private float nextLine, feedbackUntil, isolation, current = 9.4f;
     private int reserves, isolated;
     private bool blocked;
+    private bool introducingIvan;
     private bool tractionNoted;
     private float[] pulseStrength;
     private float displayedCurrent, voltage, instability, modeFlash, nextArc, arcEnds, nextTelemetry;
@@ -85,6 +86,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
     private void StartAlexei()
     {
         UseGameplayHud();
+        flow.Audio?.StartAlexeiMusic();
         step = Step.Reserve;
         Goal("Резервное питание: 0/3");
         foreach (var lamp in reserveLights) lamp.enabled = false;
@@ -112,7 +114,16 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         blocked = false;
         Goal("Исследовать питание установки");
         displayedCurrent = current;
+        var audio = flow.Audio;
+        if (audio != null)
+        {
+            introducingIvan = true;
+            audio.StartIvanGameplay();
+            yield return audio.IntroduceIvan();
+            introducingIvan = false;
+        }
         Say("Питание установки нестабильно. Похоже, сущность использует общую энергетическую сеть.", unstablePowerVoice);
+        if (audio != null) PresentSpeech();
     }
 
     private void UseGameplayHud()
@@ -131,12 +142,12 @@ public sealed class FinalLabMechanisms : MonoBehaviour
     private void Update()
     {
         if (step == Step.Inactive || blocked) return;
-        PresentSpeech();
+        if (!introducingIvan) PresentSpeech();
         if (Time.unscaledTime > feedbackUntil) Set(feedback, "");
         if (step == Step.FatherDoor) return;
         if (step == Step.Stabilizing) UpdateIsolation();
         if (step >= Step.Traction) UpdateResonator();
-        if (!player.enabled) return;
+        if (!player.enabled || introducingIvan) return;
 
         var target = FindControl();
         Focus(target);
@@ -223,14 +234,17 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         if (control.Engaged || !Available(control.Kind)) return;
         control.Engage();
         Focus(null);
+        var audio = flow.Audio;
         switch (control.Kind)
         {
             case FinalLabSwitch.Function.Reserve:
+                audio?.Spatial(FinalLabAudio.Cue.ReserveSwitch, control.Point, .43f);
                 reserves++;
                 if (reserves <= reserveLights.Length) reserveLights[reserves - 1].enabled = true;
                 Goal($"Резервное питание: {reserves}/3");
                 if (reserves == 1) Say("Есть! Но одной линии недостаточно. Где-то должны быть остальные.", remainingLinesVoice);
                 if (reserves != 3) return;
+                audio?.Signal(FinalLabAudio.Cue.ReserveRestored, .26f);
                 step = Step.Isolation;
                 Goal("Изоляция: 0/2");
                 Report("Резервное питание: 3/3");
@@ -238,9 +252,11 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 Say("Система изоляции не даёт открыть дверь. Кажется, у неё два независимых контура. Проверь их, Алёша.", twoContoursVoice);
                 break;
             case FinalLabSwitch.Function.Isolation:
+                audio?.Spatial(FinalLabAudio.Cue.IsolationLever, control.Point, .44f);
                 isolated++;
                 Goal($"Изоляция: {isolated}/2");
                 if (isolated != 2) return;
+                audio?.Signal(FinalLabAudio.Cue.FatherRoomIsolated, .28f);
                 step = Step.FatherDoor;
                 Focus(null);
                 Goal("Подойдите к комнате отца");
@@ -251,6 +267,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 flow.OnGameplayCompleted();
                 break;
             case FinalLabSwitch.Function.Traction:
+                audio?.Spatial(FinalLabAudio.Cue.SwitchClick, control.Point, .43f);
                 FinalLabSwitch.SetColor(powerLens, new Color(.13f, .17f, .15f));
                 current = 7.6f;
                 step = Step.Mode;
@@ -260,6 +277,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 ReplaceSpeech("Основной режим не позволяет разорвать связь. Возможно, существует другой способ работы установки.", alternativeModeVoice);
                 break;
             case FinalLabSwitch.Function.Mode:
+                audio?.Spatial(FinalLabAudio.Cue.ModeB, control.Point, .46f);
                 step = Step.Contour;
                 modeFlash = Time.unscaledTime + .85f;
                 Goal("Стабилизировать контур");
@@ -268,14 +286,17 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                 Say("Контур неустойчив. Нужно удержать систему в рабочем состоянии.", unstableContourVoice);
                 break;
             case FinalLabSwitch.Function.Contour:
+                audio?.Spatial(FinalLabAudio.Cue.SwitchClick, control.Point, .36f);
                 step = Step.Stabilizing;
                 Goal("Удерживай E у включённого рубильника");
                 ReplaceSpeech("Ток падает… Изоляция растёт.", isolationRisingVoice);
                 break;
             case FinalLabSwitch.Function.Cover:
+                audio?.Spatial(FinalLabAudio.Cue.CoverOpens, control.Point, .43f);
                 Report("Аварийная кнопка доступна");
                 break;
             case FinalLabSwitch.Function.Overload:
+                audio?.Spatial(FinalLabAudio.Cue.SwitchClick, control.Point, .45f);
                 StartCoroutine(Discharge());
                 break;
         }
@@ -292,9 +313,11 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         bool holding = near && Keyboard.current != null && Keyboard.current.eKey.isPressed &&
             VisibleFrom(view.transform.position, handle, delta, delta.magnitude);
         if (holding) isolation = Mathf.MoveTowards(isolation, 100f, Time.unscaledDeltaTime * 19f);
+        flow.Audio?.LowerCurrent(holding && isolation < 100f, isolation / 100f);
         current = Mathf.Lerp(7.6f, 1.2f, isolation / 100);
         FinalLabSwitch.SetColor(contourLens, Color.Lerp(new Color(.93f, .44f, .12f), new Color(.28f, .8f, .48f), isolation / 100));
         if (isolation < 100) return;
+        flow.Audio?.Signal(FinalLabAudio.Cue.IsolationComplete, .37f);
         step = Step.Overload;
         Goal("Запустить аварийную перегрузку К-17");
         Report("Контур стабилен");
@@ -314,6 +337,8 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         Goal("Аварийная перегрузка");
         Report("СЕРДЕЧНИК НЕСТАБИЛЕН");
         Set(crouchHint, "");
+        var audio = flow.Audio;
+        audio?.StartOverload();
         const float duration = 4.2f;
         for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
         {
@@ -321,6 +346,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
                          (1f - Mathf.SmoothStep(0f, 1f, (t - 2.55f) / 1.65f));
             current = (1.2f + 18.6f * peak) * (1f - Mathf.SmoothStep(0f, 1f, (t - 3.4f) / .8f));
             UpdateResonator(peak);
+            audio?.MatchOverload(t);
             yield return null;
         }
         foreach (var arc in arcs) arc.enabled = false;
@@ -333,7 +359,9 @@ public sealed class FinalLabMechanisms : MonoBehaviour
         FinalLabSwitch.SetColor(contourLens, new Color(.11f, .13f, .12f));
         Goal("К-17 отключён");
         Report("Связь разорвана. Сущность уничтожена");
+        audio?.Shutdown();
         yield return new WaitForSecondsRealtime(1.25f);
+        if (audio != null) yield return audio.AfterShutdown();
         yield return FinalLabAlexeiRescue.Fade(blackout, 1, .55f);
         StopGameplayHud();
         investigationHud.SetCinematic(true);
@@ -466,6 +494,7 @@ public sealed class FinalLabMechanisms : MonoBehaviour
 
     private void StopGameplayHud()
     {
+        flow.Audio?.StopMusic();
         blocked = false;
         step = Step.Inactive;
         Focus(null);

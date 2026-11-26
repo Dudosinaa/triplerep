@@ -10296,8 +10296,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 321708ef99160f44c91bbbb0c21576b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalLabAlexeiRescue
-  fearVoice: {fileID: 8300000, guid: 0987d74e8a94db241aebba1c068a1880, type: 3}
-  apologyVoice: {fileID: 8300000, guid: 27128014310268741aca5dab11bf00c6, type: 3}
   player: {fileID: 1395016068}
   view: {fileID: 185203938}
   alexei: {fileID: 165082645}
@@ -10313,6 +10311,8 @@ MonoBehaviour:
   - {fileID: 43043996}
   objective: {fileID: 879004750}
   prompt: {fileID: 849641355}
+  fearVoice: {fileID: 8300000, guid: 0987d74e8a94db241aebba1c068a1880, type: 3}
+  apologyVoice: {fileID: 8300000, guid: 27128014310268741aca5dab11bf00c6, type: 3}
 --- !u!4 &257432279
 Transform:
   m_ObjectHideFlags: 0
@@ -46846,6 +46846,7 @@ GameObject:
   - component: {fileID: 1197382736}
   - component: {fileID: 1197382735}
   - component: {fileID: 1197382734}
+  - component: {fileID: 1197382737}
   m_Layer: 0
   m_Name: "Father encounter \u2014 final laboratory"
   m_TagString: Untagged
@@ -46881,65 +46882,65 @@ MonoBehaviour:
   blackout: {fileID: 917008054}
   lines:
   - speaker: "\u041E\u0422\u0415\u0426"
-    voiceClip: {fileID: 8300000, guid: 47c4cba0ae0b4124bb1dcfd2ba21aaff, type: 3}
     text: "\u0427\u0442\u043E?.. \u0413\u0434\u0435 \u044F?.. \u0421\u043A\u043E\u043B\u044C\u043A\u043E
       \u0432\u0440\u0435\u043C\u0435\u043D\u0438 \u043F\u0440\u043E\u0448\u043B\u043E?.."
+    voiceClip: {fileID: 8300000, guid: 47c4cba0ae0b4124bb1dcfd2ba21aaff, type: 3}
   - speaker: "\u041E\u0422\u0415\u0426"
-    voiceClip: {fileID: 8300000, guid: a212bc07b7100844eaf39a6711f44c5b, type: 3}
     text: "\u0410\u043B\u0451\u0448\u0430?.. \u042D\u0442\u043E \u0442\u044B?.. \u0410\u043B\u0451\u0448\u0430,
       \u043D\u0435\u0443\u0436\u0435\u043B\u0438 \u044D\u0442\u043E \u043F\u0440\u0430\u0432\u0434\u0430
       \u0442\u044B?.."
+    voiceClip: {fileID: 8300000, guid: a212bc07b7100844eaf39a6711f44c5b, type: 3}
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
-    voiceClip: {fileID: 8300000, guid: 3cb266977ca9b5e40ba93fc37a9be037, type: 3}
     text: "\u041F\u0430\u043F\u0430?.. \u042D\u0442\u043E \u044F. \u042F \u0437\u0434\u0435\u0441\u044C.
       \u041C\u044B \u0441\u0442\u043E\u043B\u044C\u043A\u043E \u043B\u0435\u0442
       \u0442\u0435\u0431\u044F \u0438\u0441\u043A\u0430\u043B\u0438... \u042F \u0434\u0443\u043C\u0430\u043B,
       \u0447\u0442\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0438\u043A\u043E\u0433\u0434\u0430
       \u0442\u0435\u0431\u044F \u043D\u0435 \u0443\u0432\u0438\u0436\u0443"
+    voiceClip: {fileID: 8300000, guid: 3cb266977ca9b5e40ba93fc37a9be037, type: 3}
   - speaker: "\u041E\u0422\u0415\u0426"
-    voiceClip: {fileID: 8300000, guid: d086ef02236755d40842dc2f41181ae6, type: 3}
     text: "\u042F \u0441\u043B\u044B\u0448\u0430\u043B, \u043A\u0430\u043A \u0442\u044B
       \u0437\u0432\u0430\u043B \u043C\u0435\u043D\u044F... \u0434\u0430\u0436\u0435
       \u0442\u0430\u043C. \u041D\u043E \u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437
       \u0431\u043E\u044F\u043B\u0441\u044F, \u0447\u0442\u043E \u044D\u0442\u043E
       \u043E\u043F\u044F\u0442\u044C \u043D\u0435 \u0442\u044B"
+    voiceClip: {fileID: 8300000, guid: d086ef02236755d40842dc2f41181ae6, type: 3}
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
-    voiceClip: {fileID: 8300000, guid: 7a6b136e5c4dee6459e059ba83c6dc13, type: 3}
     text: "\u0412\u0441\u0451 \u0437\u0430\u043A\u043E\u043D\u0447\u0438\u043B\u043E\u0441\u044C.
       \u041C\u044B \u0432\u044B\u0431\u0435\u0440\u0435\u043C\u0441\u044F \u043E\u0442\u0441\u044E\u0434\u0430,
       \u0441\u043B\u044B\u0448\u0438\u0448\u044C? \u042F \u043F\u043E\u043C\u043E\u0433\u0443
       \u0442\u0435\u0431\u0435. \u0422\u0435\u043F\u0435\u0440\u044C \u0432\u0441\u0451
       \u0431\u0443\u0434\u0435\u0442 \u0445\u043E\u0440\u043E\u0448\u043E"
+    voiceClip: {fileID: 8300000, guid: 7a6b136e5c4dee6459e059ba83c6dc13, type: 3}
   - speaker: "\u041E\u0422\u0415\u0426"
-    voiceClip: {fileID: 8300000, guid: 5840de18cf5c417458070612929d9045, type: 3}
     text: "\u041D\u0435\u0442, \u0441\u044B\u043D\u043E\u043A... \u041E\u043D\u0438
       \u0432\u0435\u0440\u043D\u0443\u043B\u0438 \u0442\u043E\u043B\u044C\u043A\u043E
       \u043C\u043E\u0451 \u0442\u0435\u043B\u043E. \u0410 \u0447\u0442\u043E-\u0442\u043E
       \u0432\u043D\u0443\u0442\u0440\u0438 \u043C\u0435\u043D\u044F \u0442\u0430\u043A
       \u0438 \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C \u043F\u043E \u0442\u0443
       \u0441\u0442\u043E\u0440\u043E\u043D\u0443"
+    voiceClip: {fileID: 8300000, guid: 5840de18cf5c417458070612929d9045, type: 3}
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
-    voiceClip: {fileID: 8300000, guid: f4cc001702d95464eb239c797b79bd6f, type: 3}
     text: "\u041D\u0435 \u0433\u043E\u0432\u043E\u0440\u0438 \u0442\u0430\u043A.
       \u041F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430... \u041F\u0440\u043E\u0441\u0442\u043E
       \u0434\u0430\u0439 \u043C\u043D\u0435 \u0440\u0443\u043A\u0443. \u041C\u044B
       \u0432\u0435\u0434\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430\u0448\u043B\u0438
       \u0434\u0440\u0443\u0433 \u0434\u0440\u0443\u0433\u0430"
+    voiceClip: {fileID: 8300000, guid: f4cc001702d95464eb239c797b79bd6f, type: 3}
   - speaker: "\u041E\u0422\u0415\u0426"
-    voiceClip: {fileID: 8300000, guid: 74c43c2233e2a214a8505ffe27399496, type: 3}
     text: "\u041F\u0440\u043E\u0441\u0442\u0438 \u043C\u0435\u043D\u044F, \u0410\u043B\u0451\u0448\u0430...
       \u042F \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u043B \u0432\u0435\u0440\u043D\u0443\u0442\u044C\u0441\u044F
       \u043A \u0442\u0435\u0431\u0435 \u043D\u0430\u043C\u043D\u043E\u0433\u043E
       \u0440\u0430\u043D\u044C\u0448\u0435. \u042F \u0442\u0430\u043A \u0442\u0435\u0431\u044F
       \u043B\u044E\u0431\u043B\u044E, \u0441\u044B\u043D\u043E\u043A..."
+    voiceClip: {fileID: 8300000, guid: 74c43c2233e2a214a8505ffe27399496, type: 3}
   - speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
-    voiceClip: {fileID: 8300000, guid: e7b689973fab0704391cfd55a976d7da, type: 3}
     text: "\u041F\u0430\u043F\u0430?.. \u041F\u0430\u043F\u0430, \u043D\u0435\u0442!
       \u041F\u043E\u0441\u043C\u043E\u0442\u0440\u0438 \u043D\u0430 \u043C\u0435\u043D\u044F!.."
+    voiceClip: {fileID: 8300000, guid: e7b689973fab0704391cfd55a976d7da, type: 3}
   - speaker: "\u0418\u0412\u0410\u041D"
-    voiceClip: {fileID: 8300000, guid: 434a3fcede3aa2d4fb442498292212f3, type: 3}
     text: "\u041D\u0435\u0442, \u043F\u0430\u043F\u0430... \u0410\u043B\u0435\u043A\u0441\u0435\u0439,
       \u0441\u043A\u0430\u0436\u0438, \u0447\u0442\u043E \u043E\u043D \u0434\u044B\u0448\u0438\u0442!"
+    voiceClip: {fileID: 8300000, guid: 434a3fcede3aa2d4fb442498292212f3, type: 3}
 --- !u!114 &1197382735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46981,6 +46982,117 @@ Transform:
   - {fileID: 181089449}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1197382737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197382733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1e5d5db5dd2c843b53a63c148a07e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FinalLabAudio
+  flow: {fileID: 1197382735}
+  ivan: {fileID: 888513905}
+  investigation: {fileID: 1101739921}
+  lamp: {fileID: 628740265}
+  resonator: {fileID: 369678497}
+  cues:
+  - {fileID: 8300000, guid: cacdad81e7651bd48b7b277aae8ea477, type: 3}
+  - {fileID: 8300000, guid: 573b7cd179db9084ba44c93684d12969, type: 3}
+  - {fileID: 8300000, guid: 9a23696fb18152d478e4ceab6d517621, type: 3}
+  - {fileID: 8300000, guid: 0ef4d3faf149a7d4b8738fb18a3f69eb, type: 3}
+  - {fileID: 8300000, guid: e0a6b5e7502c8bc42bde0d07807d7569, type: 3}
+  - {fileID: 8300000, guid: 5540600778e89184082fa233327b451b, type: 3}
+  - {fileID: 8300000, guid: 29c91556976b9044b93e4493ed9d38d7, type: 3}
+  - {fileID: 8300000, guid: 3c453ebaae3aba0458c524303c88792e, type: 3}
+  - {fileID: 8300000, guid: e76b6ffc6a3bb35418f33442afd5f1ba, type: 3}
+  - {fileID: 8300000, guid: ce12ca18dde062a45b90c7ec40e8ee90, type: 3}
+  - {fileID: 8300000, guid: d2714eab587c311449c662cff379568b, type: 3}
+  - {fileID: 8300000, guid: f5ea1e76ebe894944bdd9b393cbf42d9, type: 3}
+  - {fileID: 8300000, guid: 16c092ca6ab9fac4d89341c28906d415, type: 3}
+  - {fileID: 8300000, guid: 0612d0723e8120741beccc067bc957f5, type: 3}
+  - {fileID: 8300000, guid: d4e5d508e70f6d34fa0d8339141e745b, type: 3}
+  - {fileID: 8300000, guid: 5acdda1574ccaae4b8cdd54892d5b5b2, type: 3}
+  - {fileID: 8300000, guid: feaa110975309c64bb3f2ca4821cca15, type: 3}
+  - {fileID: 8300000, guid: 5c3b228797a8685449ffd46a57c22f89, type: 3}
+  - {fileID: 8300000, guid: d92e8d47b5ce1a24ab779d0cc421f323, type: 3}
+  - {fileID: 8300000, guid: 850ab8edf8bf83e429423973d99fbc57, type: 3}
+  - {fileID: 8300000, guid: 11e0c8d711991f34693c977b41c23e0b, type: 3}
+  - {fileID: 8300000, guid: 6441fb8bad348e941882406a64b295d6, type: 3}
+  ivanSteps:
+  - {fileID: 8300000, guid: b9894844ab60e88439caf4235c0c3121, type: 3}
+  - {fileID: 8300000, guid: 6be7c11ce0df5e14cb006f60620d53c1, type: 3}
+  - {fileID: 8300000, guid: 90d2d66350a2e35408da3627430d37a6, type: 3}
+  ventilation:
+    clip: {fileID: 8300000, guid: fab26e43336e1964ea088e2646cf42da, type: 3}
+    start: 0.05
+    end: 18.42
+    overlap: 0.47
+  fluorescent:
+    clip: {fileID: 8300000, guid: 6d4a3df18622134468ebea118a9570c7, type: 3}
+    start: 0.04
+    end: 14.52
+    overlap: 0.15
+  hum:
+    clip: {fileID: 8300000, guid: 60bebedc606a6af46855dbc629ccdbf4, type: 3}
+    start: 0.05
+    end: 31.68
+    overlap: 0.56
+  alexeiMusic:
+    clip: {fileID: 8300000, guid: 3b5a6383c1e6ee347ad3c87ebd8259ab, type: 3}
+    start: 2.33
+    end: 122.6
+    overlap: 1.65
+  ivanMusic:
+    clip: {fileID: 8300000, guid: ea81ca7e535cdeb4f9fe4185e0a7b0bd, type: 3}
+    start: 0.4
+    end: 100.15
+    overlap: 1.55
+  alexeiPossession:
+    speaker: "\u0410\u041B\u0415\u041A\u0421\u0415\u0419"
+    voiceClip: {fileID: 8300000, guid: 98c0caf91eaf03641b27a0b706aec1b9, type: 3}
+    captions:
+    - start: 0
+      text: "\u0412\u0430\u043D\u044F! \u041F\u043E\u0434\u043E\u0436\u0434\u0438!
+        \u0427\u0442\u043E-\u0442\u043E \u043D\u0435 \u0442\u0430\u043A!"
+    - start: 3.72
+      text: "\u042F \u0447\u0443\u0432\u0441\u0442\u0432\u0443\u044E\u2026 \u041E\u043D\u043E
+        \u0432\u043D\u0443\u0442\u0440\u0438 \u043C\u0435\u043D\u044F!"
+    - start: 6.82
+      text: "\u0427\u0451\u0440\u0442! \u042F \u043D\u0435 \u043C\u043E\u0433\u0443!"
+  ivanIntroduction:
+    speaker: "\u0418\u0412\u0410\u041D"
+    voiceClip: {fileID: 8300000, guid: 2b824db5cc8c2734390cbc8ceb51eddb, type: 3}
+    captions:
+    - start: 0
+      text: "\u041E\u043D\u043E \u043F\u0435\u0440\u0435\u0441\u0435\u043B\u0438\u043B\u043E\u0441\u044C
+        \u0432 \u0410\u043B\u0451\u0448\u0443."
+    - start: 3
+      text: "\u0417\u043D\u0430\u0447\u0438\u0442, \u0441\u043C\u0435\u0440\u0442\u044C
+        \u043E\u0442\u0446\u0430 \u043D\u0438\u0447\u0435\u0433\u043E \u043D\u0435
+        \u043E\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u043B\u0430."
+    - start: 6.84
+      text: "\u0427\u0451\u0440\u0442, \u041A-17."
+    - start: 9.72
+      text: "\u041F\u043E\u043A\u0430 \u044D\u0442\u0430 \u043F\u0440\u043E\u043A\u043B\u044F\u0442\u0430\u044F
+        \u043C\u0430\u0448\u0438\u043D\u0430 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442,
+        \u043E\u043D\u043E \u0435\u0433\u043E \u043D\u0435 \u043E\u0442\u043F\u0443\u0441\u0442\u0438\u0442."
+  ivanShutdown:
+    speaker: "\u0418\u0412\u0410\u041D"
+    voiceClip: {fileID: 8300000, guid: d2f2af003af3d304fa4684e9960efc9c, type: 3}
+    captions:
+    - start: 0
+      text: "\u0412\u0441\u0451. \u041A-17 \u0437\u0430\u043C\u043E\u043B\u0447\u0430\u043B."
+    - start: 3.44
+      text: "\u0417\u043D\u0430\u0447\u0438\u0442, \u044D\u0442\u0430 \u0442\u0432\u0430\u0440\u044C
+        \u0431\u043E\u043B\u044C\u0448\u0435 \u0442\u0435\u0431\u044F \u043D\u0435
+        \u0434\u0435\u0440\u0436\u0438\u0442."
+    - start: 6.9
+      text: "\u0414\u0435\u0440\u0436\u0438\u0441\u044C, \u0410\u043B\u0451\u0448\u0430.
+        \u042F \u0443\u0436\u0435 \u0438\u0434\u0443."
 --- !u!1 &1202315685
 GameObject:
   m_ObjectHideFlags: 0
@@ -55105,6 +55217,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 185203935}
+  - {fileID: 2103396403}
   m_Father: {fileID: 1746311831}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1395016068
@@ -55119,11 +55232,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22122fae074f8d4b90fffaebe2fca59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonPlayer
+  fallRecoveryY: -50
   playerCamera: {fileID: 185203938}
-  pistol: {fileID: 0}
-  footstepSource: {fileID: 0}
-  footstepClips: []
+  footstepSource: {fileID: 2103396404}
+  footstepClips:
+  - {fileID: 8300000, guid: 12116cf416b26714c82a29d21f763ef7, type: 3}
+  - {fileID: 8300000, guid: d8bc8c501479f334da033002b3f52fa3, type: 3}
+  - {fileID: 8300000, guid: 926db03d127471c419268d75316db82d, type: 3}
+  - {fileID: 8300000, guid: 730abc307129f2245b77fd5e037f3287, type: 3}
+  trainEncounter: {fileID: 0}
   walkSpeed: 3.1
+  sprintSpeedMultiplier: 1.5
   crouchSpeed: 2
   gravity: -20
   mouseSensitivity: 0.12
@@ -64429,18 +64548,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aec5963cf0a6ef4b93e6914528880fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalLabMechanisms
-  restoreReserveVoice: {fileID: 8300000, guid: de9c79b912ca8d6418f3fd0a54ecea08, type: 3}
-  remainingLinesVoice: {fileID: 8300000, guid: c255d4a07396d794e90e82ddbf359c09, type: 3}
-  isolationHintVoice: {fileID: 8300000, guid: 4fa60c14cb3567242b7b70076aeee680, type: 3}
-  twoContoursVoice: {fileID: 8300000, guid: 8aa9c569fa6a68840a141d34f82f64ad, type: 3}
-  doorUnlockedVoice: {fileID: 8300000, guid: 63cb56c963b99ca4b9704568c4b53057, type: 3}
-  unstablePowerVoice: {fileID: 8300000, guid: cbeaf75fb6975fc4995c331b314b319e, type: 3}
-  tractionVoice: {fileID: 8300000, guid: d5eaeb91d67377342b77a86ba4fcafc6, type: 3}
-  alternativeModeVoice: {fileID: 8300000, guid: eeb84bb11eb6dd84fb0792f474058e12, type: 3}
-  modeBVoice: {fileID: 8300000, guid: cd761c904d8799d4cb2542c9707360ce, type: 3}
-  unstableContourVoice: {fileID: 8300000, guid: 32f5e9e5d4faaf94d97b3efb071d1f8c, type: 3}
-  isolationRisingVoice: {fileID: 8300000, guid: 4c92380e0071a67409b81b508baa10ce, type: 3}
-  isolationCompleteVoice: {fileID: 8300000, guid: 56130ddbeec44494e821119675a4d765, type: 3}
   flow: {fileID: 1197382735}
   player: {fileID: 1395016068}
   view: {fileID: 185203938}
@@ -64497,6 +64604,18 @@ MonoBehaviour:
   - {fileID: 1781431400}
   - {fileID: 829745726}
   - {fileID: 78023484}
+  restoreReserveVoice: {fileID: 8300000, guid: de9c79b912ca8d6418f3fd0a54ecea08, type: 3}
+  remainingLinesVoice: {fileID: 8300000, guid: c255d4a07396d794e90e82ddbf359c09, type: 3}
+  isolationHintVoice: {fileID: 8300000, guid: 4fa60c14cb3567242b7b70076aeee680, type: 3}
+  twoContoursVoice: {fileID: 8300000, guid: 8aa9c569fa6a68840a141d34f82f64ad, type: 3}
+  doorUnlockedVoice: {fileID: 8300000, guid: 63cb56c963b99ca4b9704568c4b53057, type: 3}
+  unstablePowerVoice: {fileID: 8300000, guid: cbeaf75fb6975fc4995c331b314b319e, type: 3}
+  tractionVoice: {fileID: 8300000, guid: d5eaeb91d67377342b77a86ba4fcafc6, type: 3}
+  alternativeModeVoice: {fileID: 8300000, guid: eeb84bb11eb6dd84fb0792f474058e12, type: 3}
+  modeBVoice: {fileID: 8300000, guid: cd761c904d8799d4cb2542c9707360ce, type: 3}
+  unstableContourVoice: {fileID: 8300000, guid: 32f5e9e5d4faaf94d97b3efb071d1f8c, type: 3}
+  isolationRisingVoice: {fileID: 8300000, guid: 4c92380e0071a67409b81b508baa10ce, type: 3}
+  isolationCompleteVoice: {fileID: 8300000, guid: 56130ddbeec44494e821119675a4d765, type: 3}
 --- !u!4 &1639970071
 Transform:
   m_ObjectHideFlags: 0
@@ -81685,6 +81804,135 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &2103396402
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2103396403}
+  - component: {fileID: 2103396404}
+  m_Layer: 0
+  m_Name: Final Lab FPS footsteps
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2103396403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103396402}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1395016067}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &2103396404
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103396402}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.4
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 112
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2113241300
 GameObject:
   m_ObjectHideFlags: 0

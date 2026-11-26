@@ -49,6 +49,7 @@ namespace FinalLab.Investigation
         public InvestigationPoint[] Points => points;
         public event Action InvestigationCompleted;
         public event Action IvanDeskClosedAfterInvestigation;
+        internal event Action<Vector3, bool> DocumentSound;
         private bool AtArchive => active != null && active.Id == ArchiveId;
         private bool AtFather => active != null && active.Id == FatherId;
         private bool AtIvan => active != null && active.Id == IvanId;
@@ -82,6 +83,8 @@ namespace FinalLab.Investigation
             if (progress == null) return;
             if (state == ViewState.Moving)
             {
+                // Keep Escape inside the inspection while the camera is moving.
+                InteractionInput.TryConsumeCancel();
                 bool ended = inspection.Advance(Time.unscaledDeltaTime, out float amount);
                 if (movingPaper != null)
                     movingPaper.SetPositionAndRotation(Vector3.LerpUnclamped(paperFrom.position, paperTo.position, amount),
@@ -233,7 +236,11 @@ namespace FinalLab.Investigation
             selected = item;
             documentHome = new Pose(item.transform.position, item.transform.rotation);
             if (AtDesk) deskDocumentHome = new Pose(item.transform.localPosition, item.transform.localRotation);
-            if (item.Lifts) AnimatePaper(item.transform, new Pose(from.position + from.forward * dist, from.rotation));
+            if (item.Lifts)
+            {
+                AnimatePaper(item.transform, new Pose(from.position + from.forward * dist, from.rotation));
+                DocumentSound?.Invoke(documentHome.position, true);
+            }
             detailFov = focusFov;
             Move(cameraTarget, detailFov, item.Lifts ? 0.49f : 0.52f, () =>
             {
@@ -269,7 +276,11 @@ namespace FinalLab.Investigation
         {
             if (state == ViewState.Detail)
             {
-                if (selected.Lifts) AnimatePaper(selected.transform, documentHome);
+                if (selected.Lifts)
+                {
+                    AnimatePaper(selected.transform, documentHome);
+                    DocumentSound?.Invoke(documentHome.position, false);
+                }
                 Move(OverviewPose(), OverviewFov(), 0.46f, () =>
                 {
                     RestorePaper();

@@ -1,30 +1,45 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 // Reads the four facts in the ordinary ReadableDocument props from main.
 public sealed class CargoPuzzleTerminal : MonoBehaviour
 {
+    internal const string WaybillKey = "AirportMemory.WaybillK17";
+
     private static readonly string[][] Options =
     {
-        new[] { "F-04", "K-17", "L-09" },
-        new[] { "12.06.2004", "14.06.2004", "16.06.2004" },
-        new[] { "Сергей Карамазов", "И. Карамазов", "Михаил Орлов" },
+        new[] { "F-04", "К-17", "L-09" },
+        new[] { "12.06.1992", "14.06.1992", "16.06.1992" },
+        new[] { "Сергей Карамазов", "Иван Карамазов", "Михаил Орлов" },
         new[] { "Семейный багаж, Нью-Йорк", "Технический склад, Нью-Йорк", "Личные вещи, Москва" }
     };
-    private static readonly string[] Labels =
-        { "Номер контейнера", "Дата отправки", "Отправитель", "Адрес получателя" };
+    private static readonly Color Pending = new Color32(181, 155, 110, 255);
+    private static readonly Color Mismatch = new Color32(236, 153, 113, 255);
+    private static readonly Color Match = new Color32(172, 211, 153, 255);
 
     [SerializeField] private FirstPersonPlayer player;
     [SerializeField] private Camera playerCamera;
     [SerializeField, Min(1f)] private float interactionDistance = 3.5f;
+    [SerializeField] private GameObject panel, prompt, clue;
+    [SerializeField] private Button[] facts;
+    [SerializeField] private TMP_Text[] values;
+    [SerializeField] private Button submit, dismiss;
+    [SerializeField] private TMP_Text feedbackTitle, feedbackRecord, feedbackDetails;
+    [SerializeField] private Image feedbackAccent;
+
     private readonly int[] selected = new int[4];
     private DocumentReader reader;
     private ItemInspector inspector;
     private DialogueController dialogue;
     private bool open;
     private bool solved;
-    private bool movementWasEnabled;
-    private string feedback = "Сверь данные трёх накладных и маркировку К-17.";
+    private bool movementWasEnabled, cursorWasVisible, waitForRelease;
+    private CursorLockMode previousCursorLock;
+    private GameObject previousSelection;
+    private int ignoreClicksThrough;
 
     public bool IsSolved => solved;
 
@@ -38,29 +53,62 @@ public sealed class CargoPuzzleTerminal : MonoBehaviour
             inspector = player.GetComponent<ItemInspector>();
             dialogue = player.GetComponent<DialogueController>();
         }
+        for (int i = 0; i < facts.Length; i++)
+        {
+            int field = i;
+            facts[field].onClick.AddListener(() => Cycle(field));
+            values[field].text = Options[field][selected[field]];
+        }
+        submit.onClick.AddListener(CheckAnswer);
+        dismiss.onClick.AddListener(() => { if (CanClick()) Close(); });
+        ShowPending();
     }
 
     private void Update()
     {
-        if (GameplayPause.BlocksGameplayInput) return;
-        if (Keyboard.current == null) return;
+        bool paused = GameplayPause.BlocksGameplayInput;
+        var keyboard = Keyboard.current;
+        bool aimed = !paused && !open && CanApproach() && IsAimedAtTerminal();
+        prompt.SetActive(aimed);
+        clue.SetActive(!paused && !open && solved);
+        if (paused) return;
         if (open)
         {
-            if (InteractionInput.TryConsumeCancel() || (Keyboard.current.eKey.wasPressedThisFrame && InteractionInput.TryConsume()))
+            if (waitForRelease && Mouse.current?.leftButton.isPressed != true)
+            {
+                waitForRelease = false;
+                ignoreClicksThrough = Time.frameCount;
+            }
+            if (InteractionInput.TryConsumeCancel() || (keyboard?.eKey.wasPressedThisFrame == true && InteractionInput.TryConsume()))
                 Close();
             return;
         }
-        if (player == null || !player.enabled || playerCamera == null ||
-            (reader != null && reader.IsReading) ||
-            (inspector != null && inspector.IsInspecting) ||
-            (dialogue != null && dialogue.IsTalking)) return;
-        if (!Keyboard.current.eKey.wasPressedThisFrame || !IsAimedAtTerminal() ||
-            !InteractionInput.TryConsume()) return;
+        if (aimed && keyboard?.eKey.wasPressedThisFrame == true && InteractionInput.TryConsume()) Open();
+    }
+
+    private bool CanApproach() => player != null && player.enabled && playerCamera != null &&
+        (reader == null || !reader.IsReading) && (inspector == null || !inspector.IsInspecting) &&
+        (dialogue == null || !dialogue.IsTalking);
+
+    private void Open()
+    {
         open = true;
         movementWasEnabled = player.enabled;
+        previousCursorLock = Cursor.lockState;
+        cursorWasVisible = Cursor.visible;
+        ignoreClicksThrough = Time.frameCount;
+        waitForRelease = Mouse.current?.leftButton.isPressed == true;
+        if (EventSystem.current != null)
+        {
+            previousSelection = EventSystem.current.currentSelectedGameObject;
+            EventSystem.current.SetSelectedGameObject(null);
+        }
         player.enabled = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        prompt.SetActive(false);
+        clue.SetActive(false);
+        panel.SetActive(true);
     }
 
     private bool IsAimedAtTerminal()
@@ -73,64 +121,61 @@ public sealed class CargoPuzzleTerminal : MonoBehaviour
     private void Close()
     {
         open = false;
+        panel.SetActive(false);
         if (player != null && movementWasEnabled) player.enabled = true;
+        Cursor.lockState = previousCursorLock;
+        Cursor.visible = cursorWasVisible;
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(previousSelection);
+        previousSelection = null;
     }
 
     private void OnDisable() { if (open) Close(); }
 
-    private void OnGUI()
+    private bool CanClick() => open && Time.frameCount > ignoreClicksThrough && !waitForRelease &&
+        !GameplayPause.BlocksGameplayInput;
+
+    private void Cycle(int field)
     {
-        if (GameplayPause.BlocksGameplayInput) return;
-        if (!open)
-        {
-            if (solved)
-                GUI.Box(new Rect(Screen.width - 340f, 12f, 328f, 42f),
-                    "УЛИКА: накладная К-17 / Иван Карамазов");
-            if (player != null && player.enabled && playerCamera != null && IsAimedAtTerminal())
-                GUI.Box(new Rect(Screen.width * .35f, Screen.height * .78f,
-                    Screen.width * .3f, 38f), "[E] Проверить грузовую накладную");
-            return;
-        }
-        float scale = Mathf.Min(Screen.width / 1280f, Screen.height / 720f);
-        var area = new Rect((Screen.width - 700f * scale) * .5f,
-            (Screen.height - 570f * scale) * .5f, 700f * scale, 570f * scale);
-        Color previousColor = GUI.color;
-        GUI.color = new Color(.065f, .075f, .07f, 1f);
-        GUI.DrawTexture(area, Texture2D.whiteTexture);
-        GUI.color = previousColor;
-        GUI.Box(area, "ТЕРМИНАЛ ГРУЗОВОГО УЧЁТА");
-        GUILayout.BeginArea(new Rect(area.x + 24f * scale, area.y + 35f * scale,
-            area.width - 48f * scale, area.height - 55f * scale));
-        GUILayout.Label("Найди запись технического контейнера. Выбери данные из трёх документов.");
-        GUILayout.Space(10f * scale);
-        for (int i = 0; i < Labels.Length; i++)
-        {
-            GUILayout.Label(Labels[i]);
-            if (GUILayout.Button(Options[i][selected[i]], GUILayout.Height(34f * scale)))
-                selected[i] = (selected[i] + 1) % Options[i].Length;
-            GUILayout.Space(4f * scale);
-        }
-        GUILayout.Label(feedback, GUILayout.Height(96f * scale));
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Сопоставить", GUILayout.Height(38f * scale))) CheckAnswer();
-        if (GUILayout.Button("Закрыть [E / Esc]", GUILayout.Height(38f * scale))) Close();
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
+        if (!CanClick()) return;
+        selected[field] = NextIndex(field, selected[field]);
+        values[field].text = Options[field][selected[field]];
+        ShowPending();
     }
 
     private void CheckAnswer()
     {
-        for (int i = 0; i < selected.Length; i++)
-            if (selected[i] != 1)
-            {
-                feedback = "Данные не совпали. Проверь номер, дату, подпись и адрес.";
-                return;
-            }
+        if (!CanClick()) return;
+        if (!MatchesWaybill(selected))
+        {
+            SetFeedback(Mismatch, "ДАННЫЕ НЕ СОВПАДАЮТ", "",
+                "Записи противоречат друг другу. Проверь накладные и попробуй ещё раз.");
+            return;
+        }
         solved = true;
-        PlayerPrefs.SetInt("AirportMemory.WaybillK17", 1);
+        PlayerPrefs.SetInt(WaybillKey, 1);
         PlayerPrefs.Save();
-        feedback = "НАКЛАДНАЯ НАЙДЕНА: K-17, 14.06.2004. Отправитель — Иван Карамазов. " +
-            "Получатель — технический склад, Нью-Йорк. Копия с подписью Ивана получена.\n" +
-            "Теперь поговори с Тихоном Инокентьевичем.";
+        SetFeedback(Match, "НАКЛАДНАЯ НАЙДЕНА", "К-17 · 14.06.1992",
+            "<b>Отправитель:</b> Иван Карамазов\n<b>Получатель:</b> технический склад, Нью-Йорк\n" +
+            "Копия с подписью Ивана получена.\n<b>Теперь поговори с Тихоном Иннокентьевичем.</b>");
+    }
+
+    private static int NextIndex(int field, int index) => (index + 1) % Options[field].Length;
+
+    private static bool MatchesWaybill(int[] indices)
+    {
+        foreach (int index in indices)
+            if (index != 1) return false;
+        return true;
+    }
+
+    private void ShowPending() => SetFeedback(Pending, "ОЖИДАНИЕ ПРОВЕРКИ", "", "");
+
+    private void SetFeedback(Color accent, string title, string record, string details)
+    {
+        feedbackTitle.text = title;
+        feedbackTitle.color = accent;
+        feedbackAccent.color = accent;
+        feedbackRecord.text = record;
+        feedbackDetails.text = details;
     }
 }

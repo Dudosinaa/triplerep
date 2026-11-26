@@ -19,6 +19,7 @@ internal static class SceneEntryCheckpoint
 
     private const TrainMemory RequiredTrainMemories = TrainMemory.Petrovich | TrainMemory.Michael | TrainMemory.Innokenty;
     private static TrainMemory completedTrainMemories;
+    private static bool startingNewGame;
 
     [Serializable]
     private sealed class Entry
@@ -45,29 +46,51 @@ internal static class SceneEntryCheckpoint
     {
         ReturnPath = null;
         completedTrainMemories = 0;
+        startingNewGame = false;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    internal static bool TryGetStartIndex(out int index)
+    internal static bool HasCheckpoint => TryReadCheckpoint(out _, out _);
+
+    private static bool TryReadCheckpoint(out Entry entry, out int index)
     {
-        ReturnPath = null;
-        completedTrainMemories = 0;
+        entry = null;
+        index = -1;
         string json = PlayerPrefs.GetString(SaveKey);
-        if (!string.IsNullOrEmpty(json))
+        if (string.IsNullOrEmpty(json)) return false;
+
+        try { entry = JsonUtility.FromJson<Entry>(json); }
+        catch (ArgumentException) { return false; }
+
+        return entry != null && IsGameplayPath(entry.scenePath) &&
+            LocationTransition.TryGetBuildIndex(entry.scenePath, out index);
+    }
+
+    internal static bool TryContinue()
+    {
+        if (!TryReadCheckpoint(out Entry entry, out int index)) return false;
+
+        ReturnPath = entry.returnPath;
+        completedTrainMemories = entry.completedTrainMemories;
+        return SceneManager.LoadSceneAsync(index) != null;
+    }
+
+    internal static bool TryStartNewGame()
+    {
+        if (!LocationTransition.TryGetBuildIndex(HomePath, out int index)) return false;
+
+        startingNewGame = true;
+        AsyncOperation load = null;
+        try
         {
-            Entry entry = null;
-            try { entry = JsonUtility.FromJson<Entry>(json); }
-            catch (ArgumentException) { }
-            if (entry != null && IsGameplayPath(entry.scenePath) &&
-                LocationTransition.TryGetBuildIndex(entry.scenePath, out index))
-            {
-                ReturnPath = entry.returnPath;
-                completedTrainMemories = entry.completedTrainMemories;
-                return true;
-            }
+            load = SceneManager.LoadSceneAsync(index);
+            return load != null;
         }
-        return LocationTransition.TryGetBuildIndex(HomePath, out index);
+        finally
+        {
+            if (load == null) startingNewGame = false;
+        }
     }
 
     internal static int GetReturnIndex(int fallback) =>
@@ -77,6 +100,13 @@ internal static class SceneEntryCheckpoint
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (mode != LoadSceneMode.Single) return;
+        if (startingNewGame && scene.path == HomePath)
+        {
+            completedTrainMemories = 0;
+            PlayerPrefs.DeleteKey(RadioMemoryPuzzle.ClueKey);
+            PlayerPrefs.DeleteKey(CargoPuzzleTerminal.WaybillKey);
+        }
+        startingNewGame = false;
         if (!IsMind(scene.path)) ReturnPath = null;
         Enter(scene);
     }

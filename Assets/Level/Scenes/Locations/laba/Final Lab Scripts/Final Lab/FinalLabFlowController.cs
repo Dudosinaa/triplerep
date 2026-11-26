@@ -19,6 +19,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
     public bool SkipGameplayForTesting { get => skipGameplayForTesting; set => skipGameplayForTesting = value; }
     public FinalLabMetalDoor FatherDoor => fatherDoor;
     public FatherCutsceneController Father => father;
+    internal FinalLabAudio Audio { get; private set; }
     public bool DoorMarkerVisible => doorMarker.activeSelf;
     public event Action GameplayPhaseStarted;
     public event Action FatherSequenceStarted;
@@ -38,6 +39,7 @@ public sealed class FinalLabFlowController : MonoBehaviour
 
     private void Awake()
     {
+        Audio = GetComponent<FinalLabAudio>();
         fatherDoor.SetLocked(true);
         fatherDoor.OpenPrompt = "Открыть дверь — E";
         doorMarker.SetActive(false);
