@@ -3950,6 +3950,7 @@ MonoBehaviour:
   targetScenePath: Assets/Level/Scenes/Locations/Train.unity
   fadeOutDuration: 0.65
   fadeInDuration: 0.65
+  waitForIvan: {fileID: 0}
 --- !u!1001 &2525242708414167756
 PrefabInstance:
   m_ObjectHideFlags: 0

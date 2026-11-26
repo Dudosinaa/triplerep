@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public sealed class MergedGameBootstrap : MonoBehaviour
 {
     public string locationLabel;
+    [SerializeField] private bool hideControls;
     private void Start()
     {
         var movement = FindFirstObjectByType<FirstPersonPlayer>();
@@ -34,6 +35,8 @@ public sealed class MergedGameBootstrap : MonoBehaviour
         var scaler = go.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
+        if (hideControls) return canvas;
+
         var controls = locationLabel + "  |  WASD — идти, Ctrl — присесть, E — взаимодействие, T — сознание, ПКМ — приблизить";
         if (gameObject.scene.path == TrainMindSession.TrainPath)
             controls += "\nЛКМ — выстрел, R — перезарядка, Q — оружие, Y — покурить";

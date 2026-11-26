@@ -39,6 +39,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
 
     [Header("Combat")]
     [SerializeField, Min(1)] private int maxHealth = 100;
+    [SerializeField] private Collider[] shotHitboxes = System.Array.Empty<Collider>();
     [SerializeField] private HostileNpcRagdoll ragdoll;
     [SerializeField] private Transform eyes;
     [SerializeField] private Transform muzzle;
@@ -80,6 +81,14 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
     private AudioClip previousShotSound;
 
     public int Health { get; private set; }
+
+    internal bool IsShotHitbox(Collider hitbox) => System.Array.IndexOf(shotHitboxes, hitbox) >= 0;
+
+    private void SetShotHitboxesEnabled(bool value)
+    {
+        foreach (var hitbox in shotHitboxes)
+            if (hitbox != null) hitbox.enabled = value;
+    }
 
     private void Awake()
     {
@@ -368,6 +377,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
         if (voiceSource != null) voiceSource.Stop();
         body.enabled = false;
         seatedHitbox.enabled = false;
+        SetShotHitboxesEnabled(false);
         if (ragdoll == null)
         {
             SetState(State.Defeated);
@@ -395,6 +405,7 @@ public sealed class HostileTrainNpc : MonoBehaviour, IShootingTarget
         voiceDelay = voiceInterval;
         previousLine = null;
         seatedHitbox.enabled = true;
+        SetShotHitboxesEnabled(true);
         animator.enabled = true;
         animator.Rebind();
         animator.Play(Animations[(int)State.Seated], 0, 0f);

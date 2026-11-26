@@ -187,6 +187,8 @@ public sealed partial class FirstPersonPlayer : MonoBehaviour
             if (pressedE && InteractionInput.TryConsume())
             {
                 collectedKeys.Add(key);
+                if (key.PickupClip != null && footstepSource != null)
+                    footstepSource.PlayOneShot(key.PickupClip);
                 key.gameObject.SetActive(false);
             }
             return;

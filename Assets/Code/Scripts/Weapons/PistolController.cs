@@ -106,8 +106,9 @@ public sealed class PistolController : MonoBehaviour
         BeginAction("Shot");
         weaponView.PlayShotSound();
         weaponView.PlayMuzzleFlash();
+        Physics.SyncTransforms();
         var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (ShotRaycast.TryGetFirstHit(ray, shotRange, ~0, transform, shotHits, out RaycastHit hit))
+        if (ShotRaycast.TryGetFirstHit(ray, shotRange, ~0, transform, shotHits, out RaycastHit hit, includeNpcHitboxes: true))
             hit.collider.GetComponentInParent<IShootingTarget>()?.Hit();
         return true;
     }
