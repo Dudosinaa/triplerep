@@ -44,8 +44,8 @@ public sealed class FirstPersonHandsRendererFeature : ScriptableRendererFeature
 
     private sealed class HandsPass : ScriptableRenderPass
     {
-        private static readonly GlobalKeyword ScreenSpaceOcclusion =
-            GlobalKeyword.Create(ShaderKeywordStrings.ScreenSpaceOcclusion);
+        private static readonly int ScreenSpaceOcclusionTexture =
+            Shader.PropertyToID("_ScreenSpaceOcclusionTexture");
 
         private static readonly List<ShaderTagId> ForwardPasses = new List<ShaderTagId>
         {
@@ -94,17 +94,26 @@ public sealed class FirstPersonHandsRendererFeature : ScriptableRendererFeature
                 builder.UseRendererList(data.Opaque);
                 builder.UseRendererList(data.Transparent);
                 builder.UseAllGlobalTextures(true);
-                data.WorldUsesSsao = resources.ssaoTexture.IsValid();
-                if (data.WorldUsesSsao) builder.AllowGlobalStateModification(true);
+                data.WorldSsao = resources.ssaoTexture;
+                if (data.WorldSsao.IsValid())
+                {
+                    data.NeutralSsao = renderGraph.defaultResources.whiteTexture;
+                    builder.UseTexture(data.WorldSsao, AccessFlags.Read);
+                    builder.UseTexture(data.NeutralSsao, AccessFlags.Read);
+                    builder.AllowGlobalStateModification(true);
+                }
                 builder.SetRenderAttachment(color, 0, AccessFlags.Write);
                 builder.SetRenderAttachmentDepth(handsDepth, AccessFlags.ReadWrite);
                 builder.SetRenderFunc(static (PassData passData, RasterGraphContext context) =>
                 {
-                    // The scene's AO texture describes geometry outside the hands' depth buffer.
-                    if (passData.WorldUsesSsao) context.cmd.SetKeyword(ScreenSpaceOcclusion, false);
+                    // World SSAO uses scene depth, while the hands render with their own depth buffer.
+                    bool hasWorldSsao = passData.WorldSsao.IsValid();
+                    if (hasWorldSsao)
+                        context.cmd.SetGlobalTexture(ScreenSpaceOcclusionTexture, passData.NeutralSsao);
                     context.cmd.DrawRendererList(passData.Opaque);
                     context.cmd.DrawRendererList(passData.Transparent);
-                    if (passData.WorldUsesSsao) context.cmd.SetKeyword(ScreenSpaceOcclusion, true);
+                    if (hasWorldSsao)
+                        context.cmd.SetGlobalTexture(ScreenSpaceOcclusionTexture, passData.WorldSsao);
                 });
             }
         }
@@ -113,7 +122,8 @@ public sealed class FirstPersonHandsRendererFeature : ScriptableRendererFeature
         {
             internal RendererListHandle Opaque;
             internal RendererListHandle Transparent;
-            internal bool WorldUsesSsao;
+            internal TextureHandle WorldSsao;
+            internal TextureHandle NeutralSsao;
         }
     }
 }
